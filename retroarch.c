@@ -1994,6 +1994,9 @@ struct rarch_state
    /* Set to true by driver if context caching succeeded. */
    bool video_driver_cache_context_ack;
 
+/* Set during core reinit to keep the window open. */
+   bool video_keep_window_on_core_reload;
+
 #ifdef HAVE_GFX_WIDGETS
    bool gfx_widgets_paused;
    bool gfx_widgets_fast_forward;
@@ -14369,6 +14372,24 @@ static void command_event_deinit_core(
       struct rarch_state *p_rarch,
       bool reinit)
 {
+   bool program_shutdown = !reinit || (p_rarch->runloop_shutdown_initiated
+      && !p_rarch->runloop_core_shutdown_initiated);
+
+
+   /* If we are not shutting down and the window is managed through a context
+    * driver (set_video_mode function is set) and it is a desktop video driver
+    * (supports windowed) and we are not switching video drivers,
+    * then we don't have to recreate the window.
+    */
+   if (!program_shutdown &&
+       p_rarch->current_video_context.set_video_mode &&
+       video_driver_has_windowed() &&
+       string_is_equal(p_rarch->current_video->ident,
+          p_rarch->configuration_settings->arrays.video_driver))
+   {
+      p_rarch->video_keep_window_on_core_reload = true;
+   }
+
    core_unload_game(p_rarch);
 
    video_driver_set_cached_frame_ptr(NULL);
@@ -30924,10 +30945,13 @@ static bool video_driver_init_internal(bool *video_is_threaded)
    else
       RARCH_LOG("[Video]: Video @ fullscreen\n");
 
-   video_driver_display_type_set(RARCH_DISPLAY_NONE);
-   video_driver_display_set(0);
-   video_driver_display_userdata_set(0);
-   video_driver_window_set(0);
+   if (!p_rarch->video_keep_window_on_core_reload)
+   {
+      video_driver_display_type_set(RARCH_DISPLAY_NONE);
+      video_driver_display_set(0);
+      video_driver_display_userdata_set(0);
+      video_driver_window_set(0);
+   }
 
    if (!video_driver_pixel_converter_init(p_rarch,
             RARCH_SCALE_BASE * scale))
@@ -32945,6 +32969,12 @@ const gfx_ctx_driver_t *video_context_driver_init_first(void *data,
    struct rarch_state *p_rarch = &rarch_st;
    int                       i = find_video_context_driver_index(ident);
 
+   if (p_rarch->video_keep_window_on_core_reload)
+   {
+      *ctx_data = p_rarch->video_context_data;
+      return &p_rarch->current_video_context;
+   }
+
    if (i >= 0)
    {
       const gfx_ctx_driver_t *ctx = video_context_driver_init(data, gfx_ctx_drivers[i], ident,
@@ -33017,6 +33047,8 @@ void video_context_driver_translate_aspect(gfx_ctx_aspect_t *aspect)
 void video_context_driver_free(void)
 {
    struct rarch_state   *p_rarch = &rarch_st;
+   if (p_rarch->video_keep_window_on_core_reload)
+      return;
    if (p_rarch->current_video_context.destroy)
       p_rarch->current_video_context.destroy(p_rarch->video_context_data);
    video_context_driver_destroy();
@@ -33103,6 +33135,11 @@ bool video_context_driver_get_ident(gfx_ctx_ident_t *ident)
 bool video_context_driver_set_video_mode(gfx_ctx_mode_t *mode_info)
 {
    struct rarch_state      *p_rarch = &rarch_st;
+   if (p_rarch->video_keep_window_on_core_reload)
+   {
+      p_rarch->video_keep_window_on_core_reload = false;
+      return true;
+   }
    if (!p_rarch->current_video_context.set_video_mode)
       return false;
    return p_rarch->current_video_context.set_video_mode(
