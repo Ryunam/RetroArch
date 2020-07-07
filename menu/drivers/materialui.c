@@ -4821,6 +4821,7 @@ static void materialui_render_header(
    bool battery_level_enable     = settings->bools.menu_battery_level_enable;
    bool menu_timedate_enable     = settings->bools.menu_timedate_enable;
    unsigned menu_timedate_style  = settings->uints.menu_timedate_style;
+   unsigned menu_timedate_separator  = settings->uints.menu_timedate_separator;
    bool menu_core_enable         = settings->bools.menu_core_enable;
 
    menu_title_buf[0]  = '\0';
@@ -4973,6 +4974,7 @@ static void materialui_render_header(
       datetime.s         = timedate_str;
       datetime.len       = sizeof(timedate_str);
       datetime.time_mode = menu_timedate_style;
+      datetime.separator = menu_timedate_separator;
 
       menu_display_timedate(&datetime);
 

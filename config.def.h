@@ -982,7 +982,7 @@ static const int default_content_favorites_size = 200;
 #define DEFAULT_PLAYLIST_SUBLABEL_RUNTIME_TYPE PLAYLIST_RUNTIME_PER_CORE
 
 /* Specifies time/date display format for runtime 'last played' data */
-#define DEFAULT_PLAYLIST_SUBLABEL_LAST_PLAYED_STYLE PLAYLIST_LAST_PLAYED_STYLE_YMD_HMS
+#define DEFAULT_PLAYLIST_SUBLABEL_LAST_PLAYED_STYLE PLAYLIST_LAST_PLAYED_STYLE_DASH_YMD_HMS
 
 #define DEFAULT_PLAYLIST_ENTRY_REMOVE_ENABLE PLAYLIST_ENTRY_REMOVE_ENABLE_ALL
 #endif
@@ -1070,7 +1070,8 @@ static const unsigned menu_left_thumbnails_default = 0;
 static const unsigned gfx_thumbnail_upscale_threshold = 0;
 
 #ifdef HAVE_MENU
-static const unsigned menu_timedate_style = MENU_TIMEDATE_STYLE_DDMM_HM;
+static const unsigned menu_timedate_style = MENU_TIMEDATE_STYLE_DASH_YMD_HMS;
+static const unsigned menu_timedate_separator = MENU_TIMEDATE_SEPARATOR_DASH;
 #endif
 
 static const bool xmb_vertical_thumbnails = false;

@@ -1683,6 +1683,7 @@ static void ozone_draw_header(ozone_handle_t *ozone,
 
       datetime.s         = timedate;
       datetime.time_mode = settings->uints.menu_timedate_style;
+      datetime.separator = settings->uints.menu_timedate_separator;
       datetime.len       = sizeof(timedate);
 
       menu_display_timedate(&datetime);

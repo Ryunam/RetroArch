@@ -3884,7 +3884,7 @@ static void rgui_render(void *data,
 
          datetime.s = timedate;
          datetime.len = sizeof(timedate);
-         datetime.time_mode = MENU_TIMEDATE_STYLE_HM;
+         datetime.time_mode = MENU_TIMEDATE_STYLE_DASH_HM;
 
          menu_display_timedate(&datetime);
 

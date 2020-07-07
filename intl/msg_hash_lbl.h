@@ -2667,6 +2667,10 @@ MSG_HASH(
    "menu_timedate_style"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_TIMEDATE_SEPARATOR,
+   "menu_timedate_separator"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_MENU_TICKER_TYPE,
    "menu_ticker_type"
    )

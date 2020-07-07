@@ -454,6 +454,7 @@ default_sublabel_macro(action_bind_sublabel_ozone_scroll_content_metadata,      
 default_sublabel_macro(action_bind_sublabel_menu_thumbnail_upscale_threshold, MENU_ENUM_SUBLABEL_MENU_THUMBNAIL_UPSCALE_THRESHOLD)
 default_sublabel_macro(action_bind_sublabel_timedate_enable,               MENU_ENUM_SUBLABEL_TIMEDATE_ENABLE)
 default_sublabel_macro(action_bind_sublabel_timedate_style,                MENU_ENUM_SUBLABEL_TIMEDATE_STYLE)
+default_sublabel_macro(action_bind_sublabel_timedate_separator,            MENU_ENUM_SUBLABEL_TIMEDATE_SEPARATOR)
 default_sublabel_macro(action_bind_sublabel_battery_level_enable,          MENU_ENUM_SUBLABEL_BATTERY_LEVEL_ENABLE)
 default_sublabel_macro(action_bind_sublabel_menu_show_sublabels,           MENU_ENUM_SUBLABEL_MENU_SHOW_SUBLABELS)
 default_sublabel_macro(action_bind_sublabel_navigation_wraparound,         MENU_ENUM_SUBLABEL_NAVIGATION_WRAPAROUND)
@@ -2132,6 +2133,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_TIMEDATE_STYLE:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_timedate_style);
+            break;
+         case MENU_ENUM_LABEL_TIMEDATE_SEPARATOR:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_timedate_separator);
             break;
          case MENU_ENUM_LABEL_THUMBNAILS:
             {
