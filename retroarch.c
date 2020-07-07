@@ -14375,7 +14375,6 @@ static void command_event_deinit_core(
    bool program_shutdown = !reinit || (p_rarch->runloop_shutdown_initiated
       && !p_rarch->runloop_core_shutdown_initiated);
 
-
    /* If we are not shutting down and the window is managed through a context
     * driver (set_video_mode function is set) and it is a desktop video driver
     * (supports windowed) and we are not switching video drivers,
