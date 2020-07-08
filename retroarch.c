@@ -36394,6 +36394,21 @@ bool retroarch_main_init(int argc, char *argv[])
    cheat_manager_state_free();
    command_event_init_cheats(p_rarch->configuration_settings, p_rarch);
 #endif
+
+   if (p_rarch->video_keep_window_on_core_reload)
+   {
+      video_driver_t *old_video = p_rarch->current_video;
+      video_driver_find_driver(p_rarch);
+      if (old_video != p_rarch->current_video)
+      {
+         /* We assumed the video driver wouldn't change but the core requested
+          * a change. Give up on trying to keep the window open.
+          */
+         p_rarch->video_keep_window_on_core_reload = false;
+         video_context_driver_free();
+      }
+   }
+
    drivers_init(p_rarch, DRIVERS_CMD_ALL);
    input_driver_deinit_command(p_rarch);
    input_driver_init_command(p_rarch);
