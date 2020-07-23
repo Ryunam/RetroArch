@@ -7436,6 +7436,55 @@ unsigned menu_displaylist_build_list(
             }
          }
          break;
+      case DISPLAYLIST_ONSCREEN_INDICATORS_SETTINGS_LIST:
+         {
+            settings_t *settings     = config_get_ptr();
+            bool video_font_enable   = settings->bools.video_font_enable;
+            bool video_fps_show      = settings->bools.video_fps_show;
+            bool video_memory_show   = settings->bools.video_memory_show;
+
+            menu_displaylist_build_info_selective_t build_list[] = {
+               {MENU_ENUM_LABEL_FPS_SHOW,                                PARSE_ONLY_BOOL,  true },
+               {MENU_ENUM_LABEL_FPS_UPDATE_INTERVAL,                     PARSE_ONLY_UINT,  false },
+               {MENU_ENUM_LABEL_FRAMECOUNT_SHOW,                         PARSE_ONLY_BOOL,  true },
+               {MENU_ENUM_LABEL_STATISTICS_SHOW,                         PARSE_ONLY_BOOL,  false },
+               {MENU_ENUM_LABEL_MEMORY_SHOW,                             PARSE_ONLY_BOOL,  true },
+               {MENU_ENUM_LABEL_MEMORY_UPDATE_INTERVAL,                  PARSE_ONLY_UINT,  false },
+            };
+
+            for (i = 0; i < ARRAY_SIZE(build_list); i++)
+            {
+               switch (build_list[i].enum_idx)
+               {
+                  case MENU_ENUM_LABEL_FPS_UPDATE_INTERVAL:
+                     if (video_fps_show)
+                        build_list[i].checked = true;
+                     break;
+                  case MENU_ENUM_LABEL_MEMORY_UPDATE_INTERVAL:
+                     if (video_memory_show)
+                        build_list[i].checked = true;
+                     break;
+                  case MENU_ENUM_LABEL_STATISTICS_SHOW:
+                     if (video_font_enable)
+                        build_list[i].checked = true;
+                     break;
+                  default:
+                     break;
+               }
+            }
+
+            for (i = 0; i < ARRAY_SIZE(build_list); i++)
+            {
+               if (!build_list[i].checked && !include_everything)
+                  continue;
+
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                        build_list[i].enum_idx,  build_list[i].parse_type,
+                        false) == 0)
+                  count++;
+            }
+         }
+         break;
       case DISPLAYLIST_ONSCREEN_NOTIFICATIONS_SETTINGS_LIST:
          {
             settings_t *settings          = config_get_ptr();
@@ -7547,9 +7596,9 @@ unsigned menu_displaylist_build_list(
       case DISPLAYLIST_ONSCREEN_NOTIFICATIONS_VIEWS_SETTINGS_LIST:
          {
             settings_t *settings     = config_get_ptr();
-            bool video_font_enable   = settings->bools.video_font_enable;
-            bool video_fps_show      = settings->bools.video_fps_show;
-            bool video_memory_show   = settings->bools.video_memory_show;
+//            bool video_font_enable   = settings->bools.video_font_enable;
+//            bool video_fps_show      = settings->bools.video_fps_show;
+//            bool video_memory_show   = settings->bools.video_memory_show;
 #ifdef HAVE_GFX_WIDGETS
             bool widgets_supported   = video_driver_has_widgets();
             bool menu_enable_widgets = settings->bools.menu_enable_widgets;
@@ -7558,12 +7607,12 @@ unsigned menu_displaylist_build_list(
             bool notification_show_screenshot = settings->bools.notification_show_screenshot;
 #endif
             menu_displaylist_build_info_selective_t build_list[] = {
-               {MENU_ENUM_LABEL_FPS_SHOW,                                PARSE_ONLY_BOOL,  true },
-               {MENU_ENUM_LABEL_FPS_UPDATE_INTERVAL,                     PARSE_ONLY_UINT,  false },
-               {MENU_ENUM_LABEL_FRAMECOUNT_SHOW,                         PARSE_ONLY_BOOL,  true },
-               {MENU_ENUM_LABEL_STATISTICS_SHOW,                         PARSE_ONLY_BOOL,  false },
-               {MENU_ENUM_LABEL_MEMORY_SHOW,                             PARSE_ONLY_BOOL,  true },
-               {MENU_ENUM_LABEL_MEMORY_UPDATE_INTERVAL,                  PARSE_ONLY_UINT,  false },
+//               {MENU_ENUM_LABEL_FPS_SHOW,                                PARSE_ONLY_BOOL,  true },
+//               {MENU_ENUM_LABEL_FPS_UPDATE_INTERVAL,                     PARSE_ONLY_UINT,  false },
+//               {MENU_ENUM_LABEL_FRAMECOUNT_SHOW,                         PARSE_ONLY_BOOL,  true },
+//               {MENU_ENUM_LABEL_STATISTICS_SHOW,                         PARSE_ONLY_BOOL,  false },
+//               {MENU_ENUM_LABEL_MEMORY_SHOW,                             PARSE_ONLY_BOOL,  true },
+//               {MENU_ENUM_LABEL_MEMORY_UPDATE_INTERVAL,                  PARSE_ONLY_UINT,  false },
                {MENU_ENUM_LABEL_MENU_SHOW_LOAD_CONTENT_ANIMATION,        PARSE_ONLY_BOOL,  false },
                {MENU_ENUM_LABEL_NOTIFICATION_SHOW_AUTOCONFIG,            PARSE_ONLY_BOOL,  true },
                {MENU_ENUM_LABEL_NOTIFICATION_SHOW_CHEATS_APPLIED,        PARSE_ONLY_BOOL,  true },
@@ -7582,7 +7631,7 @@ unsigned menu_displaylist_build_list(
             {
                switch (build_list[i].enum_idx)
                {
-                  case MENU_ENUM_LABEL_FPS_UPDATE_INTERVAL:
+/*                  case MENU_ENUM_LABEL_FPS_UPDATE_INTERVAL:
                      if (video_fps_show)
                         build_list[i].checked = true;
                      break;
@@ -7593,7 +7642,7 @@ unsigned menu_displaylist_build_list(
                   case MENU_ENUM_LABEL_STATISTICS_SHOW:
                      if (video_font_enable)
                         build_list[i].checked = true;
-                     break;
+                     break;*/
 #ifdef HAVE_GFX_WIDGETS
                   case MENU_ENUM_LABEL_MENU_SHOW_LOAD_CONTENT_ANIMATION:
                      if (widgets_supported &&
@@ -7856,6 +7905,7 @@ unsigned menu_displaylist_build_list(
 #ifdef HAVE_VIDEO_LAYOUT
                {MENU_ENUM_LABEL_ONSCREEN_VIDEO_LAYOUT_SETTINGS, PARSE_ACTION},
 #endif
+               {MENU_ENUM_LABEL_ONSCREEN_INDICATORS_SETTINGS,     PARSE_ACTION},
                {MENU_ENUM_LABEL_ONSCREEN_NOTIFICATIONS_SETTINGS,  PARSE_ACTION},
             };
 
@@ -10491,6 +10541,7 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
       case DISPLAYLIST_SETTINGS_ALL:
       case DISPLAYLIST_PRIVACY_SETTINGS_LIST:
       case DISPLAYLIST_CONFIGURATIONS_LIST:
+      case DISPLAYLIST_ONSCREEN_INDICATORS_SETTINGS_LIST:
       case DISPLAYLIST_ONSCREEN_NOTIFICATIONS_SETTINGS_LIST:
       case DISPLAYLIST_ONSCREEN_NOTIFICATIONS_VIEWS_SETTINGS_LIST:
       case DISPLAYLIST_LATENCY_SETTINGS_LIST:

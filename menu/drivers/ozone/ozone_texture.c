@@ -287,6 +287,8 @@ uintptr_t ozone_entries_icon_get_texture(ozone_handle_t *ozone,
             return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_REWIND];
       case MENU_ENUM_LABEL_QUICK_MENU_OVERRIDE_OPTIONS:
             return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_OVERRIDE];
+      case MENU_ENUM_LABEL_ONSCREEN_INDICATORS_SETTINGS:
+            return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_NOTIFICATIONS];
       case MENU_ENUM_LABEL_ONSCREEN_NOTIFICATIONS_SETTINGS:
             return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_NOTIFICATIONS];
 #ifdef HAVE_NETWORKING

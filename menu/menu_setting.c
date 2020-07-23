@@ -8381,6 +8381,15 @@ static bool setting_append_list(
 
          CONFIG_ACTION(
                list, list_info,
+               MENU_ENUM_LABEL_ONSCREEN_INDICATORS_SETTINGS,
+               MENU_ENUM_LABEL_VALUE_ONSCREEN_INDICATORS_SETTINGS,
+               &group_info,
+               &subgroup_info,
+               parent_group);
+         SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_LAKKA_ADVANCED);
+
+         CONFIG_ACTION(
+               list, list_info,
                MENU_ENUM_LABEL_ONSCREEN_NOTIFICATIONS_SETTINGS,
                MENU_ENUM_LABEL_VALUE_ONSCREEN_NOTIFICATIONS_SETTINGS,
                &group_info,

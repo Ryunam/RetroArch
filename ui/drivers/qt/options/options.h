@@ -436,6 +436,14 @@ public:
    QWidget *widget();
 };
 
+class IndicatorsPage : public OptionsPage
+{
+   Q_OBJECT
+public:
+   IndicatorsPage(QObject *parent = nullptr);
+   QWidget *widget();
+};
+
 class NotificationsPage : public OptionsPage
 {
    Q_OBJECT

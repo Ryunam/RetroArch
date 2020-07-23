@@ -794,6 +794,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_onscreen_overlay_settings_list,     
 #ifdef HAVE_VIDEO_LAYOUT
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_onscreen_video_layout_settings_list,   MENU_ENUM_SUBLABEL_ONSCREEN_VIDEO_LAYOUT_SETTINGS)
 #endif
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_onscreen_indicators_settings_list,     MENU_ENUM_SUBLABEL_ONSCREEN_INDICATORS_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_onscreen_notifications_settings_list,  MENU_ENUM_SUBLABEL_ONSCREEN_NOTIFICATIONS_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_onscreen_notifications_views_settings_list, MENU_ENUM_SUBLABEL_ONSCREEN_NOTIFICATIONS_VIEWS_SETTINGS)
 #ifdef HAVE_QT
@@ -3675,6 +3676,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_onscreen_video_layout_settings_list);
             break;
 #endif
+         case MENU_ENUM_LABEL_ONSCREEN_INDICATORS_SETTINGS:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_onscreen_indicators_settings_list);
+            break;
          case MENU_ENUM_LABEL_ONSCREEN_NOTIFICATIONS_SETTINGS:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_onscreen_notifications_settings_list);
             break;

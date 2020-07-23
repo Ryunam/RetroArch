@@ -889,6 +889,10 @@ MSG_HASH(
    "deferred_onscreen_video_layout_settings_list"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_DEFERRED_ONSCREEN_INDICATORS_SETTINGS_LIST,
+   "deferred_onscreen_indicators_settings_list"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_DEFERRED_ONSCREEN_NOTIFICATIONS_SETTINGS_LIST,
    "deferred_onscreen_notifications_settings_list"
    )
@@ -1927,6 +1931,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_ONSCREEN_VIDEO_LAYOUT_SETTINGS,
    "onscreen_video_layout_settings"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_ONSCREEN_INDICATORS_SETTINGS,
+   "onscreen_indicators_settings"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_ONSCREEN_NOTIFICATIONS_SETTINGS,

@@ -12,9 +12,38 @@ QVector<OptionsPage*> OnscreenDisplayCategory::pages()
    QVector<OptionsPage*> pages;
 
    pages << new OverlayPage(this);
+   pages << new IndicatorsPage(this);
    pages << new NotificationsPage(this);
 
    return pages;
+}
+
+IndicatorsPage::IndicatorsPage(QObject *parent) :
+   OptionsPage(parent)
+{
+   setDisplayName(MENU_ENUM_LABEL_VALUE_ONSCREEN_INDICATORS_SETTINGS);
+}
+
+QWidget *IndicatorsPage::widget()
+{
+   QWidget                            *widget = new QWidget;
+   QVBoxLayout                        *layout = new QVBoxLayout;
+   CheckableSettingsGroup *indicatorsGroup    = new CheckableSettingsGroup(MENU_ENUM_LABEL_VIDEO_FONT_ENABLE);
+
+   indicatorsGroup->add(MENU_ENUM_LABEL_FPS_SHOW);
+   indicatorsGroup->add(MENU_ENUM_LABEL_FPS_UPDATE_INTERVAL);
+   indicatorsGroup->add(MENU_ENUM_LABEL_FRAMECOUNT_SHOW);
+   indicatorsGroup->add(MENU_ENUM_LABEL_MEMORY_SHOW);
+   indicatorsGroup->add(MENU_ENUM_LABEL_MEMORY_UPDATE_INTERVAL);
+   indicatorsGroup->add(MENU_ENUM_LABEL_STATISTICS_SHOW);
+
+   layout->addWidget(indicatorsGroup);
+
+   layout->addStretch();
+
+   widget->setLayout(layout);
+
+   return widget;
 }
 
 NotificationsPage::NotificationsPage(QObject *parent) :
@@ -30,12 +59,12 @@ QWidget *NotificationsPage::widget()
    CheckableSettingsGroup *notificationsGroup = new CheckableSettingsGroup(MENU_ENUM_LABEL_VIDEO_FONT_ENABLE);
    CheckableSettingsGroup            *bgGroup = new CheckableSettingsGroup(MENU_ENUM_LABEL_VIDEO_MESSAGE_BGCOLOR_ENABLE);
 
-   notificationsGroup->add(MENU_ENUM_LABEL_FPS_SHOW);
+/*   notificationsGroup->add(MENU_ENUM_LABEL_FPS_SHOW);
    notificationsGroup->add(MENU_ENUM_LABEL_FPS_UPDATE_INTERVAL);
    notificationsGroup->add(MENU_ENUM_LABEL_FRAMECOUNT_SHOW);
    notificationsGroup->add(MENU_ENUM_LABEL_MEMORY_SHOW);
    notificationsGroup->add(MENU_ENUM_LABEL_MEMORY_UPDATE_INTERVAL);
-   notificationsGroup->add(MENU_ENUM_LABEL_STATISTICS_SHOW);
+   notificationsGroup->add(MENU_ENUM_LABEL_STATISTICS_SHOW);*/
    notificationsGroup->add(MENU_ENUM_LABEL_VIDEO_FONT_PATH);
    notificationsGroup->add(MENU_ENUM_LABEL_VIDEO_FONT_SIZE);
    notificationsGroup->add(MENU_ENUM_LABEL_VIDEO_MESSAGE_POS_X);
