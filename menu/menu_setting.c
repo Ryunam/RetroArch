@@ -4988,6 +4988,27 @@ static void setting_get_string_representation_uint_notification_show_screenshot_
 #endif
 #endif
 
+static void setting_get_string_representation_uint_video_screen_mode(
+      rarch_setting_t *setting,
+      char *s, size_t len)
+{
+   if (!setting)
+      return;
+
+   switch (*setting->value.target.unsigned_integer)
+   {
+      case SCREEN_MODE_EXCLUSIVE_FULLSCREEN:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE_EXCLUSIVE_FULLSCREEN), len);
+         break;
+      case SCREEN_MODE_WINDOWED_FULLSCREEN:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE_WINDOWED_FULLSCREEN), len);
+         break;
+      case SCREEN_MODE_WINDOWED:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE_WINDOWED), len);
+         break;
+   }
+}
+
 static void setting_get_string_representation_uint_video_autoswitch_refresh_rate(
       rarch_setting_t *setting,
       char *s, size_t len)
@@ -11565,6 +11586,15 @@ static bool setting_append_list(
 
             if (video_driver_has_windowed())
             {
+
+               CONFIG_ACTION(
+                     list, list_info,
+                     MENU_ENUM_LABEL_VIDEO_SCREEN_MODE_SETTINGS,
+                     MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE_SETTINGS,
+                     &group_info,
+                     &subgroup_info,
+                     parent_group);
+
                CONFIG_ACTION(
                      list, list_info,
                      MENU_ENUM_LABEL_VIDEO_FULLSCREEN_MODE_SETTINGS,
@@ -11582,6 +11612,22 @@ static bool setting_append_list(
                      parent_group);
             }
 
+            CONFIG_UINT(
+                  list, list_info,
+                  &settings->uints.video_screen_mode,
+                  MENU_ENUM_LABEL_VIDEO_SCREEN_MODE,
+                  MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE,
+                  DEFAULT_VIDEO_SCREEN_MODE,
+                  &group_info,
+                  &subgroup_info,
+                  parent_group,
+                  general_write_handler,
+                  general_read_handler);
+            (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
+            (*list)[list_info->index - 1].get_string_representation =
+               &setting_get_string_representation_uint_video_screen_mode;
+            menu_settings_list_current_add_range(list, list_info, 0, SCREEN_MODE_LAST - 1, 1, true, true);
+            (*list)[list_info->index - 1].ui_type   = ST_UI_TYPE_UINT_COMBOBOX;
 
             CONFIG_BOOL(
                   list, list_info,

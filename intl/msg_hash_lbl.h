@@ -1163,6 +1163,10 @@ MSG_HASH(
    "deferred_video_settings_list"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_DEFERRED_VIDEO_SCREEN_MODE_SETTINGS_LIST,
+   "deferred_video_screen_mode_settings_list"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_DEFERRED_VIDEO_WINDOWED_MODE_SETTINGS_LIST,
    "deferred_video_windowed_mode_settings_list"
    )
@@ -3647,6 +3651,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VIDEO_REFRESH_RATE_POLLED,
    "video_refresh_rate_polled"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VIDEO_SCREEN_MODE,
+   "video_screen_mode"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VIDEO_AUTOSWITCH_REFRESH_RATE,

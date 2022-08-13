@@ -306,6 +306,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_settings_views_settings_list, MENU_E
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_settings_list,            MENU_ENUM_SUBLABEL_MENU_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_settings_list,           MENU_ENUM_SUBLABEL_VIDEO_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_synchronization_settings_list,           MENU_ENUM_SUBLABEL_VIDEO_SYNCHRONIZATION_SETTINGS)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_screen_mode_settings_list,           MENU_ENUM_SUBLABEL_VIDEO_SCREEN_MODE_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_fullscreen_mode_settings_list,           MENU_ENUM_SUBLABEL_VIDEO_FULLSCREEN_MODE_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_windowed_mode_settings_list,           MENU_ENUM_SUBLABEL_VIDEO_WINDOWED_MODE_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_scaling_settings_list,           MENU_ENUM_SUBLABEL_VIDEO_SCALING_SETTINGS)
@@ -605,6 +606,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_screen_orientation,            MENU_
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_force_srgb_enable,       MENU_ENUM_SUBLABEL_VIDEO_FORCE_SRGB_DISABLE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_fullscreen,              MENU_ENUM_SUBLABEL_VIDEO_FULLSCREEN)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_windowed_fullscreen,     MENU_ENUM_SUBLABEL_VIDEO_WINDOWED_FULLSCREEN)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_screen_mode,             MENU_ENUM_SUBLABEL_VIDEO_SCREEN_MODE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_autoswitch_refresh_rate, MENU_ENUM_SUBLABEL_VIDEO_AUTOSWITCH_REFRESH_RATE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_gpu_record,              MENU_ENUM_SUBLABEL_VIDEO_GPU_RECORD)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_savestate_auto_index,          MENU_ENUM_SUBLABEL_SAVESTATE_AUTO_INDEX)
@@ -3697,6 +3699,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
          case MENU_ENUM_LABEL_VIDEO_WINDOWED_FULLSCREEN:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_video_windowed_fullscreen);
             break;
+         case MENU_ENUM_LABEL_VIDEO_SCREEN_MODE:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_video_screen_mode);
+            break;
          case MENU_ENUM_LABEL_VIDEO_AUTOSWITCH_REFRESH_RATE:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_video_autoswitch_refresh_rate);
             break;
@@ -4304,6 +4309,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_VIDEO_SYNCHRONIZATION_SETTINGS:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_video_synchronization_settings_list);
+            break;
+         case MENU_ENUM_LABEL_VIDEO_SCREEN_MODE_SETTINGS:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_video_screen_mode_settings_list);
             break;
          case MENU_ENUM_LABEL_VIDEO_FULLSCREEN_MODE_SETTINGS:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_video_fullscreen_mode_settings_list);

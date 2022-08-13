@@ -198,31 +198,30 @@
 #define DEFAULT_GAMMA 0
 #endif
 
-/* Windowed
+/* To start in Fullscreen, or not. */
+#if defined(HAVE_STEAM) || defined(DINGUX) || defined(__WINRT__) || defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
+/* Start in fullscreen mode for Steam and Dingux
+ * WinRT and Winapi Family builds */
+#define DEFAULT_VIDEO_SCREEN_MODE SCREEN_MODE_EXCLUSIVE_FULLSCREEN
+#else
+#define DEFAULT_VIDEO_SCREEN_MODE SCREEN_MODE_WINDOWED
+#endif
+
+/* Note to self: this requires some more thinking
+
+// /* To use windowed mode or not when going fullscreen. */
+// #if defined(__WINRT__) || defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
+// /* Do not use windowed mode for WinRT and Winapi Family builds on the Xbox UWP with fixed resolution shrinks the image into the left top corner of the screen with some libretro cores */
+// #define DEFAULT_WINDOWED_FULLSCREEN false
+// #else
+// #define DEFAULT_WINDOWED_FULLSCREEN true 
+// #endif 
+
+/* When using Windowed Mode
  * Real x resolution = aspect * base_size * x scale
  * Real y resolution = base_size * y scale
  */
 #define DEFAULT_SCALE (3.0)
-
-/* Fullscreen */
-
-/* To start in Fullscreen, or not. */
-
-#if defined(HAVE_STEAM) || defined(DINGUX) || defined(__WINRT__) || defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
-/* Start in fullscreen mode for Steam and Dingux
- * WinRT and Winapi Family builds */
-#define DEFAULT_FULLSCREEN true
-#else
-#define DEFAULT_FULLSCREEN false
-#endif
-
-/* To use windowed mode or not when going fullscreen. */
-#if defined(__WINRT__) || defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
-/* Do not use windowed mode for WinRT and Winapi Family builds on the Xbox UWP with fixed resolution shrinks the image into the left top corner of the screen with some libretro cores */
-#define DEFAULT_WINDOWED_FULLSCREEN false
-#else
-#define DEFAULT_WINDOWED_FULLSCREEN true 
-#endif 
 
 /* Enable automatic switching of the screen refresh rate when using the specified screen mode(s),
  * based on running core/content */

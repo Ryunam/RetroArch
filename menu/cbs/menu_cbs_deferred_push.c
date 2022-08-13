@@ -167,6 +167,7 @@ GENERIC_DEFERRED_PUSH(deferred_push_driver_settings_list,           DISPLAYLIST_
 GENERIC_DEFERRED_PUSH(deferred_push_core_settings_list,             DISPLAYLIST_CORE_SETTINGS_LIST)
 GENERIC_DEFERRED_PUSH(deferred_push_core_information_list,          DISPLAYLIST_CORE_INFO)
 GENERIC_DEFERRED_PUSH(deferred_push_video_settings_list,            DISPLAYLIST_VIDEO_SETTINGS_LIST)
+GENERIC_DEFERRED_PUSH(deferred_push_video_screen_mode_settings_list, DISPLAYLIST_VIDEO_SCREEN_MODE_SETTINGS_LIST)
 GENERIC_DEFERRED_PUSH(deferred_push_video_fullscreen_mode_settings_list,    DISPLAYLIST_VIDEO_FULLSCREEN_MODE_SETTINGS_LIST)
 GENERIC_DEFERRED_PUSH(deferred_push_video_windowed_mode_settings_list,    DISPLAYLIST_VIDEO_WINDOWED_MODE_SETTINGS_LIST)
 GENERIC_DEFERRED_PUSH(deferred_push_video_synchronization_settings_list,    DISPLAYLIST_VIDEO_SYNCHRONIZATION_SETTINGS_LIST)
@@ -773,6 +774,7 @@ static int menu_cbs_init_bind_deferred_push_compare_label(
       {MENU_ENUM_LABEL_DEFERRED_NETPLAY, deferred_push_netplay_sublist},
       {MENU_ENUM_LABEL_DEFERRED_DRIVER_SETTINGS_LIST, deferred_push_driver_settings_list},
       {MENU_ENUM_LABEL_DEFERRED_VIDEO_SETTINGS_LIST, deferred_push_video_settings_list},
+      {MENU_ENUM_LABEL_DEFERRED_VIDEO_SCREEN_MODE_SETTINGS_LIST, deferred_push_video_screen_mode_settings_list},
       {MENU_ENUM_LABEL_DEFERRED_VIDEO_FULLSCREEN_MODE_SETTINGS_LIST, deferred_push_video_fullscreen_mode_settings_list},
       {MENU_ENUM_LABEL_DEFERRED_VIDEO_WINDOWED_MODE_SETTINGS_LIST, deferred_push_video_windowed_mode_settings_list},
       {MENU_ENUM_LABEL_DEFERRED_VIDEO_SYNCHRONIZATION_SETTINGS_LIST, deferred_push_video_synchronization_settings_list},
@@ -1227,6 +1229,9 @@ static int menu_cbs_init_bind_deferred_push_compare_label(
             break;
          case MENU_ENUM_LABEL_DEFERRED_VIDEO_SETTINGS_LIST:
             BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_video_settings_list);
+            break;
+         case MENU_ENUM_LABEL_DEFERRED_VIDEO_SCREEN_MODE_SETTINGS_LIST:
+            BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_video_screen_mode_settings_list);
             break;
          case MENU_ENUM_LABEL_DEFERRED_VIDEO_FULLSCREEN_MODE_SETTINGS_LIST:
             BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_video_fullscreen_mode_settings_list);

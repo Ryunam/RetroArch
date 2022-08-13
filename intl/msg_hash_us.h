@@ -1418,6 +1418,14 @@ MSG_HASH(
    "Change video output settings."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE_SETTINGS,
+   "Screen Mode"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_SCREEN_MODE_SETTINGS,
+   "Change screen mode settings."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_FULLSCREEN_MODE_SETTINGS,
    "Fullscreen Mode"
    )
@@ -1700,6 +1708,26 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_REFRESH_RATE_POLLED,
    "The refresh rate as reported by the display driver."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE,
+   "Screen Mode"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_SCREEN_MODE,
+   "Select the screen mode to be used. Can be changed at runtime."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE_EXCLUSIVE_FULLSCREEN,
+   "Exclusive Fullscreen"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE_WINDOWED_FULLSCREEN,
+   "Windowed Fullscreen"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_SCREEN_MODE_WINDOWED,
+   "Windowed"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_AUTOSWITCH_REFRESH_RATE,
