@@ -1405,12 +1405,14 @@ bool task_push_dbscan(
    db->playlist_config.compress            = settings->bools.playlist_compression;
    db->playlist_config.fuzzy_archive_match = settings->bools.playlist_fuzzy_archive_match;
    playlist_config_set_base_content_directory(&db->playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&db->playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_libretro : NULL);
 #else
    db->playlist_config.capacity            = COLLECTION_SIZE;
    db->playlist_config.old_format          = false;
    db->playlist_config.compress            = false;
    db->playlist_config.fuzzy_archive_match = false;
    playlist_config_set_base_content_directory(&db->playlist_config, NULL);
+   playlist_config_set_base_core_directory(&db->playlist_config, NULL);
 #endif
    if (db_dir_show_hidden_files)
       db->flags |= DB_HANDLE_FLAG_SHOW_HIDDEN_FILES;

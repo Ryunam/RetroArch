@@ -66,6 +66,7 @@ struct content_playlist
    char *default_core_path;
    char *default_core_name;
    char *base_content_directory;
+   char *base_core_directory;
 
    struct playlist_entry *entries;
 
@@ -153,6 +154,23 @@ void playlist_config_set_base_content_directory(
       config->base_content_directory[0] = '\0';
 }
 
+/* Convenience function: copies base core directory
+ * path to specified playlist configuration object.
+ * Also sets autofix_paths boolean, depending on base 
+ * core directory value */
+void playlist_config_set_base_core_directory(
+      playlist_config_t* config, const char* path)
+{
+   if (!config)
+      return;
+
+   config->autofix_paths = !string_is_empty(path);
+   if (config->autofix_paths)
+      strlcpy(config->base_core_directory, path,
+            sizeof(config->base_core_directory));
+   else
+      config->base_core_directory[0] = '\0';
+}
 
 /* Creates a copy of the specified playlist configuration.
  * Returns false in the event of an error */
@@ -165,6 +183,8 @@ bool playlist_config_copy(const playlist_config_t *src,
    strlcpy(dst->path, src->path, sizeof(dst->path));
    strlcpy(dst->base_content_directory, src->base_content_directory,
          sizeof(dst->base_content_directory));
+   strlcpy(dst->base_core_directory, src->base_core_directory,
+         sizeof(dst->base_core_directory));
 
    dst->capacity            = src->capacity;
    dst->old_format          = src->old_format;
@@ -1747,6 +1767,17 @@ void playlist_write_file(playlist_t *playlist)
          rjsonwriter_raw(writer, "\n", 1);
       }
 
+      if (!string_is_empty(playlist->base_core_directory))
+      {
+         rjsonwriter_add_spaces(writer, 2);
+         rjsonwriter_add_string(writer, "base_core_directory");
+         rjsonwriter_raw(writer, ":", 1);
+         rjsonwriter_raw(writer, " ", 1);
+         rjsonwriter_add_string(writer, playlist->base_core_directory);
+         rjsonwriter_raw(writer, ",", 1);
+         rjsonwriter_raw(writer, "\n", 1);
+      }
+
       rjsonwriter_add_spaces(writer, 2);
       rjsonwriter_add_string(writer, "label_display_mode");
       rjsonwriter_raw(writer, ":", 1);
@@ -2035,6 +2066,10 @@ void playlist_free(playlist_t *playlist)
    if (playlist->base_content_directory)
       free(playlist->base_content_directory);
    playlist->base_content_directory = NULL;
+
+   if (playlist->base_core_directory)
+      free(playlist->base_core_directory);
+   playlist->base_core_directory = NULL;
 
    if (playlist->scan_record.content_dir)
       free(playlist->scan_record.content_dir);
@@ -2407,6 +2442,10 @@ static bool JSONObjectMemberHandler(void *context, const char *pValue, size_t le
          case 'b':
             if (string_is_equal(pValue, "base_content_directory"))
                pCtx->current_string_val = &pCtx->playlist->base_content_directory;
+            break;
+         case 'c':
+            if (string_is_equal(pValue, "base_core_directory"))
+               pCtx->current_string_val = &pCtx->playlist->base_core_directory;
             break;
          case 'd':
             if (string_is_equal(pValue,      "default_core_path"))
@@ -2814,6 +2853,7 @@ playlist_t *playlist_init(const playlist_config_t *config)
    playlist->default_core_name      = NULL;
    playlist->default_core_path      = NULL;
    playlist->base_content_directory = NULL;
+   playlist->base_core_directory    = NULL;
    playlist->entries                = NULL;
    playlist->label_display_mode     = LABEL_DISPLAY_MODE_DEFAULT;
    playlist->right_thumbnail_mode   = PLAYLIST_THUMBNAIL_MODE_DEFAULT;
@@ -2835,11 +2875,14 @@ playlist_t *playlist_init(const playlist_config_t *config)
    if (!playlist_read_file(playlist))
       goto error;
 
-   /* Try auto-fixing paths if enabled, and playlist
-    * base content directory is different */
-   if (config->autofix_paths &&
-       !string_is_equal(playlist->base_content_directory,
-            config->base_content_directory))
+   /* Try auto-fixing paths if enabled, and if
+    * either playlist base content directory or
+    * playlist base core directory are different */
+   if ((config->autofix_paths) &&
+      (!string_is_equal(playlist->base_content_directory,
+            config->base_content_directory) ||
+      !string_is_equal(playlist->base_core_directory,
+            config->base_core_directory)))
    {
       if (!string_is_empty(playlist->base_content_directory))
       {
@@ -2926,10 +2969,39 @@ playlist_t *playlist_init(const playlist_config_t *config)
          }
       }
 
+      if (!string_is_empty(playlist->base_core_directory))
+      {
+         size_t i, j, len;
+         char tmp_core_path[PATH_MAX_LENGTH];
+
+         for (i = 0, len = RBUF_LEN(playlist->entries); i < len; i++)
+         {
+            struct playlist_entry* entry = &playlist->entries[i];
+
+            if (!entry || string_is_empty(entry->core_path))
+               continue;
+
+            /* Fix core path */
+            tmp_core_path[0] = '\0';
+            path_replace_base_path_and_convert_to_local_file_system(
+                  tmp_core_path, entry->core_path,
+                  playlist->base_core_directory, playlist->config.base_core_directory,
+                  sizeof(tmp_core_path));
+
+            free(entry->core_path);
+            entry->core_path = strdup(tmp_core_path);
+         }
+      }
+
       /* Update playlist base content directory*/
       if (playlist->base_content_directory)
          free(playlist->base_content_directory);
       playlist->base_content_directory = strdup(playlist->config.base_content_directory);
+
+      /* Update playlist base core directory*/
+      if (playlist->base_core_directory)
+         free(playlist->base_core_directory);
+      playlist->base_core_directory = strdup(playlist->config.base_core_directory);
 
       /* Save playlist */
       playlist->modified = true;

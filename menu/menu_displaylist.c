@@ -2457,6 +2457,10 @@ static int menu_displaylist_parse_database_entry(menu_handle_t *menu,
            settings->bools.playlist_portable_paths
          ? settings->paths.directory_menu_content
          : NULL);
+   playlist_config_set_base_core_directory(&playlist_config,
+           settings->bools.playlist_portable_paths
+         ? settings->paths.directory_libretro
+         : NULL);
 
    database_info_build_query_enum(query, sizeof(query),
          DATABASE_QUERY_ENTRY, info->path_b);
@@ -3259,6 +3263,7 @@ static void menu_displaylist_set_new_playlist(
    playlist_config.compress            = settings->bools.playlist_compression;
    playlist_config.fuzzy_archive_match = settings->bools.playlist_fuzzy_archive_match;
    playlist_config_set_base_content_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_libretro : NULL);
 
    menu->db_playlist_file[0]           = '\0';
 

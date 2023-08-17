@@ -396,6 +396,7 @@ void MainWindow::addFilesToPlaylist(QStringList files)
    playlist_config.compress            = settings->bools.playlist_compression;
    playlist_config.fuzzy_archive_match = settings->bools.playlist_fuzzy_archive_match;
    playlist_config_set_base_content_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_libretro : NULL);
 
    /* Assume a blank list means we will manually enter in all fields. */
    if (files.isEmpty())
@@ -703,6 +704,7 @@ bool MainWindow::updateCurrentPlaylistEntry(
    playlist_config.compress            = settings->bools.playlist_compression;
    playlist_config.fuzzy_archive_match = settings->bools.playlist_fuzzy_archive_match;
    playlist_config_set_base_content_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_libretro : NULL);
 
    if (      playlistPath.isEmpty()
          ||  contentHash.isEmpty()
@@ -832,6 +834,7 @@ void MainWindow::onPlaylistWidgetContextMenuRequested(const QPoint&)
    playlist_config.compress            = settings->bools.playlist_compression;
    playlist_config.fuzzy_archive_match = settings->bools.playlist_fuzzy_archive_match;
    playlist_config_set_base_content_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_libretro : NULL);
 
    if (selectedItem)
    {
@@ -1370,6 +1373,7 @@ void MainWindow::deleteCurrentPlaylistItem()
    playlist_config.compress            = settings->bools.playlist_compression;
    playlist_config.fuzzy_archive_match = settings->bools.playlist_fuzzy_archive_match;
    playlist_config_set_base_content_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_libretro : NULL);
 
    if (isAllPlaylist)
       return;
@@ -1419,6 +1423,7 @@ QString MainWindow::getPlaylistDefaultCore(QString plName)
    playlist_config.compress            = settings->bools.playlist_compression;
    playlist_config.fuzzy_archive_match = settings->bools.playlist_fuzzy_archive_match;
    playlist_config_set_base_content_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_libretro : NULL);
 
    if (!settings || string_is_empty(plNameCString))
       return corePath;
@@ -1490,6 +1495,7 @@ void PlaylistModel::getPlaylistItems(QString path)
    playlist_config.compress            = settings->bools.playlist_compression;
    playlist_config.fuzzy_archive_match = settings->bools.playlist_fuzzy_archive_match;
    playlist_config_set_base_content_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&playlist_config, settings->bools.playlist_portable_paths ? settings->paths.directory_libretro : NULL);
 
    pathArray.append(path);
    pathData              = pathArray.constData();

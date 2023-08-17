@@ -494,6 +494,7 @@ explore_state_t *menu_explore_build_list(const char *directory_playlist,
 
       playlist_config.path[0]                   = '\0';
       playlist_config.base_content_directory[0] = '\0';
+      playlist_config.base_core_directory[0]    = '\0';
       playlist_config.capacity                  = 0;
       playlist_config.old_format                = false;
       playlist_config.compress                  = false;

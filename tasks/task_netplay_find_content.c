@@ -801,6 +801,9 @@ bool task_push_netplay_crc_scan(uint32_t crc, const char *content,
    playlist_config_set_base_content_directory(&data->playlist_config,
       settings->bools.playlist_portable_paths ?
          settings->paths.directory_menu_content : NULL);
+   playlist_config_set_base_core_directory(&data->playlist_config,
+      settings->bools.playlist_portable_paths ?
+         settings->paths.directory_libretro : NULL);
 
    data->playlists = dir_list_new(settings->paths.directory_playlist, "lpl",
       false, true, false, false);
