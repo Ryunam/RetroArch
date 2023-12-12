@@ -1701,11 +1701,17 @@ static struct config_bool_setting *populate_settings_bool(
    SETTING_BOOL("fastforward_frameskip",         &settings->bools.fastforward_frameskip, true, DEFAULT_FASTFORWARD_FRAMESKIP, false);
    SETTING_BOOL("vrr_runloop_enable",            &settings->bools.vrr_runloop_enable, true, DEFAULT_VRR_RUNLOOP_ENABLE, false);
    SETTING_BOOL("menu_throttle_framerate",       &settings->bools.menu_throttle_framerate, true, true, false);
+
+/* WIP - To be removed*/
+/*
    SETTING_BOOL("run_ahead_enabled",             &settings->bools.run_ahead_enabled, true, false, false);
    SETTING_BOOL("run_ahead_secondary_instance",  &settings->bools.run_ahead_secondary_instance, true, DEFAULT_RUN_AHEAD_SECONDARY_INSTANCE, false);
    SETTING_BOOL("run_ahead_hide_warnings",       &settings->bools.run_ahead_hide_warnings, true, DEFAULT_RUN_AHEAD_HIDE_WARNINGS, false);
    SETTING_BOOL("preemptive_frames_enable",      &settings->bools.preemptive_frames_enable, true, false, false);
    SETTING_BOOL("preemptive_frames_hide_warnings", &settings->bools.preemptive_frames_hide_warnings, true, DEFAULT_PREEMPT_HIDE_WARNINGS, false);
+*/
+/* End of WIP*/
+
    SETTING_BOOL("kiosk_mode_enable",             &settings->bools.kiosk_mode_enable, true, DEFAULT_KIOSK_MODE_ENABLE, false);
    SETTING_BOOL("block_sram_overwrite",          &settings->bools.block_sram_overwrite, true, DEFAULT_BLOCK_SRAM_OVERWRITE, false);
    SETTING_BOOL("replay_auto_index",             &settings->bools.replay_auto_index, true, DEFAULT_REPLAY_AUTO_INDEX, false);
@@ -2268,7 +2274,9 @@ static struct config_uint_setting *populate_settings_uint(
    SETTING_UINT("autosave_interval",             &settings->uints.autosave_interval,  true, DEFAULT_AUTOSAVE_INTERVAL, false);
    SETTING_UINT("rewind_granularity",            &settings->uints.rewind_granularity, true, DEFAULT_REWIND_GRANULARITY, false);
    SETTING_UINT("rewind_buffer_size_step",       &settings->uints.rewind_buffer_size_step, true, DEFAULT_REWIND_BUFFER_SIZE_STEP, false);
+   SETTING_UINT("run_ahead",                     &settings->uints.run_ahead, true, DEFAULT_RUN_AHEAD, false);
    SETTING_UINT("run_ahead_frames",              &settings->uints.run_ahead_frames, true, 1,  false);
+   SETTING_UINT("run_ahead_show_warnings",       &settings->uints.run_ahead_show_warnings, true, DEFAULT_RUN_AHEAD_SHOW_WARNINGS, false);
    SETTING_UINT("replay_max_keep",               &settings->uints.replay_max_keep, true, DEFAULT_REPLAY_MAX_KEEP, false);
    SETTING_UINT("replay_checkpoint_interval",    &settings->uints.replay_checkpoint_interval,  true, DEFAULT_REPLAY_CHECKPOINT_INTERVAL, false);
    SETTING_UINT("savestate_max_keep",            &settings->uints.savestate_max_keep, true, DEFAULT_SAVESTATE_MAX_KEEP, false);
@@ -3455,6 +3463,54 @@ static void check_verbosity_settings(config_file_t *conf,
    }
 }
 
+/* Check whether the old boolean options for Run-Ahead and/or
+ * Preemptive Frames exist in the loaded configuration/override file.
+ * If those options exist, replace them with the equivalent value of
+ * the newer universal Run-Ahead setting. */
+static void run_ahead_convert_old_settings(config_file_t *conf,
+      settings_t *settings)
+{
+   bool old_run_ahead_single      = false;
+   bool old_run_ahead_double      = false;
+   bool old_run_ahead_preemptive  = false;
+
+   if (  (bool)RHMAP_HAS_STR(conf->entries_map, "run_ahead_enabled")            ||
+         (bool)RHMAP_HAS_STR(conf->entries_map, "run_ahead_secondary_instance") ||
+         (bool)RHMAP_HAS_STR(conf->entries_map, "preemptive_frames_enable"))
+   {
+      /* If both the newer Run-Ahead setting and the older boolean options
+       * exist in the configuration file, the older settings are given
+       * priority to ensure backwards compatibility.
+       * This also makes it possible to convert the old values in overrides.*/
+      config_unset(conf, "run_ahead");
+
+      if (  (config_get_bool(conf, "preemptive_frames_enable", &old_run_ahead_preemptive))
+         && (old_run_ahead_preemptive))
+         settings->uints.run_ahead = RUN_AHEAD_PREEMPTIVE;
+      else if (   (config_get_bool(conf, "run_ahead_enabled", &old_run_ahead_single))
+            &&    (config_get_bool(conf, "run_ahead_secondary_instance", &old_run_ahead_double))
+            &&    (old_run_ahead_single && old_run_ahead_double))
+         settings->uints.run_ahead = RUN_AHEAD_DOUBLE;
+      else if (   (config_get_bool(conf, "run_ahead_enabled", &old_run_ahead_single))
+            &&    (old_run_ahead_single))
+         settings->uints.run_ahead = RUN_AHEAD_SINGLE;
+      else
+         settings->uints.run_ahead = RUN_AHEAD_DISABLED;
+   }
+}
+
+/* Remove the old boolean settings after the conversion.*/
+static void run_ahead_remove_old_settings(config_file_t *conf,
+      settings_t *settings)
+{
+   if ((bool)RHMAP_HAS_STR(conf->entries_map, "run_ahead_enabled"))
+      config_unset(conf, "run_ahead_enabled");
+   if ((bool)RHMAP_HAS_STR(conf->entries_map, "run_ahead_secondary_instance"))
+      config_unset(conf, "run_ahead_secondary_instance");
+   if ((bool)RHMAP_HAS_STR(conf->entries_map, "preemptive_frames_enable"))
+      config_unset(conf, "preemptive_frames_enable");
+}
+
 /**
  * config_load:
  * @path                : path to be read from.
@@ -4150,6 +4206,12 @@ static bool config_load_file(global_t *global,
       else
          settings->ints.content_favorites_size = (int)settings->uints.content_history_size;
    }
+
+   /* Call the function that converts any of the older boolean settings
+    * of Run-Ahead and/or Preemptive Frames and replace them with
+    * the equivalent values for the newer Run-Ahead option.*/
+   run_ahead_convert_old_settings(conf, settings);
+   run_ahead_remove_old_settings(conf, settings);
 
    if (conf)
       config_file_free(conf);
@@ -5249,6 +5311,8 @@ bool config_save_file(const char *path)
    for (i = 0; i < MAX_USERS; i++)
       input_config_save_keybinds_user(conf, i);
 
+   run_ahead_remove_old_settings(conf, settings);
+
    ret = config_file_write(conf, path, true);
    config_file_free(conf);
 
@@ -5603,6 +5667,7 @@ int8_t config_save_overrides(enum override_type type,
          }
       }
 
+      run_ahead_remove_old_settings(conf, settings);
       config_file_free(conf);
    }
 

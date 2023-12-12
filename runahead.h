@@ -26,6 +26,24 @@
 
 #define MAX_RUNAHEAD_FRAMES 12
 
+enum run_ahead
+{
+   RUN_AHEAD_DISABLED = 0,
+   RUN_AHEAD_SINGLE,
+   RUN_AHEAD_DOUBLE,
+   RUN_AHEAD_PREEMPTIVE,
+   RUN_AHEAD_LAST
+};
+
+enum run_ahead_show_warnings
+{
+   RUN_AHEAD_SHOW_WARNINGS_DISABLED = 0,
+   RUN_AHEAD_SHOW_WARNINGS_INSTANCE,
+   RUN_AHEAD_SHOW_WARNINGS_PREEMPTIVE,
+   RUN_AHEAD_SHOW_WARNINGS_ALL,
+   RUN_AHEAD_SHOW_WARNINGS_LAST
+};
+
 typedef void *(*constructor_t)(void);
 typedef void  (*destructor_t )(void*);
 

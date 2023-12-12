@@ -3614,36 +3614,16 @@ MSG_HASH(
    "run_ahead_unsupported"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_RUN_AHEAD_ENABLED,
-   "run_ahead_enabled"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_RUN_AHEAD_SECONDARY_INSTANCE,
-   "run_ahead_secondary_instance"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_RUN_AHEAD_HIDE_WARNINGS,
-   "run_ahead_hide_warnings"
+   MENU_ENUM_LABEL_RUN_AHEAD,
+   "run_ahead"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_RUN_AHEAD_FRAMES,
    "run_ahead_frames"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_PREEMPT_ENABLE,
-   "preemptive_frames_enable"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_PREEMPT_UNSUPPORTED,
-   "preemptive_frames_unsupported"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_PREEMPT_HIDE_WARNINGS,
-   "preemptive_frames_hide_warnings"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_PREEMPT_FRAMES,
-   "preemptive_frames"
+   MENU_ENUM_LABEL_RUN_AHEAD_SHOW_WARNINGS,
+   "run_ahead_show_warnings"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_SORT_SAVEFILES_ENABLE,

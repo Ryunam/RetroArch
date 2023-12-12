@@ -8677,63 +8677,66 @@ static void frontend_log_level_change_handler(rarch_setting_t *setting)
 }
 
 #ifdef HAVE_RUNAHEAD
-static void runahead_change_handler(rarch_setting_t *setting)
+static void setting_get_string_representation_uint_run_ahead(
+      rarch_setting_t *setting,
+      char *s, size_t len)
 {
-   settings_t *settings              = config_get_ptr();
-   struct menu_state *menu_st        = menu_state_get_ptr();
-   bool run_ahead_enabled            = settings->bools.run_ahead_enabled;
-   bool preempt_enabled              = settings->bools.preemptive_frames_enable;
-#if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
-   unsigned run_ahead_frames         = settings->uints.run_ahead_frames;
-   bool run_ahead_secondary_instance = settings->bools.run_ahead_secondary_instance;
-#endif
-
    if (!setting)
       return;
 
-   switch (setting->enum_idx)
+   switch (*setting->value.target.unsigned_integer)
    {
-      case MENU_ENUM_LABEL_RUN_AHEAD_ENABLED:
-         if (run_ahead_enabled && preempt_enabled)
-         {
-            /* Disable preemptive frames and inform user */
-            settings->bools.preemptive_frames_enable = false;
-            preempt_deinit(runloop_state_get_ptr());
-            runloop_msg_queue_push(
-                  msg_hash_to_str(MSG_PREEMPT_DISABLED), 1, 100, false,
-                  NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-         }
-         menu_st->flags |=  MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
-         /* fall-through */
-      case MENU_ENUM_LABEL_RUN_AHEAD_FRAMES:
-#if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
-      case MENU_ENUM_LABEL_RUN_AHEAD_SECONDARY_INSTANCE:
-         /* If any changes here will cause second
-          * instance runahead to be enabled, must
-          * re-apply cheats to ensure that they
-          * propagate to the newly-created secondary
-          * core */
-         if (     run_ahead_enabled
-               && (run_ahead_frames > 0)
-               && run_ahead_secondary_instance
-               && !retroarch_ctl(RARCH_CTL_IS_SECOND_CORE_LOADED, NULL)
-               && retroarch_ctl(RARCH_CTL_IS_SECOND_CORE_AVAILABLE, NULL)
-               && command_event(CMD_EVENT_LOAD_SECOND_CORE, NULL))
-            command_event(CMD_EVENT_CHEATS_APPLY, NULL);
-#endif
+      case RUN_AHEAD_DISABLED:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_OFF), len);
          break;
-      default:
+      case RUN_AHEAD_SINGLE:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SINGLE), len);
+         break;
+      case RUN_AHEAD_DOUBLE:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_RUN_AHEAD_DOUBLE), len);
+         break;
+      case RUN_AHEAD_PREEMPTIVE:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_RUN_AHEAD_PREEMPTIVE), len);
          break;
    }
 }
 
-static void preempt_change_handler(rarch_setting_t *setting)
+static void setting_get_string_representation_uint_run_ahead_show_warnings(
+      rarch_setting_t *setting,
+      char *s, size_t len)
 {
-   settings_t *settings       = config_get_ptr();
-   bool preempt_enabled       = settings->bools.preemptive_frames_enable;
-   bool run_ahead_enabled     = settings->bools.run_ahead_enabled;
-   preempt_t *preempt         = runloop_state_get_ptr()->preempt_data;
-   struct menu_state *menu_st = menu_state_get_ptr();
+   if (!setting)
+      return;
+
+   switch (*setting->value.target.unsigned_integer)
+   {
+      case RUN_AHEAD_SHOW_WARNINGS_DISABLED:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_OFF), len);
+         break;
+      case RUN_AHEAD_SHOW_WARNINGS_INSTANCE:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SHOW_WARNINGS_INSTANCE), len);
+         break;
+      case RUN_AHEAD_SHOW_WARNINGS_PREEMPTIVE:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SHOW_WARNINGS_PREEMPTIVE), len);
+         break;
+      case RUN_AHEAD_SHOW_WARNINGS_ALL:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SHOW_WARNINGS_ALL), len);
+         break;
+   }
+}
+
+static void runahead_change_handler(rarch_setting_t *setting)
+{
+   settings_t *settings              = config_get_ptr();
+   struct menu_state *menu_st        = menu_state_get_ptr();
+   bool run_ahead_enabled            = ((settings->uints.run_ahead == RUN_AHEAD_SINGLE) ||
+                                       (settings->uints.run_ahead == RUN_AHEAD_DOUBLE));
+#if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
+   bool run_ahead_secondary_instance = (settings->uints.run_ahead == RUN_AHEAD_DOUBLE);
+#endif
+   unsigned run_ahead_frames         = settings->uints.run_ahead_frames;
+   bool preempt_enabled              = (settings->uints.run_ahead == RUN_AHEAD_PREEMPTIVE);
+   preempt_t *preempt                = runloop_state_get_ptr()->preempt_data;
 #ifdef HAVE_NETWORKING
    bool netplay_enabled       = netplay_driver_ctl(RARCH_NETPLAY_CTL_IS_ENABLED, NULL);
 #else
@@ -8743,32 +8746,47 @@ static void preempt_change_handler(rarch_setting_t *setting)
    if (!setting)
       return;
 
-   switch (setting->enum_idx)
+   // WIP: Create separate bools for Single Instance and Double Instance. Remove "disabled" messages.
+
+   if (run_ahead_enabled)
    {
-      case MENU_ENUM_LABEL_PREEMPT_ENABLE:
-         if (preempt_enabled && run_ahead_enabled)
-         {
-            /* Disable runahead and inform user */
-            settings->bools.run_ahead_enabled = false;
-            runloop_msg_queue_push(
-                  msg_hash_to_str(MSG_RUNAHEAD_DISABLED), 1, 100, false,
-                  NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-         }
-
-         if ((preempt_enabled != !!preempt) && !netplay_enabled)
-            command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
-
-         menu_st->flags |=  MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
-         break;
-      case MENU_ENUM_LABEL_PREEMPT_FRAMES:
-         if (     preempt
-               && preempt->frames != settings->uints.run_ahead_frames
-               && !netplay_enabled)
-            command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
-         break;
-      default:
-         break;
+      /* Disable Preemptive Mode and inform user */
+      preempt_deinit(runloop_state_get_ptr());
+      runloop_msg_queue_push(
+            msg_hash_to_str(MSG_PREEMPT_DISABLED), 1, 100, false,
+            NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
    }
+   else if (preempt_enabled)
+   {
+      /* Inform user of having disabled any Run-Ahead instance (WIP. Necessary?) */
+      runloop_msg_queue_push(
+            msg_hash_to_str(MSG_RUNAHEAD_DISABLED), 1, 100, false,
+            NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
+   }
+
+   if ((preempt_enabled != !!preempt) && !netplay_enabled)
+      command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
+
+   menu_st->flags |=  MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
+
+   if (preempt
+   && preempt->frames != settings->uints.run_ahead_frames
+   && !netplay_enabled)
+      command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
+
+#if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
+         /* If any changes here will cause second
+          * instance runahead to be enabled, must
+          * re-apply cheats to ensure that they
+          * propagate to the newly-created secondary
+          * core */
+   if (run_ahead_secondary_instance
+   && (run_ahead_frames > 0)
+   && !retroarch_ctl(RARCH_CTL_IS_SECOND_CORE_LOADED, NULL)
+   && retroarch_ctl(RARCH_CTL_IS_SECOND_CORE_AVAILABLE, NULL)
+   && command_event(CMD_EVENT_LOAD_SECOND_CORE, NULL))
+      command_event(CMD_EVENT_CHEATS_APPLY, NULL);
+#endif
 }
 #endif
 
@@ -15581,22 +15599,25 @@ static bool setting_append_list(
          menu_settings_list_current_add_range(list, list_info, 1, 10, 0.1, true, true);
 
 #ifdef HAVE_RUNAHEAD
-         CONFIG_BOOL(
+         CONFIG_UINT(
                list, list_info,
-               &settings->bools.run_ahead_enabled,
-               MENU_ENUM_LABEL_RUN_AHEAD_ENABLED,
-               MENU_ENUM_LABEL_VALUE_RUN_AHEAD_ENABLED,
-               false,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
+               &settings->uints.run_ahead,
+               MENU_ENUM_LABEL_RUN_AHEAD,
+               MENU_ENUM_LABEL_VALUE_RUN_AHEAD,
+               DEFAULT_RUN_AHEAD,
                &group_info,
                &subgroup_info,
                parent_group,
                general_write_handler,
-               general_read_handler,
-               SD_FLAG_NONE
-               );
+               general_read_handler);
+         (*list)[list_info->index - 1].ui_type   = ST_UI_TYPE_UINT_COMBOBOX;
+         (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
+         (*list)[list_info->index - 1].action_left = &setting_uint_action_left_with_refresh;
+         (*list)[list_info->index - 1].action_right = &setting_uint_action_right_with_refresh;
+         (*list)[list_info->index - 1].get_string_representation =
+            &setting_get_string_representation_uint_run_ahead;
          (*list)[list_info->index - 1].change_handler = runahead_change_handler;
+         menu_settings_list_current_add_range(list, list_info, 0, RUN_AHEAD_LAST-1, 1, true, true);
 
          CONFIG_UINT(
             list, list_info,
@@ -15615,89 +15636,22 @@ static bool setting_append_list(
          (*list)[list_info->index - 1].change_handler = runahead_change_handler;
          menu_settings_list_current_add_range(list, list_info, 1, MAX_RUNAHEAD_FRAMES, 1, true, true);
 
-#if defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB)
-         CONFIG_BOOL(
-               list, list_info,
-               &settings->bools.run_ahead_secondary_instance,
-               MENU_ENUM_LABEL_RUN_AHEAD_SECONDARY_INSTANCE,
-               MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SECONDARY_INSTANCE,
-               DEFAULT_RUN_AHEAD_SECONDARY_INSTANCE,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
-               &group_info,
-               &subgroup_info,
-               parent_group,
-               general_write_handler,
-               general_read_handler,
-               SD_FLAG_NONE
-               );
-         (*list)[list_info->index - 1].change_handler = runahead_change_handler;
-#endif
-
-         CONFIG_BOOL(
-               list, list_info,
-               &settings->bools.run_ahead_hide_warnings,
-               MENU_ENUM_LABEL_RUN_AHEAD_HIDE_WARNINGS,
-               MENU_ENUM_LABEL_VALUE_RUN_AHEAD_HIDE_WARNINGS,
-               DEFAULT_RUN_AHEAD_HIDE_WARNINGS,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
-               &group_info,
-               &subgroup_info,
-               parent_group,
-               general_write_handler,
-               general_read_handler,
-               SD_FLAG_ADVANCED
-               );
-
-         CONFIG_BOOL(
-               list, list_info,
-               &settings->bools.preemptive_frames_enable,
-               MENU_ENUM_LABEL_PREEMPT_ENABLE,
-               MENU_ENUM_LABEL_VALUE_PREEMPT_ENABLE,
-               false,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
-               &group_info,
-               &subgroup_info,
-               parent_group,
-               general_write_handler,
-               general_read_handler,
-               SD_FLAG_NONE);
-         (*list)[list_info->index - 1].change_handler = preempt_change_handler;
-
          CONFIG_UINT(
                list, list_info,
-               &settings->uints.run_ahead_frames,
-               MENU_ENUM_LABEL_PREEMPT_FRAMES,
-               MENU_ENUM_LABEL_VALUE_PREEMPT_FRAMES,
-               1,
+               &settings->uints.run_ahead_show_warnings,
+               MENU_ENUM_LABEL_RUN_AHEAD_SHOW_WARNINGS,
+               MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SHOW_WARNINGS,
+               DEFAULT_RUN_AHEAD_SHOW_WARNINGS,
                &group_info,
                &subgroup_info,
                parent_group,
                general_write_handler,
                general_read_handler);
-         (*list)[list_info->index - 1].ui_type   = ST_UI_TYPE_UINT_COMBOBOX;
          (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
-         (*list)[list_info->index - 1].offset_by = 1;
-         (*list)[list_info->index - 1].change_handler = preempt_change_handler;
-         menu_settings_list_current_add_range(list, list_info, 1, MAX_RUNAHEAD_FRAMES, 1, true, true);
-
-         CONFIG_BOOL(
-               list, list_info,
-               &settings->bools.preemptive_frames_hide_warnings,
-               MENU_ENUM_LABEL_PREEMPT_HIDE_WARNINGS,
-               MENU_ENUM_LABEL_VALUE_PREEMPT_HIDE_WARNINGS,
-               DEFAULT_PREEMPT_HIDE_WARNINGS,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
-               &group_info,
-               &subgroup_info,
-               parent_group,
-               general_write_handler,
-               general_read_handler,
-               SD_FLAG_ADVANCED
-               );
+         (*list)[list_info->index - 1].get_string_representation =
+            &setting_get_string_representation_uint_run_ahead_show_warnings;
+         (*list)[list_info->index - 1].ui_type   = ST_UI_TYPE_UINT_COMBOBOX;
+         menu_settings_list_current_add_range(list, list_info, 0, RUN_AHEAD_SHOW_WARNINGS_LAST-1, 1, true, true);
 #endif
 
 #ifdef ANDROID

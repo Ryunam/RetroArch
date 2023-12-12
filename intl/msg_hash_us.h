@@ -4101,68 +4101,52 @@ MSG_HASH(
    "Current core is incompatible with run-ahead due to lack of deterministic save state support."
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_ENABLED,
-   "Run-Ahead to Reduce Latency"
+   MENU_ENUM_LABEL_VALUE_RUN_AHEAD,
+   "Run-Ahead"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_RUN_AHEAD_ENABLED,
-   "Run core logic one or more frames ahead then load the state back to reduce perceived input lag."
+   MENU_ENUM_SUBLABEL_RUN_AHEAD,
+   "Reduce input latency by either running the core ahead and then loading the state back (Single Instance or Secondary Instance), or re-running the core with the latest input when the controller state changes (Preemptive). Secondary Instance Mode is slower, but may eliminate audio hiccups with certain cores. Preemptive Mode is faster, but will not prevent audio issues."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SINGLE,
+   "Single Instance"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_DOUBLE,
+   "Double Instance"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_PREEMPTIVE,
+   "Preemptive"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_RUN_AHEAD_FRAMES,
-   "Number of Frames to Run-Ahead"
+   "Run-Ahead Frames"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RUN_AHEAD_FRAMES,
-   "The number of frames to run ahead. Causes gameplay issues such as jitter if the number of lag frames internal to the game is exceeded."
+   "The number of frames to use Run-Ahead with. Causes gameplay issues such as jitter if the number of lag frames internal to the game is exceeded."
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SECONDARY_INSTANCE,
-   "Use Second Instance for Run-Ahead"
+   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SHOW_WARNINGS,
+   "Run-Ahead Compatibility Warnings"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_RUN_AHEAD_SECONDARY_INSTANCE,
-   "Use a second instance of the RetroArch core to run-ahead. Prevents audio problems due to loading state."
+   MENU_ENUM_SUBLABEL_RUN_AHEAD_SHOW_WARNINGS,
+   "Show warning messages when Run-Ahead is enabled while using a core that does not support save states."
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_HIDE_WARNINGS,
-   "Hide Run-Ahead Warnings"
+   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SHOW_WARNINGS_INSTANCE,
+   "Only for Single Instance and Secondary Instance Modes"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_RUN_AHEAD_HIDE_WARNINGS,
-   "Hide the warning message that appears when using Run-Ahead and the core does not support save states."
+   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SHOW_WARNINGS_PREEMPTIVE,
+   "Only for Preemptive Mode"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_PREEMPT_UNSUPPORTED,
-   "[Preemptive Frames Unavailable]"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_PREEMPT_UNSUPPORTED,
-   "Current core is incompatible with preemptive frames due to lack of deterministic save state support."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_PREEMPT_ENABLE,
-   "Run Preemptive Frames"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_PREEMPT_ENABLE,
-   "Rerun core logic with the latest input when the controller state changes. Faster than Run-Ahead, but does not prevent audio issues cores may have with loading states."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_PREEMPT_FRAMES,
-   "Number of Preemptive Frames"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_PREEMPT_FRAMES,
-   "The number of frames to rerun. Causes gameplay issues such as jitter if the number of lag frames internal to the game is exceeded."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_PREEMPT_HIDE_WARNINGS,
-   "Hide Preemptive Frames Warnings"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_PREEMPT_HIDE_WARNINGS,
-   "Hide the warning message that appears when a core is incompatible with preemptive frames."
+   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SHOW_WARNINGS_ALL,
+   "All Modes"
    )
 
 /* Settings > Core */

@@ -1434,7 +1434,7 @@ bool preempt_init(void *data)
    const char *failed_str      = NULL;
 
    if (     runloop_st->preempt_data
-         || !settings->bools.preemptive_frames_enable
+         || !(settings->uints.run_ahead == RUN_AHEAD_PREEMPTIVE)
          || !settings->uints.run_ahead_frames
          || !(runloop_st->current_core.flags & RETRO_CORE_FLAG_GAME_LOADED))
       return false;
@@ -1470,7 +1470,7 @@ bool preempt_init(void *data)
 error:
    preempt_deinit(runloop_st);
 
-   if (!settings->bools.preemptive_frames_hide_warnings)
+   if (settings->uints.run_ahead_show_warnings == (RUN_AHEAD_SHOW_WARNINGS_PREEMPTIVE || RUN_AHEAD_SHOW_WARNINGS_ALL))
       runloop_msg_queue_push(
             failed_str, 0, 2 * 60, true,
             NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
@@ -1688,7 +1688,7 @@ error:
    video_st->flags   |=  VIDEO_FLAG_ACTIVE;
    preempt_deinit(runloop_st);
 
-   if (!settings->bools.preemptive_frames_hide_warnings)
+   if (settings->uints.run_ahead_show_warnings == (RUN_AHEAD_SHOW_WARNINGS_PREEMPTIVE || RUN_AHEAD_SHOW_WARNINGS_ALL))
       runloop_msg_queue_push(
             failed_str, 0, 2 * 60, true,
             NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);

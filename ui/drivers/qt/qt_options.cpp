@@ -386,7 +386,7 @@ QWidget *LatencyPage::widget()
 {
    QWidget                         *widget = new QWidget;
    FormLayout                      *layout = new FormLayout;
-   CheckableSettingsGroup *runAheadGpuSync = new CheckableSettingsGroup(MENU_ENUM_LABEL_RUN_AHEAD_ENABLED);
+   CheckableSettingsGroup *runAheadGpuSync = new CheckableSettingsGroup(MENU_ENUM_LABEL_RUN_AHEAD);
 
    rarch_setting_t *hardSyncSetting        = menu_setting_find_enum(MENU_ENUM_LABEL_VIDEO_HARD_SYNC);
 
@@ -407,10 +407,12 @@ QWidget *LatencyPage::widget()
    layout->add(menu_setting_find_enum(MENU_ENUM_LABEL_AUDIO_LATENCY));
    layout->add(menu_setting_find_enum(MENU_ENUM_LABEL_INPUT_POLL_TYPE_BEHAVIOR));
 
-   runAheadGpuSync->add(menu_setting_find_enum(MENU_ENUM_LABEL_RUN_AHEAD_FRAMES));
-   runAheadGpuSync->add(menu_setting_find_enum(MENU_ENUM_LABEL_RUN_AHEAD_SECONDARY_INSTANCE));
-   runAheadGpuSync->add(menu_setting_find_enum(MENU_ENUM_LABEL_RUN_AHEAD_HIDE_WARNINGS));
+/* WIP - Add Run-Ahead mode selection to QT UI */
+
+   runAheadGpuSync->add(MENU_ENUM_LABEL_RUN_AHEAD_FRAMES);
    layout->addRow(runAheadGpuSync);
+
+/* End of WIP */
 
    widget->setLayout(layout);
 

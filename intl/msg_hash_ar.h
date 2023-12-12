@@ -2813,32 +2813,8 @@ MSG_HASH(
 /* Settings > Latency */
 
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_ENABLED,
-   "ابدأ بتخفيض لاتفيا"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_RUN_AHEAD_ENABLED,
-   "تشغيل المنطق الأساسي واحد أو أكثر من الأطر القادمة ثم تحميل الحالة مرة أخرى لتقليل التخلف المتوقع في الإدخال."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_RUN_AHEAD_FRAMES,
    "عدد الإطارات إلى Run-Aforward"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SECONDARY_INSTANCE,
-   "استخدام المثيل الثاني للتشغيل"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_RUN_AHEAD_SECONDARY_INSTANCE,
-   "استخدم مثيل ثان من قلب RetroArch للمضي قدما. يمنع مشاكل الصوت بسبب حالة التحميل."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_HIDE_WARNINGS,
-   "إخفاء التحذيرات"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_RUN_AHEAD_HIDE_WARNINGS,
-   "يخفي رسالة التحذير التي تظهر عند استخدام Run-Aforward والنواة الأساسية لا تدعم حفظ الحالة."
    )
 
 /* Settings > Core */

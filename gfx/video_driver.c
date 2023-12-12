@@ -65,6 +65,8 @@
 #include "../retroarch.h"
 #include "../verbosity.h"
 
+#include "runahead.h"
+
 #define TIME_TO_FPS(last_time, new_time, frames) ((1000000.0f * (frames)) / ((new_time) - (last_time)))
 
 #define FRAME_DELAY_AUTO_DEBUG 0
@@ -2553,10 +2555,8 @@ void video_driver_build_info(video_frame_info_t *video_info)
    video_info->black_frame_insertion       = settings->uints.video_black_frame_insertion;
    video_info->hard_sync                   = settings->bools.video_hard_sync;
    video_info->hard_sync_frames            = settings->uints.video_hard_sync_frames;
-   video_info->runahead                    = settings->bools.run_ahead_enabled;
-   video_info->runahead_second_instance    = settings->bools.run_ahead_secondary_instance;
-   video_info->preemptive_frames           = settings->bools.preemptive_frames_enable;
-   video_info->runahead_frames             = settings->uints.run_ahead_frames;
+   video_info->run_ahead                   = settings->uints.run_ahead;
+   video_info->run_ahead_frames            = settings->uints.run_ahead_frames;
    video_info->fps_show                    = settings->bools.video_fps_show;
    video_info->memory_show                 = settings->bools.video_memory_show;
    video_info->statistics_show             = settings->bools.video_statistics_show;
@@ -3830,21 +3830,21 @@ void video_driver_frame(const void *data, unsigned width,
                video_st->frame_delay_effective,
                video_st->frame_delay_target);
 
-      if (video_info.runahead && !video_info.runahead_second_instance)
+      if (video_info.run_ahead == RUN_AHEAD_SINGLE)
          len = snprintf(tmp + len, sizeof(latency_stats),
                " Run-Ahead:   %2u frames\n"
-               " - Single Instance\n",
-               video_info.runahead_frames);
-      else if (video_info.runahead && video_info.runahead_second_instance)
+               " - Single Instance Mode\n",
+               video_info.run_ahead_frames);
+      else if (video_info.run_ahead == RUN_AHEAD_DOUBLE)
          len = snprintf(tmp + len, sizeof(latency_stats),
                " Run-Ahead:   %2u frames\n"
-               " - Second Instance\n",
-               video_info.runahead_frames);
-      else if (video_info.preemptive_frames)
+               " - Second Instance Mode\n",
+               video_info.run_ahead_frames);
+      else if (video_info.run_ahead == RUN_AHEAD_PREEMPTIVE)
          len = snprintf(tmp + len, sizeof(latency_stats),
                " Run-Ahead:   %2u frames\n"
-               " - Preemptive Frames\n",
-               video_info.runahead_frames);
+               " - Preemptive Frames Mode\n",
+               video_info.run_ahead_frames);
 
       if (len)
       {

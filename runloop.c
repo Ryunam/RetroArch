@@ -3143,7 +3143,7 @@ bool runloop_environment_cb(unsigned cmd, void *data)
 #if defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB)
                settings_t *settings = config_get_ptr();
 
-               if (      settings->bools.run_ahead_secondary_instance
+               if (     (settings->uints.run_ahead == RUN_AHEAD_DOUBLE)
                      && (runloop_st->flags & RUNLOOP_FLAG_RUNAHEAD_SECONDARY_CORE_AVAILABLE)
                      &&  secondary_core_ensure_exists(runloop_st, settings))
                   result = RETRO_SAVESTATE_CONTEXT_RUNAHEAD_SAME_BINARY;
@@ -7067,10 +7067,12 @@ int runloop_iterate(void)
 
    {
 #ifdef HAVE_RUNAHEAD
-      bool run_ahead_enabled            = settings->bools.run_ahead_enabled;
+      bool run_ahead_enabled            = ((settings->uints.run_ahead == RUN_AHEAD_SINGLE) ||
+                                          (settings->uints.run_ahead == RUN_AHEAD_DOUBLE));
+      bool run_ahead_secondary_instance = (settings->uints.run_ahead == RUN_AHEAD_DOUBLE);
       unsigned run_ahead_num_frames     = settings->uints.run_ahead_frames;
-      bool run_ahead_hide_warnings      = settings->bools.run_ahead_hide_warnings;
-      bool run_ahead_secondary_instance = settings->bools.run_ahead_secondary_instance;
+      bool run_ahead_hide_warnings      = (settings->uints.run_ahead_show_warnings == (RUN_AHEAD_SHOW_WARNINGS_DISABLED || RUN_AHEAD_SHOW_WARNINGS_PREEMPTIVE));
+
       /* Run Ahead Feature replaces the call to core_run in this loop */
       bool want_runahead                = run_ahead_enabled
             && (run_ahead_num_frames > 0)
@@ -7495,9 +7497,11 @@ bool core_set_cheat(retro_ctx_cheat_info_t *info)
 
    if (settings)
    {
-      run_ahead_enabled              = settings->bools.run_ahead_enabled;
-      run_ahead_frames               = settings->uints.run_ahead_frames;
-      run_ahead_secondary_instance   = settings->bools.run_ahead_secondary_instance;
+      run_ahead_enabled             = ((settings->uints.run_ahead == RUN_AHEAD_SINGLE) ||
+                                       (settings->uints.run_ahead == RUN_AHEAD_DOUBLE));
+      run_ahead_secondary_instance  = (settings->uints.run_ahead == RUN_AHEAD_DOUBLE);
+      run_ahead_frames              = settings->uints.run_ahead_frames;
+
       want_runahead                  = run_ahead_enabled
             && (run_ahead_frames > 0)
             && (runloop_st->flags & RUNLOOP_FLAG_RUNAHEAD_AVAILABLE);
@@ -7535,9 +7539,11 @@ bool core_reset_cheat(void)
 
    if (settings)
    {
-      run_ahead_enabled              = settings->bools.run_ahead_enabled;
-      run_ahead_frames               = settings->uints.run_ahead_frames;
-      run_ahead_secondary_instance   = settings->bools.run_ahead_secondary_instance;
+      run_ahead_enabled             = ((settings->uints.run_ahead == RUN_AHEAD_SINGLE) ||
+                                       (settings->uints.run_ahead == RUN_AHEAD_DOUBLE));
+      run_ahead_secondary_instance  = (settings->uints.run_ahead == RUN_AHEAD_DOUBLE);
+      run_ahead_frames              = settings->uints.run_ahead_frames;
+
       want_runahead                  = run_ahead_enabled
          && (run_ahead_frames > 0)
          && (runloop_st->flags & RUNLOOP_FLAG_RUNAHEAD_AVAILABLE);

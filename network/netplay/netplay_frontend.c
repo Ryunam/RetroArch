@@ -7249,7 +7249,8 @@ static netplay_t *netplay_new(const char *server, const char *mitm,
          settings->bools.netplay_allow_pausing;
       netplay->input_latency_frames_min =
          settings->uints.netplay_input_latency_frames_min;
-      if (settings->bools.run_ahead_enabled)
+      if ((settings->uints.run_ahead == RUN_AHEAD_SINGLE) ||
+         (settings->uints.run_ahead == RUN_AHEAD_DOUBLE))
          netplay->input_latency_frames_min -=
             settings->uints.run_ahead_frames;
       netplay->input_latency_frames_max =

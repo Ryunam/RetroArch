@@ -2398,82 +2398,88 @@ bool command_event(enum event_command cmd, void *data)
             command_event(CMD_EVENT_RECORD_INIT, NULL);
          }
          break;
-      case CMD_EVENT_RUNAHEAD_TOGGLE:
-#if HAVE_RUNAHEAD
-         {
-            if (!core_info_current_supports_runahead())
-            {
-               runloop_msg_queue_push(msg_hash_to_str(MSG_RUNAHEAD_CORE_DOES_NOT_SUPPORT_RUNAHEAD),
-                     1, 100, false,
-                     NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-               break;
-            }
 
-            settings->bools.run_ahead_enabled =
-               !(settings->bools.run_ahead_enabled);
+/* WIP */
 
-            if (settings->bools.run_ahead_enabled)
-            {
-               char msg[256];
-               if (settings->bools.run_ahead_secondary_instance)
-                  snprintf(msg, sizeof(msg),
-                        msg_hash_to_str(MSG_RUNAHEAD_ENABLED_WITH_SECOND_INSTANCE),
-                        settings->uints.run_ahead_frames);
-               else
-                  snprintf(msg, sizeof(msg),
-                        msg_hash_to_str(MSG_RUNAHEAD_ENABLED),
-                        settings->uints.run_ahead_frames);
-               runloop_msg_queue_push(msg, 1, 100, false,
-                     NULL, MESSAGE_QUEUE_ICON_DEFAULT,
-                     MESSAGE_QUEUE_CATEGORY_INFO);
+//       case CMD_EVENT_RUNAHEAD_TOGGLE:
+// #if HAVE_RUNAHEAD
+//          {
+//             if (!core_info_current_supports_runahead())
+//             {
+//                runloop_msg_queue_push(msg_hash_to_str(MSG_RUNAHEAD_CORE_DOES_NOT_SUPPORT_RUNAHEAD),
+//                      1, 100, false,
+//                      NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
+//                break;
+//             }
 
-               /* Disable preemptive frames */
-               settings->bools.preemptive_frames_enable = false;
-               preempt_deinit(runloop_st);
-            }
-            else
-               runloop_msg_queue_push(msg_hash_to_str(MSG_RUNAHEAD_DISABLED),
-                     1, 100, false,
-                     NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-         }
-#endif
-         break;
-      case CMD_EVENT_PREEMPT_TOGGLE:
-#if HAVE_RUNAHEAD
-         {
-            bool old_warn   = settings->bools.preemptive_frames_hide_warnings;
-            bool old_inited = runloop_st->preempt_data != NULL;
+//             settings->bools.run_ahead_enabled =
+//                !(settings->bools.run_ahead_enabled);
 
-            /* Toggle with warnings shown */
-            settings->bools.preemptive_frames_hide_warnings = false;
-            settings->bools.preemptive_frames_enable        =
-                  !(settings->bools.preemptive_frames_enable);
-            command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
+//             if (settings->bools.run_ahead_enabled)
+//             {
+//                char msg[256];
+//                if (settings->bools.run_ahead_secondary_instance)
+//                   snprintf(msg, sizeof(msg),
+//                         msg_hash_to_str(MSG_RUNAHEAD_ENABLED_WITH_SECOND_INSTANCE),
+//                         settings->uints.run_ahead_frames);
+//                else
+//                   snprintf(msg, sizeof(msg),
+//                         msg_hash_to_str(MSG_RUNAHEAD_ENABLED),
+//                         settings->uints.run_ahead_frames);
+//                runloop_msg_queue_push(msg, 1, 100, false,
+//                      NULL, MESSAGE_QUEUE_ICON_DEFAULT,
+//                      MESSAGE_QUEUE_CATEGORY_INFO);
 
-            settings->bools.preemptive_frames_hide_warnings = old_warn;
+//                /* Disable preemptive frames */
+//                settings->bools.preemptive_frames_enable = false;
+//                preempt_deinit(runloop_st);
+//             }
+//             else
+//                runloop_msg_queue_push(msg_hash_to_str(MSG_RUNAHEAD_DISABLED),
+//                      1, 100, false,
+//                      NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
+//          }
+// #endif
+//          break;
+//       case CMD_EVENT_PREEMPT_TOGGLE:
+// #if HAVE_RUNAHEAD
+//          {
+//             bool old_warn   = settings->bools.preemptive_frames_hide_warnings;
+//             bool old_inited = runloop_st->preempt_data != NULL;
 
-            if (old_inited && !runloop_st->preempt_data)
-               runloop_msg_queue_push(msg_hash_to_str(MSG_PREEMPT_DISABLED),
-                     1, 100, false,
-                     NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-            else if (runloop_st->preempt_data)
-            {
-               char msg[256];
+//             /* Toggle with warnings shown */
+//             settings->bools.preemptive_frames_hide_warnings = false;
+//             settings->bools.preemptive_frames_enable        =
+//                   !(settings->bools.preemptive_frames_enable);
+//             command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
 
-               snprintf(msg, sizeof(msg), msg_hash_to_str(MSG_PREEMPT_ENABLED),
-                        settings->uints.run_ahead_frames);
-               runloop_msg_queue_push(
-                     msg, 1, 100, false,
-                     NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
+//             settings->bools.preemptive_frames_hide_warnings = old_warn;
 
-               /* Disable runahead */
-               settings->bools.run_ahead_enabled        = false;
-            }
-            else /* Failed to init */
-               settings->bools.preemptive_frames_enable = false;
-         }
-#endif
-         break;
+//             if (old_inited && !runloop_st->preempt_data)
+//                runloop_msg_queue_push(msg_hash_to_str(MSG_PREEMPT_DISABLED),
+//                      1, 100, false,
+//                      NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
+//             else if (runloop_st->preempt_data)
+//             {
+//                char msg[256];
+
+//                snprintf(msg, sizeof(msg), msg_hash_to_str(MSG_PREEMPT_ENABLED),
+//                         settings->uints.run_ahead_frames);
+//                runloop_msg_queue_push(
+//                      msg, 1, 100, false,
+//                      NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
+
+//                /* Disable runahead */
+//                settings->bools.run_ahead_enabled        = false;
+//             }
+//             else /* Failed to init */
+//                settings->bools.preemptive_frames_enable = false;
+//          }
+// #endif
+//          break;
+
+/* End of WIP */
+
       case CMD_EVENT_PREEMPT_UPDATE:
 #if HAVE_RUNAHEAD
          preempt_deinit(runloop_st);

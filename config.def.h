@@ -1365,15 +1365,13 @@
 #define DEFAULT_VRR_RUNLOOP_ENABLE false
 
 /* Run core logic one or more frames ahead then load the state back to reduce perceived input lag. */
+#define DEFAULT_RUN_AHEAD 0
+
+/* WIP */
 #define DEFAULT_RUN_AHEAD_FRAMES 1
 
-/* When using the Run Ahead feature, use a secondary instance of the core. */
-#define DEFAULT_RUN_AHEAD_SECONDARY_INSTANCE true
-
-/* Hide warning messages when using the Run Ahead feature. */
-#define DEFAULT_RUN_AHEAD_HIDE_WARNINGS false
-/* Hide warning messages when using Preemptive Frames. */
-#define DEFAULT_PREEMPT_HIDE_WARNINGS   false
+/* WIP */
+#define DEFAULT_RUN_AHEAD_SHOW_WARNINGS 3
 
 /* Enable stdin/network command interface. */
 #define DEFAULT_NETWORK_CMD_ENABLE false

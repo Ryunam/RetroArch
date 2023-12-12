@@ -3596,6 +3596,7 @@ MSG_HASH(
 
 /* Settings > Latency */
 
+/*
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_RUN_AHEAD_FRAMES,
    "Antal bildrutor att köra före"
@@ -3608,6 +3609,7 @@ MSG_HASH(
    MENU_ENUM_SUBLABEL_RUN_AHEAD_HIDE_WARNINGS,
    "Dölj varningsmeddelandet som visas när du använder Run-Ahead och kärnan inte har stöd för sparad status."
    )
+*/
 
 /* Settings > Core */
 

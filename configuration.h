@@ -321,7 +321,9 @@ typedef struct settings
       unsigned input_overlay_abxy_diagonal_sensitivity;
 #endif
 
+      unsigned run_ahead;
       unsigned run_ahead_frames;
+      unsigned run_ahead_show_warnings;
 
       unsigned midi_volume;
       unsigned streaming_mode;
@@ -937,11 +939,6 @@ typedef struct settings
       bool menu_throttle_framerate;
       bool apply_cheats_after_toggle;
       bool apply_cheats_after_load;
-      bool run_ahead_enabled;
-      bool run_ahead_secondary_instance;
-      bool run_ahead_hide_warnings;
-      bool preemptive_frames_enable;
-      bool preemptive_frames_hide_warnings;
       bool pause_nonactive;
       bool pause_on_disconnect;
       bool block_sram_overwrite;
