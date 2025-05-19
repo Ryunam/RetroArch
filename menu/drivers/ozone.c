@@ -151,6 +151,7 @@ enum
    OZONE_SYSTEM_TAB_CONTENTLESS_CORES,
 #if defined(HAVE_LIBRETRODB)
    OZONE_SYSTEM_TAB_EXPLORE,
+   OZONE_SYSTEM_TAB_MOST_PLAYED,
 #endif
 
    /* End of this enum - use the last one to determine num of possible tabs */
@@ -1930,6 +1931,10 @@ static uintptr_t ozone_entries_icon_get_texture(
          if (!string_is_equal(enum_path, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_GOTO_EXPLORE)))
             return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_CURSOR];
          return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_RDB];
+      case MENU_ENUM_LABEL_GOTO_MOST_PLAYED:
+         if (!string_is_equal(enum_path, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_GOTO_MOST_PLAYED)))
+            return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_CURSOR];
+         return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_RDB];
       case MENU_ENUM_LABEL_GOTO_CONTENTLESS_CORES:
          return ozone->icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_CORE];
 
@@ -3304,7 +3309,8 @@ static void ozone_draw_sidebar(
       MENU_ENUM_LABEL_VALUE_ADD_TAB,
       MENU_ENUM_LABEL_VALUE_CONTENTLESS_CORES_TAB,
 #ifdef HAVE_LIBRETRODB
-      MENU_ENUM_LABEL_VALUE_EXPLORE_TAB
+      MENU_ENUM_LABEL_VALUE_EXPLORE_TAB,
+      MENU_ENUM_LABEL_VALUE_MOST_PLAYED_TAB
 #endif
    };
    static const unsigned ozone_system_tabs_icons[OZONE_SYSTEM_TAB_LAST]            = {
@@ -3954,6 +3960,7 @@ static bool ozone_is_playlist(ozone_handle_t *ozone, bool depth)
 #endif
 #ifdef HAVE_LIBRETRODB
          case OZONE_SYSTEM_TAB_EXPLORE:
+         case OZONE_SYSTEM_TAB_MOST_PLAYED:
 #endif
          case OZONE_SYSTEM_TAB_CONTENTLESS_CORES:
             is_playlist = false;
@@ -4618,7 +4625,8 @@ static void ozone_sidebar_goto(ozone_handle_t *ozone, size_t new_selection)
       MENU_ENUM_LABEL_ADD_TAB,
       MENU_ENUM_LABEL_CONTENTLESS_CORES_TAB,
 #ifdef HAVE_LIBRETRODB
-      MENU_ENUM_LABEL_EXPLORE_TAB
+      MENU_ENUM_LABEL_EXPLORE_TAB,
+      MENU_ENUM_LABEL_MOST_PLAYED_TAB,
 #endif
    };
    static const enum menu_settings_type ozone_system_tabs_type[OZONE_SYSTEM_TAB_LAST] = {
@@ -4639,7 +4647,8 @@ static void ozone_sidebar_goto(ozone_handle_t *ozone, size_t new_selection)
       MENU_ADD_TAB,
       MENU_CONTENTLESS_CORES_TAB,
 #ifdef HAVE_LIBRETRODB
-      MENU_EXPLORE_TAB
+      MENU_EXPLORE_TAB,
+      MENU_MOST_PLAYED_TAB,
 #endif
    };
 
@@ -8947,7 +8956,10 @@ static void *ozone_init(void **userdata, bool video_is_threaded)
 
 #if defined(HAVE_LIBRETRODB)
    if (settings->bools.menu_content_show_explore)
+   {
       ozone->tabs[++ozone->system_tab_end]      = OZONE_SYSTEM_TAB_EXPLORE;
+      ozone->tabs[++ozone->system_tab_end]      = OZONE_SYSTEM_TAB_MOST_PLAYED;
+   }
 #endif
 
    for (i = 0; i < OZONE_TAB_MAX_LENGTH; i++)

@@ -2268,6 +2268,7 @@ static int menu_cbs_init_bind_get_string_representation_compare_type(
       case MENU_SETTING_ACTION_CORE_DISK_OPTIONS:
       case MENU_SETTINGS_CORE_DISK_OPTIONS_DISK_IMAGE_APPEND:
       case MENU_EXPLORE_TAB:
+      case MENU_MOST_PLAYED_TAB:
       case MENU_CONTENTLESS_CORES_TAB:
       case MENU_PLAYLISTS_TAB:
          BIND_ACTION_GET_VALUE(cbs,

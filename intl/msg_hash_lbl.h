@@ -78,6 +78,10 @@ MSG_HASH(
    "explore_initialising_list"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_MOST_PLAYED_TAB,
+   "most_played_tab"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_CONTENTLESS_CORES_TAB,
    "contentless_cores_tab"
    )

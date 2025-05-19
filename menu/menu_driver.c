@@ -2343,6 +2343,8 @@ static bool menu_driver_displaylist_push_internal(
 #if defined(HAVE_LIBRETRODB)
    else if (string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_EXPLORE_TAB)))
       return menu_displaylist_ctl(DISPLAYLIST_EXPLORE, info, settings);
+   else if (string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_MOST_PLAYED_TAB)))
+      return menu_displaylist_ctl(DISPLAYLIST_MOST_PLAYED, info, settings);
 #endif
    else if (string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_CONTENTLESS_CORES_TAB)))
       return menu_displaylist_ctl(DISPLAYLIST_CONTENTLESS_CORES, info, settings);

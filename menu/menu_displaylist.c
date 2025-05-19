@@ -4388,6 +4388,16 @@ static unsigned menu_displaylist_parse_playlists(
                   MENU_EXPLORE_TAB, 0, 0, NULL))
             count++;
 #endif
+
+#if defined(HAVE_LIBRETRODB)
+      if (settings->bools.menu_content_show_explore)
+         if (menu_entries_append(info_list,
+                  msg_hash_to_str(MENU_ENUM_LABEL_VALUE_GOTO_MOST_PLAYED),
+                  msg_hash_to_str(MENU_ENUM_LABEL_GOTO_MOST_PLAYED),
+                  MENU_ENUM_LABEL_GOTO_MOST_PLAYED,
+                  MENU_MOST_PLAYED_TAB, 0, 0, NULL))
+            count++;
+#endif
    }
 
    if (!dir_list_initialize(&str_list, path, NULL, true,
@@ -14644,6 +14654,7 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
          case DISPLAYLIST_HELP_SCREEN_LIST:
          case DISPLAYLIST_INFORMATION_LIST:
          case DISPLAYLIST_EXPLORE:
+         case DISPLAYLIST_MOST_PLAYED:
          case DISPLAYLIST_SCAN_DIRECTORY_LIST:
          case DISPLAYLIST_SYSTEM_INFO:
          case DISPLAYLIST_BLUETOOTH_SETTINGS_LIST:

@@ -9311,6 +9311,7 @@ static int menu_cbs_init_bind_ok_compare_label(menu_file_list_cbs_t *cbs,
          {MENU_ENUM_LABEL_CORE_STEAM_UNINSTALL,                action_ok_core_steam_uninstall},
 #endif
          {MENU_ENUM_LABEL_EXPLORE_TAB,                         action_ok_push_default},
+         {MENU_ENUM_LABEL_MOST_PLAYED_TAB,                     action_ok_push_default},
          {MENU_ENUM_LABEL_CONTENTLESS_CORES_TAB,               action_ok_push_default},
       };
 

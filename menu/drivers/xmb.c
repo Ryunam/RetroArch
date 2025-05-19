@@ -268,6 +268,7 @@ enum
    XMB_SYSTEM_TAB_CONTENTLESS_CORES,
 #if defined(HAVE_LIBRETRODB)
    XMB_SYSTEM_TAB_EXPLORE,
+   XMB_SYSTEM_TAB_MOST_PLAYED,
 #endif
 
    /* End of this enum - use the last one to determine num of possible tabs */
@@ -335,6 +336,7 @@ typedef struct xmb_handle
    xmb_node_t contentless_cores_tab_node;
 #if defined(HAVE_LIBRETRODB)
    xmb_node_t explore_tab_node;
+   xmb_node_t most_played_tab_node;
 #endif
    xmb_node_t netplay_tab_node;
    menu_input_pointer_t pointer;
@@ -2356,6 +2358,8 @@ static xmb_node_t* xmb_get_node(xmb_handle_t *xmb, unsigned i)
 #if defined(HAVE_LIBRETRODB)
       case XMB_SYSTEM_TAB_EXPLORE:
          return &xmb->explore_tab_node;
+      case XMB_SYSTEM_TAB_MOST_PLAYED:
+         return &xmb->most_played_tab_node;
 #endif
       case XMB_SYSTEM_TAB_CONTENTLESS_CORES:
          return &xmb->contentless_cores_tab_node;
@@ -3386,6 +3390,10 @@ static uintptr_t xmb_icon_get_id(xmb_handle_t *xmb,
          return xmb->textures.list[XMB_TEXTURE_MUSICS];
       case MENU_ENUM_LABEL_GOTO_EXPLORE:
          if (!string_is_equal(enum_path, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_GOTO_EXPLORE)))
+            return xmb->textures.list[XMB_TEXTURE_CURSOR];
+         return xmb->textures.list[XMB_TEXTURE_RDB];
+      case MENU_ENUM_LABEL_GOTO_MOST_PLAYED:
+         if (!string_is_equal(enum_path, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_GOTO_MOST_PLAYED)))
             return xmb->textures.list[XMB_TEXTURE_CURSOR];
          return xmb->textures.list[XMB_TEXTURE_RDB];
       case MENU_ENUM_LABEL_GOTO_CONTENTLESS_CORES:
@@ -6483,6 +6491,12 @@ static bool xmb_context_reset_textures(
    xmb->explore_tab_node.zoom     = xmb->categories_active_zoom;
 #endif
 
+#if defined(HAVE_LIBRETRODB)
+   xmb->most_played_tab_node.icon     = xmb->textures.list[XMB_TEXTURE_RDB];
+   xmb->most_played_tab_node.alpha    = xmb->categories_active_alpha;
+   xmb->most_played_tab_node.zoom     = xmb->categories_active_zoom;
+#endif
+
 #ifdef HAVE_NETWORKING
    xmb->netplay_tab_node.icon     = xmb->textures.list[XMB_TEXTURE_NETPLAY];
    xmb->netplay_tab_node.alpha    = xmb->categories_active_alpha;
@@ -8688,7 +8702,10 @@ static void *xmb_init(void **userdata, bool video_is_threaded)
 
 #if defined(HAVE_LIBRETRODB)
    if (settings->bools.menu_content_show_explore)
+   {
       xmb->tabs[++xmb->system_tab_end] = XMB_SYSTEM_TAB_EXPLORE;
+      xmb->tabs[++xmb->system_tab_end] = XMB_SYSTEM_TAB_MOST_PLAYED;
+   }
 #endif
 
    menu_st->flags         &= ~MENU_ST_FLAG_PREVENT_POPULATE;
@@ -9093,6 +9110,10 @@ static void xmb_list_cache(void *data, enum menu_list_type type,
             case XMB_SYSTEM_TAB_EXPLORE:
                menu_stack->list[stack_size - 1].label = strdup(msg_hash_to_str(MENU_ENUM_LABEL_EXPLORE_TAB));
                menu_stack->list[stack_size - 1].type  = MENU_EXPLORE_TAB;
+               break;
+           case XMB_SYSTEM_TAB_MOST_PLAYED:
+               menu_stack->list[stack_size - 1].label = strdup(msg_hash_to_str(MENU_ENUM_LABEL_MOST_PLAYED_TAB));
+               menu_stack->list[stack_size - 1].type  = MENU_MOST_PLAYED_TAB;
                break;
 #endif
             case XMB_SYSTEM_TAB_CONTENTLESS_CORES:

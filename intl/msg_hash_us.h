@@ -45,6 +45,10 @@ MSG_HASH(
    "Explore"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_MOST_PLAYED_TAB,
+   "Most Played"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CONTENTLESS_CORES_TAB,
    "Contentless Cores"
    )
@@ -313,6 +317,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_GOTO_EXPLORE,
    "Browse all content matching the database via a categorized search interface."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_GOTO_MOST_PLAYED,
+   "Most Played"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_GOTO_MOST_PLAYED,
+   "Browse content sorted and numbered according to the runtime."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_GOTO_CONTENTLESS_CORES,
