@@ -78,4 +78,6 @@ typedef struct
 #define ERROR_DEVICE_NOT_CONNECTED 1167
 #endif
 
+bool xinput_system_port_to_device_index(unsigned system_port, unsigned *device_index);
+
 #endif

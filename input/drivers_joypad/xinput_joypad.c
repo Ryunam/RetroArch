@@ -59,6 +59,7 @@ typedef uint32_t (__stdcall *XInputGetStateEx_t)(uint32_t, XINPUT_STATE*);
 typedef uint32_t (__stdcall *XInputSetState_t)(uint32_t, XINPUT_VIBRATION*);
 
 /* TODO/FIXME - static globals */
+static int g_xinput_pad_indexes[MAX_USERS] = { -1, -1, -1, -1 };
 #if defined(HAVE_DYLIB) && !defined(__WINRT__)
 /* For xinput1_n.dll */
 static dylib_t g_xinput_dll = NULL;
@@ -105,8 +106,26 @@ static const uint16_t button_index_to_bitmap_code[] =  {
 
 static INLINE int pad_index_to_xuser_index(unsigned pad)
 {
-   return pad < DEFAULT_MAX_PADS
-      && g_xinput_states[pad].connected ? pad : -1;
+   if (pad >= MAX_USERS)
+      return -1;
+   return g_xinput_pad_indexes[pad];
+}
+
+bool xinput_system_port_to_device_index(unsigned system_port, unsigned *device_index)
+{
+   unsigned i;
+   if (!device_index || system_port >= MAX_USERS)
+      return false;
+
+   for (i = 0; i < MAX_USERS; ++i)
+   {
+      if ((unsigned)g_xinput_pad_indexes[i] == system_port)
+      {
+         *device_index = i;
+         return true;
+      }
+   }
+   return false;
 }
 
 static const char *xinput_joypad_name(unsigned pad)
@@ -215,30 +234,37 @@ static void *xinput_joypad_init(void *data)
    for (i = 0; i < 4; ++i)
       xinput_active_port[i] = false;
 
-   for (j = 0; j < MAX_USERS; j++)
-   {
-      const char *name = xinput_joypad_name(j);
+   for (i = 0; i < MAX_USERS; ++i)
+      g_xinput_pad_indexes[i] = -1;
 
-      if (pad_index_to_xuser_index(j) > -1)
+   unsigned logical_index = 0;
+   for (i = 0; i < 4; ++i)
+   {
+      if (g_xinput_states[i].connected)
       {
-         /* TODO/FIXME - fill in VID/PID? */
-         int32_t vid          = 0;
-         int32_t pid          = 0;
-         input_autoconfigure_connect(
-               name,
-               NULL,
-               xinput_joypad.ident,
-               j,
-               vid,
-               pid);
+         if (logical_index < MAX_USERS)
+            g_xinput_pad_indexes[logical_index++] = i;
       }
    }
 
-   for (i = 0; i < MAX_USERS; ++i)
+   for (j = 0; j < MAX_USERS; j++)
    {
-      int xuser = pad_index_to_xuser_index(i);
+      int xuser = g_xinput_pad_indexes[i];
       if (xuser >= 0 && xuser < 4)
+      {
          xinput_active_port[xuser] = true;
+         const char *name = xinput_joypad_name(j);
+            /* TODO/FIXME - fill in VID/PID? */
+            int32_t vid          = 0;
+            int32_t pid          = 0;
+            input_autoconfigure_connect(
+                  name,
+                  NULL,
+                  xinput_joypad.ident,
+                  j,
+                  vid,
+                  pid);
+      }
    }
 
 #ifdef __WINRT__
@@ -259,9 +285,9 @@ error:
 static bool xinput_joypad_query_pad(unsigned pad)
 {
    int xuser = pad_index_to_xuser_index(pad);
-   if (xuser > -1)
-      return g_xinput_states[xuser].connected;
-   return false;
+   if (xuser < 0 || xuser >= 4)
+      return false;
+   return g_xinput_states[xuser].connected;
 }
 
 static void xinput_joypad_destroy(void)
@@ -293,6 +319,8 @@ static void xinput_joypad_destroy(void)
 static int32_t xinput_joypad_button(unsigned port, uint16_t joykey)
 {
    int xuser                  = pad_index_to_xuser_index(port);
+   if (xuser < 0 || xuser >= 4)
+      return 0;
    uint16_t btn_word          = 0;
    xinput_joypad_state *state = &g_xinput_states[xuser];
    if (!state->connected)
@@ -304,6 +332,8 @@ static int32_t xinput_joypad_button(unsigned port, uint16_t joykey)
 static int16_t xinput_joypad_axis(unsigned port, uint32_t joyaxis)
 {
    int xuser                  = pad_index_to_xuser_index(port);
+   if (xuser < 0 || xuser >= 4)
+      return 0;
    xinput_joypad_state *state = &g_xinput_states[xuser];
    XINPUT_GAMEPAD *pad        = &(state->xstate.Gamepad);
    if (!state->connected)
@@ -380,16 +410,18 @@ static void xinput_joypad_poll(void)
    }
 
    unsigned i;
-   for (i = 0; i < 4; ++i)
+   for (i = 0; i < MAX_USERS; ++i)
    {
+      int xuser = g_xinput_pad_indexes[i];
       DWORD status;
       bool success, new_connected;
       xinput_joypad_state *state;
-      if (!xinput_active_port[i])
+
+      if ((xuser < 0 || xuser >= 4) || (!xinput_active_port[xuser]))
          continue;
 
-      state          = &g_xinput_states[i];
-      status         = g_XInputGetStateEx(i, &state->xstate);
+      state          = &g_xinput_states[xuser];
+      status         = g_XInputGetStateEx(xuser, &state->xstate);
       success        = status == ERROR_SUCCESS;
       new_connected  = status != ERROR_DEVICE_NOT_CONNECTED;
       
@@ -410,7 +442,7 @@ static void xinput_joypad_poll(void)
 
          state->connected = new_connected;
          if (!success)
-            input_autoconfigure_disconnect(i, xinput_joypad_name(i));
+            input_autoconfigure_disconnect(i, xinput_joypad_name(xuser));
       }
    }
 }
@@ -423,7 +455,7 @@ static bool xinput_joypad_rumble(unsigned pad,
    XINPUT_VIBRATION *state, new_state;
    int xuser   = pad_index_to_xuser_index(pad);
 
-   if (xuser == -1)
+   if (xuser < 0 || xuser >= 4)
       return false;
 
    state     = &g_xinput_rumble_states[xuser];

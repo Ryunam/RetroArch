@@ -37,6 +37,8 @@
 #include "../input/include/blissbox.h"
 #endif
 
+#include "../input/drivers_joypad/xinput_joypad.h"
+
 #ifdef HAVE_MENU
 #include "../menu/menu_driver.h"
 #endif
@@ -589,6 +591,9 @@ static void cb_input_autoconfigure_connect(
    /* Use local copy of port index for brevity... */
    port = autoconfig_handle->port;
 
+   if (string_is_equal(autoconfig_handle->device_info.joypad_driver, "xinput"))
+      xinput_system_port_to_device_index(autoconfig_handle->port, &port);
+
    /* We perform the actual 'connect' in this
     * callback, to ensure it occurs on the main
     * thread */
@@ -845,7 +850,10 @@ bool input_autoconfigure_connect(
             calloc(1, sizeof(autoconfig_handle_t))))
       goto error;
 
-   autoconfig_handle->port                         = port;
+   unsigned logical_port = port;
+   if (driver && string_is_equal(driver, "xinput"))
+      xinput_system_port_to_device_index(port, &logical_port);
+   autoconfig_handle->port = logical_port;
    autoconfig_handle->device_info.vid              = vid;
    autoconfig_handle->device_info.pid              = pid;
    autoconfig_handle->device_info.name[0]          = '\0';
