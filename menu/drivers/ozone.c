@@ -504,6 +504,7 @@ struct ozone_handle
    uintptr_t textures[OZONE_THEME_TEXTURE_LAST];
    uintptr_t icons_textures[OZONE_ENTRIES_ICONS_TEXTURE_LAST];
    uintptr_t tab_textures[OZONE_TAB_TEXTURE_LAST];
+   uintptr_t wallpaper_texture;
 
    size_t categories_selection_ptr; /* active tab id  */
    size_t categories_active_idx_old;
@@ -640,9 +641,11 @@ struct ozone_handle
    char tab_path[PATH_MAX_LENGTH];
 
    /* These have to be huge, because runloop_st->name.savestate
-    * has a hard-coded size of (PATH_MAX_LENGTH * 2)... */
-   char savestate_thumbnail_file_path[(PATH_MAX_LENGTH * 2)];
-   char prev_savestate_thumbnail_file_path[(PATH_MAX_LENGTH * 2)];
+   * has a hard-coded size of (PATH_MAX_LENGTH * 2)... */
+  char savestate_thumbnail_file_path[(PATH_MAX_LENGTH * 2)];
+  char prev_savestate_thumbnail_file_path[(PATH_MAX_LENGTH * 2)];
+
+   char prev_wallpaper_path[PATH_MAX_LENGTH];
 
    char thumbnails_left_status_prev;
    char thumbnails_right_status_prev;
@@ -8981,6 +8984,8 @@ static void *ozone_init(void **userdata, bool video_is_threaded)
    struct menu_state *menu_st          = menu_state_get_ptr();
    menu_handle_t *menu                 = (menu_handle_t*)calloc(1, sizeof(*menu));
    const char *directory_assets        = settings->paths.directory_assets;
+   const char *wallpaper_path          = settings->paths.path_menu_wallpaper;
+   struct texture_image wallpaper_image = {0};
 
    if (!menu)
       return NULL;
@@ -9140,6 +9145,18 @@ static void *ozone_init(void **userdata, bool video_is_threaded)
          ? word_wrap_wideglyph
          : word_wrap;
 
+   ozone->wallpaper_texture = 0;
+   if (!string_is_empty(wallpaper_path) && image_texture_load(&wallpaper_image, wallpaper_path))
+   {
+      if (wallpaper_image.pixels)
+         video_driver_texture_load(&wallpaper_image,
+                                    TEXTURE_FILTER_MIPMAP_LINEAR,
+                                    &ozone->wallpaper_texture);
+
+      image_texture_free(&wallpaper_image);
+   }
+   strlcpy(ozone->prev_wallpaper_path, settings->paths.path_menu_wallpaper, sizeof(ozone->prev_wallpaper_path));
+
    return menu;
 
 error:
@@ -9150,6 +9167,10 @@ error:
       file_list_deinitialize(&ozone->horizontal_list);
       file_list_deinitialize(&ozone->selection_buf_old);
       RHMAP_FREE(ozone->playlist_db_node_map);
+
+      if (ozone->wallpaper_texture)
+         video_driver_texture_unload(&ozone->wallpaper_texture);
+      ozone->wallpaper_texture = 0;
    }
 
    if (menu)
@@ -9176,6 +9197,10 @@ static void ozone_free(void *data)
       file_list_deinitialize(&ozone->selection_buf_old);
       file_list_deinitialize(&ozone->horizontal_list);
       RHMAP_FREE(ozone->playlist_db_node_map);
+
+      if (ozone->wallpaper_texture)
+         video_driver_texture_unload(&ozone->wallpaper_texture);
+      ozone->wallpaper_texture = 0;
 
       if (!string_is_empty(ozone->pending_message))
          free(ozone->pending_message);
@@ -9592,7 +9617,10 @@ static void ozone_context_reset(void *data, bool is_threaded)
       "cursor_border.png"
    };
    unsigned i;
-   ozone_handle_t *ozone      = (ozone_handle_t*) data;
+   ozone_handle_t *ozone                = (ozone_handle_t*) data;
+   settings_t *settings                 = config_get_ptr();
+   const char *wallpaper_path           = settings->paths.path_menu_wallpaper;
+   struct texture_image wallpaper_image = {0};
 
    if (ozone)
    {
@@ -9647,6 +9675,21 @@ static void ozone_context_reset(void *data, bool is_threaded)
          if (!gfx_display_reset_textures_list(ozone_entries_icon_texture_path(i),
                ozone->icons_path, &ozone->icons_textures[i], TEXTURE_FILTER_MIPMAP_LINEAR, NULL, NULL))
             ozone->flags &= ~OZONE_FLAG_HAS_ALL_ASSETS;
+      }
+
+      /* Wallpaper */
+      if (ozone->wallpaper_texture)
+         video_driver_texture_unload(&ozone->wallpaper_texture);
+      ozone->wallpaper_texture = 0;
+
+      if (!string_is_empty(wallpaper_path) && image_texture_load(&wallpaper_image, wallpaper_path))
+      {
+         if (wallpaper_image.pixels)
+            video_driver_texture_load(&wallpaper_image,
+                                       TEXTURE_FILTER_MIPMAP_LINEAR,
+                                       &ozone->wallpaper_texture);
+
+         image_texture_free(&wallpaper_image);
       }
 
       gfx_display_deinit_white_texture();
@@ -9738,6 +9781,11 @@ static void ozone_context_destroy(void *data)
 
    /* Thumbnails */
    ozone_unload_thumbnail_textures(ozone);
+
+   /* Wallpaper */
+   if (ozone->wallpaper_texture)
+      video_driver_texture_unload(&ozone->wallpaper_texture);
+   ozone->wallpaper_texture = 0;
 
    gfx_display_deinit_white_texture();
 
@@ -11837,6 +11885,66 @@ static void ozone_messagebox_fadeout_cb(void *userdata)
    ozone->flags                 &= ~OZONE_FLAG_SHOULD_DRAW_MSGBOX;
 }
 
+static void ozone_draw_bg(
+      void *userdata,
+      gfx_display_t *p_disp,
+      gfx_display_ctx_driver_t *dispctx,
+      unsigned video_width,
+      unsigned video_height,
+      uintptr_t texture_id,
+      float *background_color,
+      float opacity)
+{
+   gfx_display_ctx_draw_t draw = {0};
+
+   static float ozone_coord_white[16] = {
+      1.0f, 1.0f, 1.0f, 1.0f,
+      1.0f, 1.0f, 1.0f, 1.0f,
+      1.0f, 1.0f, 1.0f, 1.0f,
+      1.0f, 1.0f, 1.0f, 1.0f
+   };
+
+   draw.x              = 0;
+   draw.y              = 0;
+   draw.width          = video_width;
+   draw.height         = video_height;
+   draw.color          = background_color;
+   draw.vertex         = NULL;
+   draw.tex_coord      = NULL;
+   draw.vertex_count   = 4;
+   draw.prim_type      = GFX_DISPLAY_PRIM_TRIANGLESTRIP;
+   draw.pipeline_id    = 0;
+   draw.pipeline_active= false;
+   draw.texture        = texture_id;
+
+   if (!video_width || !video_height)
+      return;
+
+   if (dispctx->blend_begin)
+      dispctx->blend_begin(userdata);
+
+   if (draw.texture)
+   {
+      draw.color = ozone_coord_white;
+      gfx_display_set_alpha(draw.color, opacity);
+      gfx_display_draw_bg(p_disp, &draw, userdata, true, opacity);
+
+      if (dispctx->draw)
+         dispctx->draw(&draw, userdata, video_width, video_height);
+   }
+   else
+   {
+      gfx_display_set_alpha(draw.color, opacity);
+      gfx_display_draw_bg(p_disp, &draw, userdata, true, opacity);
+
+      if (dispctx->draw)
+         dispctx->draw(&draw, userdata, video_width, video_height);
+   }
+
+   if (dispctx->blend_end)
+      dispctx->blend_end(userdata);
+}
+
 static void ozone_frame(void *data, video_frame_info_t *video_info)
 {
    math_matrix_4x4 mymat;
@@ -11866,9 +11974,31 @@ static void ozone_frame(void *data, video_frame_info_t *video_info)
    video_driver_state_t *video_st         = video_state_get_ptr();
    struct menu_state *menu_st             = menu_state_get_ptr();
    menu_list_t *menu_list                 = menu_st->entries.list;
+   struct texture_image wallpaper_image   = {0};
 
    if (!ozone)
       return;
+
+   /* Check whether the wallpaper path has changed,
+    * then unload and reload the texture if necessary. */
+   if (!string_is_equal(ozone->prev_wallpaper_path, settings->paths.path_menu_wallpaper))
+   {
+      if (ozone->wallpaper_texture)
+         video_driver_texture_unload(&ozone->wallpaper_texture);
+      ozone->wallpaper_texture = 0;
+
+      if (!string_is_empty(settings->paths.path_menu_wallpaper) &&
+         image_texture_load(&wallpaper_image, settings->paths.path_menu_wallpaper))
+      {
+         if (wallpaper_image.pixels)
+            video_driver_texture_load(&wallpaper_image,
+                                    TEXTURE_FILTER_MIPMAP_LINEAR,
+                                    &ozone->wallpaper_texture);
+         image_texture_free(&wallpaper_image);
+      }
+
+      strlcpy(ozone->prev_wallpaper_path, settings->paths.path_menu_wallpaper, sizeof(ozone->prev_wallpaper_path));
+   }
 
    /* Reset thumbnail bar when starting/closing content */
    if (((ozone->flags & OZONE_FLAG_LIBRETRO_RUNNING) > 0) != libretro_running)
@@ -11989,18 +12119,16 @@ static void ozone_frame(void *data, video_frame_info_t *video_info)
    else
       background_color = ozone->theme->background;
 
-   gfx_display_draw_quad(p_disp,
-         userdata,
-         video_width,
-         video_height,
-         0,
-         0,
-         video_width,
-         video_height,
-         video_width,
-         video_height,
-         background_color,
-         NULL);
+   ozone_draw_bg(
+      userdata,
+      p_disp,
+      p_disp->dispctx,
+      video_width,
+      video_height,
+      ozone->wallpaper_texture,
+      background_color,
+      1.0f
+   );
 
    if (!p_disp->dispctx->handles_transform)
    {

@@ -1320,6 +1320,10 @@ MSG_HASH(
    )
 #endif
 MSG_HASH(
+   MENU_ENUM_LABEL_DEFERRED_WALLPAPER_SETTINGS_LIST,
+   "deferred_wallpaper_settings_list"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_DEFERRED_MENU_VIEWS_SETTINGS_LIST,
    "deferred_menu_views_settings_list"
    )
@@ -6631,6 +6635,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_INPUT_TURBO_ALLOW_DPAD,
    "input_turbo_allow_dpad"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_WALLPAPER_SETTINGS,
+   "wallpaper_settings"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_MENU_VIEWS_SETTINGS,

@@ -10531,6 +10531,18 @@ static bool setting_append_list(
                &subgroup_info,
                parent_group);
 #endif
+
+         if (string_is_not_equal(settings->arrays.menu_driver, "rgui"))
+         {
+            CONFIG_ACTION(
+                  list, list_info,
+                  MENU_ENUM_LABEL_WALLPAPER_SETTINGS,
+                  MENU_ENUM_LABEL_VALUE_WALLPAPER_SETTINGS,
+                  &group_info,
+                  &subgroup_info,
+                  parent_group);
+         }
+
          CONFIG_ACTION(
                list, list_info,
                MENU_ENUM_LABEL_MENU_VIEWS_SETTINGS,
@@ -17969,8 +17981,7 @@ static bool setting_append_list(
 
          START_SUB_GROUP(list, list_info, "State", &group_info, &subgroup_info, parent_group);
 
-         if (string_is_not_equal(settings->arrays.menu_driver, "rgui") &&
-             string_is_not_equal(settings->arrays.menu_driver, "ozone"))
+         if (string_is_not_equal(settings->arrays.menu_driver, "rgui"))
          {
             CONFIG_PATH(
                   list, list_info,

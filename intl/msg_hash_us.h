@@ -6121,6 +6121,14 @@ MSG_HASH(
 /* Settings > User Interface */
 
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_WALLPAPER_SETTINGS,
+   "Wallpaper"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_WALLPAPER_SETTINGS,
+   "Change menu wallpaper settings."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_VIEWS_SETTINGS,
    "Menu Item Visibility"
    )

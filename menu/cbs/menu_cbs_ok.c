@@ -391,6 +391,8 @@ static enum msg_hash_enums action_ok_dl_to_enum(unsigned lbl)
       case ACTION_OK_DL_MENU_BOTTOM_SETTINGS_LIST:
          return MENU_ENUM_LABEL_DEFERRED_MENU_BOTTOM_SETTINGS_LIST;
 #endif
+      case ACTION_OK_DL_WALLPAPER_SETTINGS_LIST:
+         return MENU_ENUM_LABEL_DEFERRED_WALLPAPER_SETTINGS_LIST;
       case ACTION_OK_DL_MENU_VIEWS_SETTINGS_LIST:
          return MENU_ENUM_LABEL_DEFERRED_MENU_VIEWS_SETTINGS_LIST;
       case ACTION_OK_DL_SETTINGS_VIEWS_SETTINGS_LIST:
@@ -1798,6 +1800,7 @@ int generic_action_ok_displaylist_push(
 #ifdef _3DS
       case ACTION_OK_DL_MENU_BOTTOM_SETTINGS_LIST:
 #endif
+      case ACTION_OK_DL_WALLPAPER_SETTINGS_LIST:
       case ACTION_OK_DL_MENU_VIEWS_SETTINGS_LIST:
       case ACTION_OK_DL_SETTINGS_VIEWS_SETTINGS_LIST:
       case ACTION_OK_DL_QUICK_MENU_VIEWS_SETTINGS_LIST:
@@ -6536,6 +6539,7 @@ STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_menu_list, ACTION_OK_DL_MENU_SETTINGS_LI
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_menu_bottom_list, ACTION_OK_DL_MENU_BOTTOM_SETTINGS_LIST)
 #endif
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_quick_menu_override_options, ACTION_OK_DL_QUICK_MENU_OVERRIDE_OPTIONS_LIST)
+STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_wallpaper_list, ACTION_OK_DL_WALLPAPER_SETTINGS_LIST)
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_menu_views_list, ACTION_OK_DL_MENU_VIEWS_SETTINGS_LIST)
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_settings_views_list, ACTION_OK_DL_SETTINGS_VIEWS_SETTINGS_LIST)
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_quick_menu_views_list, ACTION_OK_DL_QUICK_MENU_VIEWS_SETTINGS_LIST)
@@ -9309,6 +9313,7 @@ static int menu_cbs_init_bind_ok_compare_label(menu_file_list_cbs_t *cbs,
 #ifdef _3DS
          {MENU_ENUM_LABEL_MENU_BOTTOM_SETTINGS,                action_ok_menu_bottom_list},
 #endif
+         {MENU_ENUM_LABEL_WALLPAPER_SETTINGS,                  action_ok_wallpaper_list},
          {MENU_ENUM_LABEL_MENU_VIEWS_SETTINGS,                 action_ok_menu_views_list},
          {MENU_ENUM_LABEL_QUICK_MENU_OVERRIDE_OPTIONS,         action_ok_quick_menu_override_options},
          {MENU_ENUM_LABEL_SETTINGS_VIEWS_SETTINGS,             action_ok_settings_views_list},
