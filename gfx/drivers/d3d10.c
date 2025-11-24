@@ -1787,21 +1787,21 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
    UINT                 flags              = 0;
    DXGI_SWAP_CHAIN_DESC desc               = {{0}};
 
-   desc.BufferCount                        = 1;
+   desc.BufferCount                        = 3;
    desc.BufferDesc.Width                   = width;
    desc.BufferDesc.Height                  = height;
    desc.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM;
-   desc.BufferDesc.RefreshRate.Numerator   = 60;
-   desc.BufferDesc.RefreshRate.Denominator = 1;
+   desc.BufferDesc.RefreshRate.Numerator   = 0;
+   desc.BufferDesc.RefreshRate.Denominator = 0;
    desc.BufferUsage                        = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 #ifdef HAVE_WINDOW
    desc.OutputWindow                       = (HWND)corewindow;
 #endif
    desc.SampleDesc.Count                   = 1;
    desc.SampleDesc.Quality                 = 0;
-   desc.Windowed                           = TRUE;
+   desc.Windowed                           = FALSE;
    desc.SwapEffect                         = DXGI_SWAP_EFFECT_SEQUENTIAL;
-
+   desc.Flags                             |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 #ifdef DEBUG
    flags                                  |= D3D10_CREATE_DEVICE_DEBUG;
 #endif
@@ -1811,6 +1811,43 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
                NULL, flags, D3D10_SDK_VERSION, &desc,
                (IDXGISwapChain**)&d3d10->swapChain, &d3d10->device)))
       return false;
+
+   /* Force DXGI to (re)enter exclusive fullscreen. */
+#ifdef HAVE_WINDOW
+   IDXGIFactory* dxgiFactory = NULL;
+   IDXGISwapChain* swapChain = (IDXGISwapChain*)d3d10->swapChain;
+
+   if (swapChain && SUCCEEDED(swapChain->lpVtbl->GetParent(
+      swapChain, &IID_IDXGIFactory, (void**)&dxgiFactory)) && dxgiFactory)
+   {
+      dxgiFactory->lpVtbl->MakeWindowAssociation(dxgiFactory, desc.OutputWindow, 0);
+
+      if (FAILED(swapChain->lpVtbl->SetFullscreenState(swapChain, TRUE, NULL)))
+      {
+         swapChain->lpVtbl->SetFullscreenState(swapChain, FALSE, NULL);
+         swapChain->lpVtbl->SetFullscreenState(swapChain, TRUE, NULL);
+      }
+
+      dxgiFactory->lpVtbl->Release(dxgiFactory);
+   }
+   IDXGIFactory* dxgiFactory2 = NULL;
+   IDXGISwapChain* swapChain2 = (IDXGISwapChain*)d3d10->swapChain;
+
+   if (swapChain2 && SUCCEEDED(swapChain2->lpVtbl->GetParent(
+      swapChain2, &IID_IDXGIFactory, (void**)&dxgiFactory2)) && dxgiFactory2)
+   {
+      dxgiFactory2->lpVtbl->MakeWindowAssociation(dxgiFactory2, desc.OutputWindow, 0);
+
+      if (FAILED(swapChain2->lpVtbl->SetFullscreenState(swapChain2, TRUE, NULL)))
+      {
+         swapChain2->lpVtbl->SetFullscreenState(swapChain2, FALSE, NULL);
+         swapChain2->lpVtbl->SetFullscreenState(swapChain2, TRUE, NULL);
+      }
+
+      dxgiFactory2->lpVtbl->Release(dxgiFactory2);
+   }
+#endif
+
    return true;
 }
 

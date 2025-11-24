@@ -2775,7 +2775,7 @@ static bool d3d12_init_swapchain(d3d12_video_t* d3d12,
    desc.BufferDesc.Width     = width;
    desc.BufferDesc.Height    = height;
    desc.BufferDesc.RefreshRate.Numerator   = 0;
-   desc.BufferDesc.RefreshRate.Denominator = 1;
+   desc.BufferDesc.RefreshRate.Denominator = 0;
 #endif
 
 #ifdef HAVE_DXGI_HDR
@@ -2796,7 +2796,7 @@ static bool d3d12_init_swapchain(d3d12_video_t* d3d12,
    desc.SampleDesc.Quality   = 0;
 #ifdef HAVE_WINDOW
    desc.OutputWindow         = hwnd;
-   desc.Windowed             = TRUE;
+   desc.Windowed             = FALSE;
 #endif
    desc.SwapEffect           = DXGI_SWAP_EFFECT_FLIP_DISCARD;
    desc.Flags                = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;

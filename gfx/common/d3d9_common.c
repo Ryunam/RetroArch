@@ -612,8 +612,8 @@ void d3d9_make_d3dpp(d3d9_video_t *d3d,
 
    memset(d3dpp, 0, sizeof(*d3dpp));
 
-   d3dpp->Windowed                = windowed_enable;
-   FS_PRESENTINTERVAL(d3dpp)      = D3DPRESENT_INTERVAL_IMMEDIATE;
+   d3dpp->Windowed                = false;
+   FS_PRESENTINTERVAL(d3dpp)      = D3DPRESENT_INTERVAL_ONE;
 
    if (info->vsync)
    {
@@ -639,8 +639,8 @@ void d3d9_make_d3dpp(d3d9_video_t *d3d,
       }
    }
 
-   d3dpp->SwapEffect              = D3DSWAPEFFECT_DISCARD;
-   d3dpp->BackBufferCount         = 2;
+   d3dpp->SwapEffect              = D3DSWAPEFFECT_FLIP;
+   d3dpp->BackBufferCount         = 3;
 
 #ifdef _XBOX
    d3dpp->BackBufferFormat        = d3d9_get_color_format_backbuffer(
