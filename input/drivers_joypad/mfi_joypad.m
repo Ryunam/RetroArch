@@ -181,13 +181,7 @@ static void apple_gamecontroller_joypad_poll_internal(GCController *controller, 
         mfi_axes[slot][3]         = gp.rightThumbstick.yAxis.value * 32767.0f;
         mfi_axes[slot][4]         = gp.leftTrigger.value * 32767.0f;
         mfi_axes[slot][5]         = gp.rightTrigger.value * 32767.0f;
-
     }
-#if 0
-    else if (controller.microGamepad)
-    {
-    }
-#endif
 
     /* GCGamepad is deprecated */
 #pragma clang diagnostic push
@@ -238,6 +232,20 @@ static void apple_gamecontroller_joypad_register(GCController *controller)
         gp.buttonOptions.preferredSystemGestureState = GCSystemGestureStateDisabled;
         gp.buttonMenu.preferredSystemGestureState    = GCSystemGestureStateDisabled;
         gp.buttonHome.preferredSystemGestureState    = GCSystemGestureStateDisabled;
+
+        GCPhysicalInputProfile *profile = controller.physicalInputProfile;
+        GCControllerButtonInput *homeBtn = (GCControllerButtonInput *)profile.buttons[GCInputButtonHome];
+        if (homeBtn) {
+            homeBtn.preferredSystemGestureState = GCSystemGestureStateDisabled;
+        }
+        GCControllerButtonInput *menuBtn = (GCControllerButtonInput *)profile.buttons[GCInputButtonMenu];
+        if (menuBtn) {
+            menuBtn.preferredSystemGestureState = GCSystemGestureStateDisabled;
+        }
+        GCControllerButtonInput *optionsBtn = (GCControllerButtonInput *)profile.buttons[GCInputButtonOptions];
+        if (optionsBtn) {
+            optionsBtn.preferredSystemGestureState = GCSystemGestureStateDisabled;
+        }
     }
 #endif
 

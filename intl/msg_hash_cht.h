@@ -1229,6 +1229,14 @@ MSG_HASH(
    "關閉時檔案將會在覆寫或刪除前移動到備份資料夾。"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_SYNC_MODE_AUTOMATIC,
+   "白框線 (Automatic)"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_SYNC_MODE_MANUAL,
+   "手動"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_DRIVER,
    "雲端同步後端"
    )
@@ -13563,14 +13571,6 @@ MSG_HASH(
    "Libretro前端"
    )
 MSG_HASH(
-   MSG_LOADED_STATE_FROM_SLOT,
-   "載入即時存檔 (%d)。"
-   )
-MSG_HASH(
-   MSG_LOADED_STATE_FROM_SLOT_AUTO,
-   "已載入即時存檔 (自動)。"
-   )
-MSG_HASH(
    MSG_LOADING,
    "載入中"
    )
@@ -13761,14 +13761,6 @@ MSG_HASH(
 MSG_HASH(
    MSG_REWIND_REACHED_END,
    "倒帶緩衝區已用盡。"
-   )
-MSG_HASH(
-   MSG_SAVED_STATE_TO_SLOT,
-   "儲存即時存檔 (%d)。"
-   )
-MSG_HASH(
-   MSG_SAVED_STATE_TO_SLOT_AUTO,
-   "已儲存即時存檔 (自動)。"
    )
 MSG_HASH(
    MSG_SAVED_SUCCESSFULLY_TO,

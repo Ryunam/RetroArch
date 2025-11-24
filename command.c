@@ -93,6 +93,11 @@ static void command_post_state_loaded(void)
      if (frame_time_counter_reset_after_load_state)
         video_st->frame_time_count = 0;
    }
+#if defined(HAVE_GFX_WIDGETS) && defined(HAVE_SCREENSHOTS)
+   {
+      gfx_widget_state_slot_show(dispwidget_get_ptr(), NULL, NULL);
+   }
+#endif
 }
 
 #if defined(HAVE_COMMAND)
@@ -826,7 +831,7 @@ bool command_seek_replay(command_t *cmd, const char *arg)
    {
       _len = strlcpy(reply, "OK ", sizeof(reply));
       _len += snprintf(reply+_len, sizeof(reply)-_len,
-            "%lld", input_st->bsv_movie_state.seek_target_frame);
+            "%" PRId64, input_st->bsv_movie_state.seek_target_frame);
    }
    else
       _len = strlcpy(reply, "NO", sizeof(reply));

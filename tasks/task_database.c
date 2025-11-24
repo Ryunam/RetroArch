@@ -280,6 +280,7 @@ static int intfstream_get_serial(intfstream_t *fd, char *s, size_t len, const ch
                return 1;
          }
       }
+      /* Philips CD-i has no serial entry on disc, use default fallback to CRC */
    }
    return 0;
 }
@@ -384,18 +385,54 @@ static int task_database_gdi_get_serial(const char *name, char *s, size_t len, u
    return intfstream_file_get_serial(track_path, 0, INT64_MAX, s, len, filesize);
 }
 
+/* Helper function to detect if a CHD file is a CD-i disc
+ * CD-i discs store data in AUDIO-labeled tracks, so we need
+ * to explicitly open track 1 for scanning */
+static bool is_chd_file_cdi(const char *path)
+{
+   intfstream_t *fd;
+   uint8_t magic[12];
+   bool is_cdi = false;
+   const uint8_t cdi_magic[] = {0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
+                                 0xff, 0xff, 0xff, 0xff, 0xff, 0x00};
+
+   /* Try to open track 1 explicitly */
+   fd = intfstream_open_chd_track(path,
+         RETRO_VFS_FILE_ACCESS_READ,
+         RETRO_VFS_FILE_ACCESS_HINT_NONE,
+         1);  /* Explicit track number, not CHDSTREAM_TRACK_FIRST_DATA */
+
+   if (!fd)
+      return false;
+
+   /* Read and check CD-i magic bytes at offset 0 */
+   if (intfstream_read(fd, magic, sizeof(magic)) == sizeof(magic))
+      is_cdi = (memcmp(magic, cdi_magic, sizeof(cdi_magic)) == 0);
+
+   intfstream_close(fd);
+   free(fd);
+   return is_cdi;
+}
+
 static int task_database_chd_get_serial(const char *name, char *serial, size_t len, uint64_t *filesize)
 {
    int result;
-   intfstream_t *fd = intfstream_open_chd_track(
+   int32_t track;
+   intfstream_t *fd;
+
+   /* CD-i discs store data in AUDIO-labeled tracks, so we must
+    * explicitly open track 1 instead of using CHDSTREAM_TRACK_FIRST_DATA */
+   track = is_chd_file_cdi(name) ? 1 : CHDSTREAM_TRACK_FIRST_DATA;
+
+   fd = intfstream_open_chd_track(
          name,
          RETRO_VFS_FILE_ACCESS_READ,
          RETRO_VFS_FILE_ACCESS_HINT_NONE,
-         CHDSTREAM_TRACK_FIRST_DATA);
+         track);
    if (!fd)
       return 0;
 
-   *filesize = intfstream_get_size(fd);
+   *filesize = intfstream_get_size(fd); /* TODO: get the full CHD size instead */
    result = intfstream_get_serial(fd, serial, len, name);
    intfstream_close(fd);
    free(fd);
@@ -503,11 +540,18 @@ static int task_database_gdi_get_crc_and_size(const char *name, uint32_t *crc, u
 static bool task_database_chd_get_crc_and_size(const char *name, uint32_t *crc, uint64_t *size)
 {
    bool found_crc   = false;
-   intfstream_t *fd = intfstream_open_chd_track(
+   int32_t track;
+   intfstream_t *fd;
+
+   /* CD-i discs store data in AUDIO-labeled tracks, so we must
+    * explicitly open track 1 instead of using CHDSTREAM_TRACK_PRIMARY */
+   track = is_chd_file_cdi(name) ? 1 : CHDSTREAM_TRACK_PRIMARY;
+
+   fd = intfstream_open_chd_track(
          name,
          RETRO_VFS_FILE_ACCESS_READ,
          RETRO_VFS_FILE_ACCESS_HINT_NONE,
-         CHDSTREAM_TRACK_PRIMARY);
+         track);
    if (!fd)
       return 0;
 
@@ -652,6 +696,8 @@ static int task_database_iterate_playlist(
          else
          {
             db->type = DATABASE_TYPE_CRC_LOOKUP;
+            db_state->serial[0] = '\0';
+            RARCH_DBG("[Scanner] Cue file serial not detected, fallback to crc\n");
             return task_database_cue_get_crc_and_size(name, &db_state->crc, &db_state->size);
          }
          break;
@@ -663,6 +709,8 @@ static int task_database_iterate_playlist(
          else
          {
             db->type = DATABASE_TYPE_CRC_LOOKUP;
+            db_state->serial[0] = '\0';
+            RARCH_DBG("[Scanner] GDI file serial not detected, fallback to crc\n");
             return task_database_gdi_get_crc_and_size(name, &db_state->crc, &db_state->size);
          }
          break;
@@ -682,10 +730,12 @@ static int task_database_iterate_playlist(
       case FILE_TYPE_CHD:
          db_state->serial[0] = '\0';
          if (task_database_chd_get_serial(name, db_state->serial, sizeof(db_state->serial),&db_state->size))
-            db->type         = DATABASE_TYPE_SERIAL_LOOKUP_SIZEHINT;
+            db->type         = DATABASE_TYPE_SERIAL_LOOKUP;
          else
          {
             db->type         = DATABASE_TYPE_CRC_LOOKUP;
+            db_state->serial[0] = '\0';
+            RARCH_DBG("[Scanner] CHD file serial not detected, fallback to crc\n");
             return task_database_chd_get_crc_and_size(name, &db_state->crc, &db_state->size);
          }
          break;
@@ -860,7 +910,7 @@ static int database_info_list_iterate_found_match(
       if (delim)
          *delim = '\0';
       fill_pathname(entry_lbl,
-            path_basename_nocompression(entry_path), "", str_len);
+            path_basename_nocompression(entry_path), "", sizeof(entry_lbl));
 
       RARCH_LOG("[Scanner] Faulty match for: \"%s\", CRC: 0x%08X\n", entry_path_str, db_state->crc);
    }
@@ -1487,51 +1537,6 @@ static void task_database_handler(retro_task_t *task)
             RARCH_LOG("[Scanner] %s\"%s\"...\n", msg_hash_to_str(MSG_MANUAL_CONTENT_SCAN_START), db->fullpath);
             if (retroarch_override_setting_is_set(RARCH_OVERRIDE_SETTING_DATABASE_SCAN, NULL))
                printf("%s\"%s\"...\n", msg_hash_to_str(MSG_MANUAL_CONTENT_SCAN_START), db->fullpath);
-
-/* Shortcut removed, can be deleted later if no-one comes screaming that it was important. */
-#if 0
-            /* If the scan path matches a database path exactly then
-             * save time by only processing that database. */
-            if (dbstate->list && (db->flags & DB_HANDLE_FLAG_IS_DIRECTORY))
-            {
-               size_t i;
-               char *dirname = NULL;
-
-               if (!string_is_empty(db->fullpath))
-               {
-                  char *last_slash      = find_last_slash(db->fullpath);
-                  dirname               = last_slash + 1;
-               }
-
-               if (!string_is_empty(dirname))
-               {
-                  for (i = 0; i < dbstate->list->size; i++)
-                  {
-                     char *last_slash;
-                     const char *data = dbstate->list->elems[i].data;
-                     bool strmatch    = false;
-                     char *dbpath     = strdup(data);
-
-                     path_remove_extension(dbpath);
-
-                     last_slash       = find_last_slash(dbpath);
-                     strmatch         = strcasecmp(last_slash + 1, dirname) == 0;
-
-                     free(dbpath);
-
-                     if (strmatch)
-                     {
-                        struct string_list *single_list = string_list_new();
-                        string_list_append(single_list, data,
-                              dbstate->list->elems[i].attr);
-                        dir_list_free(dbstate->list);
-                        dbstate->list = single_list;
-                        break;
-                     }
-                  }
-               }
-            }
-#endif
          }
          dbinfo->status = DATABASE_STATUS_ITERATE_START;
          break;

@@ -1333,6 +1333,14 @@ MSG_HASH(
    "禁用后，文件会在被覆盖或删除之前移至备份文件夹。"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_SYNC_MODE_AUTOMATIC,
+   "自动"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_SYNC_MODE_MANUAL,
+   "手动"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_DRIVER,
    "云同步后端"
    )
@@ -5080,10 +5088,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_SUGGEST_ALWAYS,
    "始终建议核心"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_CORE_SUGGEST_ALWAYS,
-   "即使已加载某个核心，仍显示所有可用的核心建议。"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_USE_BUILTIN_PLAYER,
@@ -14367,14 +14371,6 @@ MSG_HASH(
    "为libretro而设计的前端"
    )
 MSG_HASH(
-   MSG_LOADED_STATE_FROM_SLOT,
-   "加载卡槽 #%d 的状态。"
-   )
-MSG_HASH(
-   MSG_LOADED_STATE_FROM_SLOT_AUTO,
-   "从槽位#-1加载状态 (Auto)。"
-   )
-MSG_HASH(
    MSG_LOADING,
    "正在加载"
    )
@@ -14573,14 +14569,6 @@ MSG_HASH(
 MSG_HASH(
    MSG_SAVED_NEW_CONFIG_TO,
    "配置已保存至"
-   )
-MSG_HASH(
-   MSG_SAVED_STATE_TO_SLOT,
-   "已保存状态到卡槽 #%d。"
-   )
-MSG_HASH(
-   MSG_SAVED_STATE_TO_SLOT_AUTO,
-   "保存状态到槽位#-1 (Auto)。"
    )
 MSG_HASH(
    MSG_SAVED_SUCCESSFULLY_TO,

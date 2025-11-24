@@ -5322,6 +5322,10 @@ unsigned menu_event(
    if (menu_st->flags & MENU_ST_FLAG_BLOCK_ALL_INPUT)
       return MENU_ACTION_NOOP;
 
+   /* Clear OK if dragged */
+   if (menu_input->pointer.flags & MENU_INP_PTR_FLG_DRAGGED)
+      ok_current = ok_trigger = ok_trigger_release = 0;
+
    ok_old                                          = ok_current;
 
    /* Get pointer (mouse + touchscreen) input
@@ -5790,7 +5794,7 @@ unsigned menu_event(
                   || keydown[RETRO_DEVICE_ID_JOYPAD_RIGHT]
                   || keydown[menu_cancel_btn]
                )
-               ok_trigger = false;
+               ok_trigger = 0;
 
             memset(keydown, 0, sizeof(keydown));
          }
@@ -8110,6 +8114,14 @@ int generic_menu_entry_action(
       menu_st->flags &= ~(MENU_ST_FLAG_PENDING_CLOSE_CONTENT
                         | MENU_ST_FLAG_PENDING_ENV_SHUTDOWN_FLUSH);
       menu_st->pending_env_shutdown_content_path[0] = '\0';
+
+      /* Reload core on launch failure if manually loaded */
+      if (     !path_is_empty(RARCH_PATH_CORE_LAST)
+            && !(menu_st->flags & MENU_ST_FLAG_PENDING_RELOAD_CORE))
+      {
+         menu_st->flags |= MENU_ST_FLAG_PENDING_RELOAD_CORE;
+         menu_st->flags |= MENU_ST_FLAG_PENDING_ENV_SHUTDOWN_FLUSH;
+      }
    }
    else if (menu_st->flags & MENU_ST_FLAG_PENDING_RELOAD_CORE)
    {

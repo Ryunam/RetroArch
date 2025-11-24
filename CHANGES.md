@@ -1,9 +1,10 @@
 # Future
 
-# 1.22.0
+# 1.22.1
 - ANDROID: OnNewIntent handler to allow launchers start new content without closing first
 - ANDROID: Use app-specific storage for Google Play builds of RetroArch
 - ANDROID: Implement support for the Storage Access Framework, to allow the user to mount most directories1 from internal storage, the SD card, other removable storage devices and any document providers provided by other Android apps on the current device.
+- 3DS: Add 800px mode for New 3DS models
 - APPLE: Include sameduck, gearcoleco, geargrafx cores in App Store builds
 - APPLE: Include reminiscence, virtualjaguar, vitaquake2 cores in App Store builds
 - APPLE: Include gam4980 core in App Store builds
@@ -12,6 +13,7 @@
 - APPLE: Don't force fullscreen, allow multitasking on iPad
 - APPLE: AppIntents for Siri, Shortcuts
 - APPLE: Fix ffmpeg camera driver
+- APPLE/MFI: Try harder to own the home button
 - AUDIO: Microphone CoreAudio driver for iOS and macOS
 - AUTOCONF: Autoconfig match extended with a physical identifier
 - CAMERA: Use ffmpeg libavfilter virtual input device as default
@@ -50,11 +52,13 @@
 - INPUT/BSV/REPLAY: Add hotkeys and text commands to force a checkpoint insertion into the currently recording replay, and to seek backwards to the previous checkpoint and forwards to the next checkpoint.
 - INPUT/BSV/REPLAY: Add a text command to seek to a specific frame of the currently playing/recording replay; it will return via the command replier the actual seeked-to frame (right now it only supports seeking to checkpoints).
 - INTL: Add Irish Gaelic to selectable languages
+- IOS: Use native keyboard in search
 - IOS: Fix crash on iOS9 when fetching refresh rate
 - IOS: Stronger haptics, controllable by setting
 - IOS: Down arrow menu is removed, all 3 options are available by other means now
 - IOS/MACOS: Fix display server resolution and refresh rates
 - IOS/TVOS: Use native keyboard
+- JPEG: Fix clamping bug in JPEG decode
 - LIBRETRO: Deprecate intfstream_open_writable_memory
 - LIBRETRO: New environment function RETRO_ENVIRONMENT_GET_TARGET_SAMPLE_RATE
 - LINUX: Add full complement of key/value pairs to desktop entry
@@ -80,6 +84,7 @@
 - MENU: Allow kiosk mode and hiding of Settings menu also in GLUI and RGUI
 - MENU: Task widget improvements
 - MENU/GLUI: Show thumbnails in Explore view
+- MENU/XMB: Improvements for mobile/touch. More natural horizontal/vertical scrolling
 - MENU/XMB: Select button toggles thumbnails in playlists
 - MENU/XMB,OZONE: Fix content icons when playlist tabs are hidden
 - MENU/OZONE: Horizontal padding factor option
@@ -116,6 +121,7 @@
 - VIDEO/SHADER: Shader hold function, useful for some lightguns and shader comparison
 - VIDEO/SWITCHRES: Horizontal and vertical geometry adjustment options added
 - VIDEO/SWITCHRES: Game overrides
+- VIDEO/VULKAN: Add VK_EXT_full_screen_exclusive extension support for Windows
 - VIDEO/WAYLAND: Support for xdg-toplevel-icon-v1
 - VIDEO/WAYLAND: Fix deadlock when using Wayland Vulkan driver
 - VIDEO/WAYLAND: Fix fullscreen on auto monitor index (partial)
@@ -124,6 +130,7 @@
 - WEBOS: Various fixes and tunings
 - WEBOS: Disable core dumps
 - WEBOS: Debug builds enabled
+- WEBOS: Fix GLES 3/3.1/3.2 option, enable 64-bit option
 
 # 1.21.0
 - 3DS: Fix unique IDs for newer cores
