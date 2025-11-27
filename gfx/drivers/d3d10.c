@@ -1800,7 +1800,7 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
    desc.SampleDesc.Count                   = 1;
    desc.SampleDesc.Quality                 = 0;
    desc.Windowed                           = FALSE;
-   desc.SwapEffect                         = DXGI_SWAP_EFFECT_SEQUENTIAL;
+   desc.SwapEffect                         = DXGI_SWAP_EFFECT_DISCARD;
    desc.Flags                             |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 #ifdef DEBUG
    flags                                  |= D3D10_CREATE_DEVICE_DEBUG;
@@ -1814,13 +1814,14 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
 
    /* Force DXGI to (re)enter exclusive fullscreen. */
 #ifdef HAVE_WINDOW
-   IDXGIFactory* dxgiFactory = NULL;
+   IDXGIFactory* factory = NULL;
    IDXGISwapChain* swapChain = (IDXGISwapChain*)d3d10->swapChain;
 
-   if (swapChain && SUCCEEDED(swapChain->lpVtbl->GetParent(
-      swapChain, &IID_IDXGIFactory, (void**)&dxgiFactory)) && dxgiFactory)
+   if (swapChain &&
+      SUCCEEDED(swapChain->lpVtbl->GetParent(
+         swapChain, &IID_IDXGIFactory, (void**)&factory)))
    {
-      dxgiFactory->lpVtbl->MakeWindowAssociation(dxgiFactory, desc.OutputWindow, 0);
+      factory->lpVtbl->MakeWindowAssociation(factory, desc.OutputWindow, 0);
 
       if (FAILED(swapChain->lpVtbl->SetFullscreenState(swapChain, TRUE, NULL)))
       {
@@ -1828,15 +1829,16 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
          swapChain->lpVtbl->SetFullscreenState(swapChain, TRUE, NULL);
       }
 
-      dxgiFactory->lpVtbl->Release(dxgiFactory);
+      factory->lpVtbl->Release(factory);
    }
-   IDXGIFactory* dxgiFactory2 = NULL;
+   factory = NULL;
    IDXGISwapChain* swapChain2 = (IDXGISwapChain*)d3d10->swapChain;
 
-   if (swapChain2 && SUCCEEDED(swapChain2->lpVtbl->GetParent(
-      swapChain2, &IID_IDXGIFactory, (void**)&dxgiFactory2)) && dxgiFactory2)
+   if (swapChain2 &&
+      SUCCEEDED(swapChain2->lpVtbl->GetParent(
+         swapChain2, &IID_IDXGIFactory, (void**)&factory)))
    {
-      dxgiFactory2->lpVtbl->MakeWindowAssociation(dxgiFactory2, desc.OutputWindow, 0);
+      factory->lpVtbl->MakeWindowAssociation(factory, desc.OutputWindow, 0);
 
       if (FAILED(swapChain2->lpVtbl->SetFullscreenState(swapChain2, TRUE, NULL)))
       {
@@ -1844,7 +1846,7 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
          swapChain2->lpVtbl->SetFullscreenState(swapChain2, TRUE, NULL);
       }
 
-      dxgiFactory2->lpVtbl->Release(dxgiFactory2);
+      factory->lpVtbl->Release(factory);
    }
 #endif
 
