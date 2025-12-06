@@ -1913,6 +1913,17 @@ typedef struct VkApplicationInfo {
     uint32_t           apiVersion;
 } VkApplicationInfo;
 
+typedef struct VkPresentWaitInfoKHR {
+   VkStructureType sType;
+   const void* pNext;
+   uint32_t        presentId;
+} VkPresentWaitInfoKHR;
+
+typedef VkResult(VKAPI_PTR* PFN_vkWaitForPresentKHR)(
+   VkDevice device,
+   const VkPresentWaitInfoKHR* pPresentWaitInfo
+   );
+
 typedef struct VkInstanceCreateInfo {
     VkStructureType             sType;
     const void*                 pNext;
@@ -4870,6 +4881,7 @@ typedef enum VkPresentModeKHR {
     VK_PRESENT_MODE_MAILBOX_KHR = 1,
     VK_PRESENT_MODE_FIFO_KHR = 2,
     VK_PRESENT_MODE_FIFO_RELAXED_KHR = 3,
+    VK_PRESENT_MODE_FIFO_LATEST_READY_EXT = 4,
     VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR = 1000111000,
     VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR = 1000111001,
     VK_PRESENT_MODE_BEGIN_RANGE_KHR = VK_PRESENT_MODE_IMMEDIATE_KHR,
