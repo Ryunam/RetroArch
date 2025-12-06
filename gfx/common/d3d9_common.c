@@ -613,7 +613,7 @@ void d3d9_make_d3dpp(d3d9_video_t *d3d,
    memset(d3dpp, 0, sizeof(*d3dpp));
 
    d3dpp->Windowed                = false;
-   FS_PRESENTINTERVAL(d3dpp)      = D3DPRESENT_INTERVAL_ONE;
+   FS_PRESENTINTERVAL(d3dpp)      = D3DPRESENT_INTERVAL_IMMEDIATE;
 
    if (info->vsync)
    {
