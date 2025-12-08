@@ -2355,25 +2355,18 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
          &desc, (IDXGISwapChain**)&d3d11->swapChain)))
          return false;
    }
-   /* Force DXGI to (re)enter exclusive fullscreen. */
-#ifdef HAVE_WINDOW
-   dxgiFactory->lpVtbl->MakeWindowAssociation(dxgiFactory, desc.OutputWindow, 0);
 
-   if (FAILED(d3d11->swapChain->lpVtbl->SetFullscreenState(
-      d3d11->swapChain, TRUE, NULL)))
-   {
-      d3d11->swapChain->lpVtbl->SetFullscreenState(
-         d3d11->swapChain, FALSE, NULL);
-      d3d11->swapChain->lpVtbl->SetFullscreenState(
-         d3d11->swapChain, TRUE, NULL);
-   }
-   if (FAILED(d3d11->swapChain->lpVtbl->SetFullscreenState(
-      d3d11->swapChain, TRUE, NULL)))
-   {
-      d3d11->swapChain->lpVtbl->SetFullscreenState(
-         d3d11->swapChain, FALSE, NULL);
-      d3d11->swapChain->lpVtbl->SetFullscreenState(
-         d3d11->swapChain, TRUE, NULL);
+   /* Brute force DXGI to (re)enter FSE. */
+#ifdef HAVE_WINDOW
+   IDXGISwapChain* sc = d3d11->swapChain;
+   for (int i = 0; i < 4; i++)
+   {                // ^ This is pretty sad, but it works.
+      HRESULT hr = sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
+      if (FAILED(hr))
+      {
+         sc->lpVtbl->SetFullscreenState(sc, FALSE, NULL);
+         sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
+      }
    }
 #endif
 

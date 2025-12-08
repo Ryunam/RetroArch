@@ -1812,44 +1812,19 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
                (IDXGISwapChain**)&d3d10->swapChain, &d3d10->device)))
       return false;
 
-   /* Force DXGI to (re)enter exclusive fullscreen. */
+   /* Brute force DXGI to (re)enter FSE. */
 #ifdef HAVE_WINDOW
-   IDXGIFactory* factory = NULL;
-   IDXGISwapChain* swapChain = (IDXGISwapChain*)d3d10->swapChain;
-
-   if (swapChain &&
-      SUCCEEDED(swapChain->lpVtbl->GetParent(
-         swapChain, &IID_IDXGIFactory, (void**)&factory)))
-   {
-      factory->lpVtbl->MakeWindowAssociation(factory, desc.OutputWindow, 0);
-
-      if (FAILED(swapChain->lpVtbl->SetFullscreenState(swapChain, TRUE, NULL)))
+   IDXGISwapChain* sc = d3d10->swapChain;
+   for (int i = 0; i < 4; i++)
+   {               
+      HRESULT hr = sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
+      if (FAILED(hr))
       {
-         swapChain->lpVtbl->SetFullscreenState(swapChain, FALSE, NULL);
-         swapChain->lpVtbl->SetFullscreenState(swapChain, TRUE, NULL);
+         sc->lpVtbl->SetFullscreenState(sc, FALSE, NULL);
+         sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
       }
-
-      factory->lpVtbl->Release(factory);
-   }
-   factory = NULL;
-   IDXGISwapChain* swapChain2 = (IDXGISwapChain*)d3d10->swapChain;
-
-   if (swapChain2 &&
-      SUCCEEDED(swapChain2->lpVtbl->GetParent(
-         swapChain2, &IID_IDXGIFactory, (void**)&factory)))
-   {
-      factory->lpVtbl->MakeWindowAssociation(factory, desc.OutputWindow, 0);
-
-      if (FAILED(swapChain2->lpVtbl->SetFullscreenState(swapChain2, TRUE, NULL)))
-      {
-         swapChain2->lpVtbl->SetFullscreenState(swapChain2, FALSE, NULL);
-         swapChain2->lpVtbl->SetFullscreenState(swapChain2, TRUE, NULL);
-      }
-
-      factory->lpVtbl->Release(factory);
    }
 #endif
-
    return true;
 }
 
