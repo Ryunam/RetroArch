@@ -541,11 +541,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Nóta: Tá 'Tá Comhaid Chórais san Eolaire Ábhair' cumasaithe faoi láthair."
+   "Nóta: Tá 'Tá Comhaid Chórais san Eolaire Ábhair' cumasaithe."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- Ag féachaint isteach: %s"
+   "Ag féachaint isteach: %s"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
@@ -2196,6 +2196,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
    "Lárú Ingearach"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Téigh trí na roghanna seo mura bhfuil an íomhá lárnaithe i gceart ar an taispeáint."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -9149,7 +9153,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Atosaigh an t-ábhar ón tús."
+   "Atosaigh an t-ábhar ón tús. Spreagann RetroPad Start athshocrú crua."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -11241,7 +11245,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "Cineál mionsamhail le taispeáint ag barr ar dheis seinmliostaí. Is féidir an cineál mionsamhail seo a athrú trí bhrú ar RetroPad Y."
+   "Cineál mionsamhail le taispeáint ag barr ar dheis seinmliostaí. Is féidir é a athrú le Deas Analógach Suas/Clé."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
@@ -11249,7 +11253,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Cineál mionsamhail le taispeáint ag bun ar dheis seinmliostaí."
+   "Cineál mionsamhail le taispeáint ag bun ar dheis seinmliostaí. Is féidir é a rothlú le Analógach Deas Síos/Ar Dheas."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11940,12 +11944,32 @@ MSG_HASH(
    "Scálaigh méid an líonadh cothrománach."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON,
+   "Deilbhín Ceanntásca"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON,
+   "Is féidir lógó an cheanntásca a cheilt, a bheith dinimiciúil ag brath ar an nascleanúint nó a shocrú go dtí an t-ionróir clasaiceach."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR,
    "Deighilteoir Ceanntásca"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "Leithead malartach do dheighilteoirí ceanntásca agus buntásca."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Dada"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dinimiciúil"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_FIXED,
+   "Seasta"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

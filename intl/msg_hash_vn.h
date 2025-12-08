@@ -549,11 +549,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "Ghi chú: Tùy chọn 'Tệp hệ thống nằm trong Thư mục trò chơi' hiện đang được bật."
+   "Lưu ý: 'Tệp Hệ thống nằm trong Thư mục Nội dung' đã được bật."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- Đang tìm trong: %s"
+   "Đang tìm trong: %s"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
@@ -2206,8 +2206,8 @@ MSG_HASH(
    "Duyệt qua các tùy chọn này để điều chỉnh cài đặt theo chiều ngang nhằm thay đổi kích thước hình ảnh."
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
-   "Căn giữa theo chiều dọc"
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Duyệt qua các tùy chọn này nếu hình ảnh không được căn giữa đúng cách trên màn hình."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -9169,7 +9169,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Bắt đầu lại trò chơi từ đầu."
+   "Khởi động lại nội dung từ đầu. Nhấn Start trên RetroPad để thực hiện reset cứng."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -11249,7 +11249,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "Loại ảnh thu nhỏ hiển thị ở góc trên bên phải danh sách. Loại ảnh này có thể chuyển đổi bằng cách nhấn RetroPad Y."
+   "Loại hình thu nhỏ hiển thị ở góc trên bên phải của danh sách phát. Có thể thay đổi bằng cần analog phải lên/xuống."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
@@ -11257,7 +11257,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Loại ảnh thu nhỏ hiển thị ở góc dưới bên phải danh sách."
+   "Loại hình thu nhỏ hiển thị ở dưới cùng."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11930,6 +11930,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "Chiều rộng thay thế cho ngăn cách tiêu đề và chân trang."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Không"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Động"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

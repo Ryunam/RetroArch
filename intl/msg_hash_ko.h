@@ -549,11 +549,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- 알림: '콘텐츠 폴더에 시스템 파일 포함'이 활성화되어 있습니다."
+   "참고: '콘텐츠 폴더에 시스템 파일 포함' 설정이 활성화되어 있습니다."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- 검색 중: %s"
+   "검색 중: %s"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
@@ -2220,6 +2220,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
    "세로 중앙 정렬"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "이미지가 디스플레이 중앙에 표시되지 않는다면 이 옵션들을 변경해가며 적용해보세요."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -9181,7 +9185,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "콘텐츠를 처음부터 다시 시작합니다."
+   "콘텐츠를 처음부터 다시 시작합니다. RetroPad 시작을 누르면 하드 리셋을 수행합니다."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -11177,7 +11181,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "오른쪽 상단에 표시될 미리보기의 종류입니다. RetroPad Y 버튼을 누르면 미리보기 종류를 전환할 수 있습니다."
+   "실행목록의 오른쪽 위에 표시할 미리보기의 종류를 설정합니다. 오른쪽 아날로그 위/왼쪽으로 전환할 수 있습니다."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
@@ -11185,7 +11189,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "오른쪽 아래에 표시할 미리보기의 종류입니다."
+   "실행목록의 오른쪽 아래에 표시할 미리보기의 종류를 설정합니다. 오른쪽 아날로그 아래/오른쪽으로 전환할 수 있습니다."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11936,12 +11940,32 @@ MSG_HASH(
    "가로 패딩 크기를 조절합니다."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON,
+   "헤더 아이콘"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON,
+   "헤더의 로고를 숨기거나, 현재 메뉴에 따라 동적으로 변경하거나, 인베이더 아이콘으로 고정할 수 있습니다."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR,
    "헤더 구분선"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "헤더와 푸터 구분선의 대체 너비입니다."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "없음"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "동적"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_FIXED,
+   "고정"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

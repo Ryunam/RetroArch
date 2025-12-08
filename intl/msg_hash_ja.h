@@ -528,14 +528,6 @@ MSG_HASH(
    "ファームウェア"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- 注意: [コンテンツディレクトリからシステムファイルを読み込む] が現在有効化されています。"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- 検索中: '%s"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
    "不足, 必須:"
    )
@@ -2102,6 +2094,10 @@ MSG_HASH(
    "画像がディスプレイ上で正しく中央寄せされていない場合はこのオプションを微調整してください。"
    )
 MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "画像がディスプレイ上で正しく中央寄せされていない場合はこのオプションを微調整してください。"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
    "高解像度メニューを使用"
    )
@@ -3039,6 +3035,18 @@ MSG_HASH(
    MENU_ENUM_SUBLABEL_MIXER_ACTION_VOLUME,
    "オーディオストリームの音量を調整します。"
    )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_AUDIO_STREAM_STATE_NONE,
+   "状態: 該当なし"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_AUDIO_STREAM_STATE_STOPPED,
+   "状態: 停止"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_AUDIO_STREAM_STATE_PLAYING_SEQUENTIAL,
+   "状態: 再生中 (順番に)"
+   )
 
 /* Settings > Audio > Menu Sounds */
 
@@ -3121,6 +3129,10 @@ MSG_HASH(
 #endif
 #ifdef ANDROID
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_SELECT_PHYSICAL_KEYBOARD,
+   "物理キーボードを選択"
+   )
+MSG_HASH(
    MENU_ENUM_SUBLABEL_INPUT_SELECT_PHYSICAL_KEYBOARD,
    "このデバイスをゲームパッドとしてではなく物理キーボードとして使用します。"
    )
@@ -3194,8 +3206,20 @@ MSG_HASH(
    "アナログ入力感度"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_SENSOR_ACCELEROMETER_SENSITIVITY,
+   "加速度センサー感度"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_SENSOR_GYROSCOPE_SENSITIVITY,
+   "ジャイロスコープ感度"
+   )
+MSG_HASH(
    MENU_ENUM_SUBLABEL_INPUT_ANALOG_SENSITIVITY,
    "アナログスティックの感度を調整します。"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_INPUT_SENSOR_ACCELEROMETER_SENSITIVITY,
+   "加速度センサの感度を調整。"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_BIND_TIMEOUT,
@@ -8572,10 +8596,6 @@ MSG_HASH(
    "再起動"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "コンテンツを最初から再開します。"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
    "コンテンツを閉じる"
    )
@@ -10596,16 +10616,8 @@ MSG_HASH(
    "上のサムネイル"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "プレイリストの右上に表示するサムネイルの種類です。このサムネイルの種類はレトロパッドの Y を押すことで切り替えることができます。"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
    "下のサムネイル"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "プレイリストの右下に表示するサムネイルの種類です。"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11154,6 +11166,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_THUMBNAIL_SCALE_FACTOR,
    "サムネイルバーのサイズの表示倍率です。"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "なし"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "ダイナミック"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

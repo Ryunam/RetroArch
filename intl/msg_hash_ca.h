@@ -545,11 +545,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Nota: «Els fitxers del sistema són al directori del contingut» es troba activat."
+   "Nota: «Els fitxers del sistema són al directori del contingut» es troba activat."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- S'està mirant en: %s"
+   "Cercant a: %s"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
@@ -2188,6 +2188,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
    "Centrat vertical"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Rota entre aquestes opcions si la imatge no se centra correctament a la pantalla."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -9125,7 +9129,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Reinicia el contingut des del principi."
+   "Reinicia el contingut des de l'inici."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -11125,7 +11129,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "Indica el tipus de miniatura que es mostrarà a la part superior dreta de les llistes de reproducció. El tipus escollit es pot canviar clicant al botó RetroPad Y."
+   "Tipus de miniatures que es mostraran a la part superior dreta de les llistes de reproducció. Pot ser canviat com el joystick dret."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
@@ -11133,7 +11137,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Tipus de miniatura a mostrar a la part superior dreta de la llista de reproducció."
+   "Tipus de miniatures que es mostraran a la part inferior dreta de les llistes de reproducció. Pot ser canviat com el joystick dret."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11812,12 +11816,32 @@ MSG_HASH(
    "Escala la mida horitzontal del farciment."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON,
+   "Icona de la capçalera"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON,
+   "El logo de la capçalera pot ser amagat, dinàmicament en funció de la navegació o de manera fixa."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR,
    "Separador de la capçalera"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "Amplada alternativa per la capçalera i el peu de pàgina."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Cap"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dinàmic"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_FIXED,
+   "Corregit"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

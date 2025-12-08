@@ -314,6 +314,7 @@ typedef struct settings
       unsigned menu_materialui_thumbnail_view_landscape;
       unsigned menu_materialui_landscape_layout_optimization;
       unsigned menu_ozone_color_theme;
+      unsigned menu_ozone_header_icon;
       unsigned menu_ozone_header_separator;
       unsigned menu_ozone_font_scale;
       unsigned menu_font_color_red;
@@ -1042,7 +1043,6 @@ typedef struct settings
       bool network_remote_enable;
       bool network_remote_enable_user[MAX_USERS];
       bool load_dummy_on_core_shutdown;
-      bool check_firmware_before_loading;
       bool core_option_category_enable;
       bool core_info_cache_enable;
       bool core_info_savestate_bypass;

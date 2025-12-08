@@ -544,14 +544,6 @@ MSG_HASH(
    "Oprogramowanie układowe"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Uwaga: 'Pliki systemowe są w katalogu zawartości' są obecnie włączone."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- Szukam w: %s"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
    "Brakujące, wymagane:"
    )
@@ -2144,6 +2136,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_PORCH_ADJUST,
    "Przebiegnij przez te opcje, aby dostosować ustawienia poziome, aby zmienić rozmiar obrazu."
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Przełączaj między tymi opcjami, jeśli obraz nie jest prawidłowo wyśrodkowany na wyświetlaczu."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -7849,7 +7845,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Uruchom ponownie zawartość od początku."
+   "Uruchom ponownie zawartość od początku. RetroPad Start wyzwala twardy reset."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -9580,10 +9576,6 @@ MSG_HASH(
    "Spodnia miniatura"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Typ miniatury do wyświetlenia w prawym dolnym rogu playlisty."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
    "Zamień miniatury"
    )
@@ -10134,6 +10126,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "Alternatywna szerokość dla separatorów nagłówka i stopki."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Brak"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dynamiczne"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

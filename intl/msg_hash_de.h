@@ -533,7 +533,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Hinweis: 'Systemdateien befinden sich im Verzeichnis des Inhalts' ist derzeit aktiviert."
+   "Hinweis: 'Systemdateien sind im Inhalteverzeichnis' ist aktiviert."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
@@ -2123,7 +2123,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
-   "Vertikale Zentrierung"
+   "Vertikales Zentrieren"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Diese Optionen durchwechseln, falls das Bild nicht richtig auf dem Display zentriert ist."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -8965,7 +8969,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Den Inhalt vom Anfang neu starten."
+   "Den Inhalt von vorne starten. RetroPad Start löst einen Hard-Reset aus."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -10973,7 +10977,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "Art der Miniaturansicht, die oben rechts in der Wiedergabeliste angezeigt wird. Dieser Typ von Miniaturansicht kann durch Drücken von RetroPad Y gewechselt werden."
+   "Art der Miniaturansicht, die oben rechts in Wiedergabelisten angezeigt werden soll. Kann auf rechtem Analogstick mit Hoch/Runter durchgewechselt werden."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
@@ -10981,7 +10985,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Art des Vorschaubilds, das unten rechts in den Wiedergabelisten angezeigt werden soll."
+   "Art der Miniaturansicht, die unten rechts in Wiedergabelisten angezeigt werden soll. Kann auf rechtem Analogstick mit Hoch/Runter durchgewechselt werden."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11628,12 +11632,32 @@ MSG_HASH(
    "Die horizontale Auffüllgröße skalieren."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON,
+   "Header-Symbol"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON,
+   "Header-Logo kann dynamisch, je nach Navigation, ausgeblendet oder an den klassischen Invader fixiert werden."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR,
    "Kopfzeilentrenner"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "Alternative Breite für Kopf- und Fußzeilentrenner."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Nein"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dynamisch"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_FIXED,
+   "Fixiert"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

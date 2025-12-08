@@ -1744,7 +1744,6 @@ static struct config_bool_setting *populate_settings_bool(
    SETTING_BOOL("input_descriptor_label_show",   &settings->bools.input_descriptor_label_show, true, DEFAULT_INPUT_DESCRIPTOR_LABEL_SHOW, false);
    SETTING_BOOL("input_descriptor_hide_unbound", &settings->bools.input_descriptor_hide_unbound, true, DEFAULT_INPUT_DESCRIPTOR_HIDE_UNBOUND, false);
    SETTING_BOOL("load_dummy_on_core_shutdown",   &settings->bools.load_dummy_on_core_shutdown, true, DEFAULT_LOAD_DUMMY_ON_CORE_SHUTDOWN, false);
-   SETTING_BOOL("check_firmware_before_loading", &settings->bools.check_firmware_before_loading, true, DEFAULT_CHECK_FIRMWARE_BEFORE_LOADING, false);
    SETTING_BOOL("core_option_category_enable",   &settings->bools.core_option_category_enable, true, DEFAULT_CORE_OPTION_CATEGORY_ENABLE, false);
    SETTING_BOOL("core_info_savestate_bypass",    &settings->bools.core_info_savestate_bypass, true, DEFAULT_CORE_INFO_SAVESTATE_BYPASS, false);
 #if defined(__WINRT__) || defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
@@ -2466,6 +2465,7 @@ static struct config_uint_setting *populate_settings_uint(
 #endif
 #ifdef HAVE_OZONE
    SETTING_UINT("ozone_menu_color_theme",        &settings->uints.menu_ozone_color_theme, true, DEFAULT_OZONE_COLOR_THEME, false);
+   SETTING_UINT("ozone_header_icon",             &settings->uints.menu_ozone_header_icon, true, DEFAULT_OZONE_HEADER_ICON, false);
    SETTING_UINT("ozone_header_separator",        &settings->uints.menu_ozone_header_separator, true, DEFAULT_OZONE_HEADER_SEPARATOR, false);
    SETTING_UINT("ozone_font_scale",              &settings->uints.menu_ozone_font_scale, true, DEFAULT_OZONE_FONT_SCALE, false);
 #endif

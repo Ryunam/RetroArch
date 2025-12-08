@@ -536,14 +536,6 @@ MSG_HASH(
    "البرنامج الثابت فيرموير"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- ملاحظة: تم تمكين 'ملفات النظام في دليل المحتوى' حاليا."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "البحث في: %s"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
    "مفقود، مطلوب:"
    )
@@ -1935,6 +1927,10 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_X_AXIS_CENTERING,
+   "دورة من خلال هذه الخيارات إذا لم تكن الصورة تتركز بشكل صحيح على العرض."
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
    "دورة من خلال هذه الخيارات إذا لم تكن الصورة تتركز بشكل صحيح على العرض."
    )
 MSG_HASH(
@@ -6224,10 +6220,6 @@ MSG_HASH(
    "الصورة المصغرة السفلية"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "نوع الصورة المصغرة لعرضها في أسفل يمين قوائم التشغيل."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
    "تبديل الصور المصغرة"
    )
@@ -6730,6 +6722,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_THUMBNAIL_SCALE_FACTOR,
    "عامل المقياس المصغرة"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "لاشيء"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

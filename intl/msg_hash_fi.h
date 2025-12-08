@@ -540,10 +540,6 @@ MSG_HASH(
    "Laiteohjelmisto"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Huomioi: \"Järjestelmätiedostot ovat sisältökansiossa\" on tällä hetkellä käytössä."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
    "Puuttuu, Pakollinen:"
    )
@@ -2007,6 +2003,10 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_X_AXIS_CENTERING,
+   "Vaihdä tätä asetusta, jos kuva ei ole keskitetty oikein näytöllä."
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
    "Vaihdä tätä asetusta, jos kuva ei ole keskitetty oikein näytöllä."
    )
 MSG_HASH(
@@ -7824,10 +7824,6 @@ MSG_HASH(
    "Käynnistä uudelleen"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Käynnistä sisältö uudestaan alusta."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
    "Sulje sisältö"
    )
@@ -9720,10 +9716,6 @@ MSG_HASH(
    "Alimmainen esikatselukuva"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Esikatselukuvan tyyppi joka näytetään soittolistojen oikeassa alakulmassa."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
    "Vaihda esikatselukuvat"
    )
@@ -10306,6 +10298,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_THUMBNAIL_SCALE_FACTOR,
    "Skaalaa esikatselukuvien palkin koko."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Ei mitään"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dynaaminen"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

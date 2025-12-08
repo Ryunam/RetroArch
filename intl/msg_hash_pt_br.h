@@ -533,11 +533,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Nota: 'Arquivos de sistema estão no Diretório de Conteúdo' está ativado no momento."
+   "Nota: 'Arquivos de sistema estão no Diretório de Conteúdo' está habilitado."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- Pesquisando em: \"%s\""
+   "Pesquisando em: %s"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
@@ -2172,6 +2172,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
    "Centralização Vertical"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Alterne entre estas opções se a imagem não estiver centralizada corretamente na tela."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -9097,7 +9101,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Reinicia o conteúdo."
+   "Reinicia o conteúdo do início. O botão Start do RetroPad aciona um hard reset."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -11089,7 +11093,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "Tipo de miniatura exibida no canto superior direito das listas de reprodução. Esse tipo de miniatura pode ser alterado pressionando RetroPad Y."
+   "Tipo de miniatura para exibir no canto superior direito das listas de reprodução. Pode ser alternado com o Analógico Direito para Cima/Esquerda."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
@@ -11097,7 +11101,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Tipo de miniatura a ser exibido no canto inferior direito das listas de reprodução."
+   "Tipo de miniatura para exibir no canto inferior direito das listas de reprodução. Pode ser alternado com o Analógico Direito para Baixo/Direita."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11784,12 +11788,32 @@ MSG_HASH(
    "Ajustar o tamanho do preenchimento horizontal."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON,
+   "Ícone do Cabeçalho"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON,
+   "O logo do cabeçalho pode ser oculto, dinâmico dependendo da navegação ou fixo no invasor clássico."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR,
    "Separador de Cabeçalho"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "Largura alternativa para os separadores de cabeçalho e rodapé."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Nenhum"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dinâmico"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_FIXED,
+   "Fixo"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,
@@ -14227,6 +14251,14 @@ MSG_HASH(
    "Interface do usuário para Libretro"
    )
 MSG_HASH(
+   MSG_LOADED_STATE_FROM_SLOT,
+   "Estado salvo do compartimento: %d."
+   )
+MSG_HASH(
+   MSG_LOADED_STATE_FROM_SLOT_AUTO,
+   "Estado carregado do compartimento: Auto."
+   )
+MSG_HASH(
    MSG_LOADING,
    "Carregando"
    )
@@ -14421,6 +14453,14 @@ MSG_HASH(
 MSG_HASH(
    MSG_SAVED_NEW_CONFIG_TO,
    "Configuração salva em"
+   )
+MSG_HASH(
+   MSG_SAVED_STATE_TO_SLOT,
+   "Estado salvo no compartimento: %d."
+   )
+MSG_HASH(
+   MSG_SAVED_STATE_TO_SLOT_AUTO,
+   "Estado salvo no compartimento: Auto."
    )
 MSG_HASH(
    MSG_SAVED_SUCCESSFULLY_TO,

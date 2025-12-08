@@ -549,11 +549,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Примітка: \"Системні файли знаходяться у каталозі вмісту\" наразі увімкнено."
+   "Примітка: 'Системні файли пов'язані з Контентом каталогу'."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- Перегляд: %s"
+   "Шукаєте: %s"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
@@ -2206,8 +2206,8 @@ MSG_HASH(
    "Перемикання між цими варіантами, щоб змінити горизонтальні налаштування для зміни розміру зображення."
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
-   "Вертикальне Центрування"
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Спробуйте різні значення, якщо зображення не центровано належним чином на екрані."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -9109,7 +9109,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Перезапустити вміст з самого початку."
+   "Перезапуск вмісту з самого початку. Перезапуск програми RetroPad призведе до перезавантаження системи."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -11169,7 +11169,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "Тип ескізу для відображення у верхньому правому куті списках відтворення. Цей тип ескізів можна налаштувати за допомогою RetroPad Y."
+   "Тип ескізу для відображення у правому верхньому куті плейлістів. Можна зациклити з правим Аналогом вгору/ліворуч."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
@@ -11177,7 +11177,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Тип ескізу для відображення в правому нижньому куті плейлістів."
+   "Тип ескізу для відображення в правому нижньому куті плейлістів. Можна зациклити з правим аналогом вниз/праворуч."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11954,6 +11954,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "Альтернативна ширина для роздільників верхнього та нижнього колонтитулів."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Немає"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Динамічний"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

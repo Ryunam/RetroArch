@@ -520,14 +520,6 @@ MSG_HASH(
    "Deterministické (Uložit/Načíst, Přetočit, Předběžné spuštění, Síťové přehrávání)"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Poznámka: Položka \"Systémové soubory jsou v adresáři s obsahem\" je v současné době povolena."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- Hledám v: %s"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
    "Chybějící, Vyžadované:"
    )
@@ -2083,6 +2075,10 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_X_AXIS_CENTERING,
+   "Pokud není obraz na displeji správně vycentrován, projděte tyto možnosti."
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
    "Pokud není obraz na displeji správně vycentrován, projděte tyto možnosti."
    )
 MSG_HASH(
@@ -8784,10 +8780,6 @@ MSG_HASH(
    "Restartovat"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "Restartujte obsah od začátku."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
    "Zavřít obsah"
    )
@@ -10744,16 +10736,8 @@ MSG_HASH(
    "Horní miniatura"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "Typ miniatury, která se má zobrazovat v pravém horním rohu seznamů skladeb. Tento typ miniatur lze cyklicky přepínat stisknutím tlačítka RetroPad Y."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
    "Spodní miniatura"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Typ miniatury, která se má zobrazovat v pravém dolním rohu playlistu."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11374,6 +11358,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_THUMBNAIL_SCALE_FACTOR,
    "Měřítko velikosti panelu miniatur."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Žádné"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dynamický"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

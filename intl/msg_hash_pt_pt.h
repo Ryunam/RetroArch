@@ -524,14 +524,6 @@ MSG_HASH(
    "Determinante (Guardar/Carregar, Rebobinar, Run-Ahead, Netplay)"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Nota: A opção \"Ficheiros do Sistema estão na Pasta de Conteúdos\" está atualmente ativada."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- A procurar em: '%s"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
    "Em falta, Requerido:"
    )
@@ -2079,6 +2071,10 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_X_AXIS_CENTERING,
+   "Alterne entre estas opções se a imagem não estiver centrada corretamente no ecrã."
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
    "Alterne entre estas opções se a imagem não estiver centrada corretamente no ecrã."
    )
 MSG_HASH(
@@ -4582,6 +4578,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_SCROLL_CONTENT_METADATA,
    "Quando ativado, cada item de metadados de conteúdo apresentado na barra lateral direita das listas de reprodução (núcleo associado, tempo de reprodução) ocupará uma única linha, e as cadeias que excedam a largura disponível serão automaticamente deslocadas. Quando desativado, cada item de metadados será exibido estaticamente, ocupando tantas linhas quantas forem necessárias."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Não partilhar"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dinâmico"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

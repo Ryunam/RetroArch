@@ -537,11 +537,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Megjegyzés: a 'Rendszerfájlok a tartalom könyvtárában' beállítás be van kapcsolva."
+   "Megjegyzés: a 'Rendszerfájlok a tartalom könyvtárában' beállítás be van kapcsolva."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- Keresés itt: %s"
+   "Keresés itt: %s"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
@@ -2182,8 +2182,8 @@ MSG_HASH(
    "A különféle beállítások közt váltva változik a vízszintes képméret."
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
-   "Függőleges középállás"
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Ha a kép nincs középen a megjelenítőn, próbáld változtatni az értékeket."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -9129,7 +9129,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "A tartalom újraindítása az elejéről."
+   "Tartalom újraindítása. A RetroPad Start gomb hidegindítást eredményez."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -11193,7 +11193,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "A játéklista jobb felső sarkában megjelenő bélyegkép típusa. A típus a RetroPad Y gombjával váltható."
+   "A játéklista jobb felső sarkában megjelenő bélyegkép típusa. A jobb analóg kar fel/le mozgatásával váltható."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
@@ -11201,7 +11201,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "A játéklista jobb alsó sarkában megjelenő bélyegkép típusa."
+   "A játéklista jobb alsó sarkában megjelenő bélyegkép típusa. A jobb analóg kar jobbra/balra mozgatásával váltható."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11714,6 +11714,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "A fejléc és lábléc elválasztójának szélessége."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Nincs"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

@@ -592,7 +592,6 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_vertical_sync,           MENU_
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_adaptive_vsync,          MENU_ENUM_SUBLABEL_VIDEO_ADAPTIVE_VSYNC)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_core_allow_rotate,             MENU_ENUM_SUBLABEL_VIDEO_ALLOW_ROTATE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_dummy_on_core_shutdown,        MENU_ENUM_SUBLABEL_DUMMY_ON_CORE_SHUTDOWN)
-DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_dummy_check_missing_firmware,  MENU_ENUM_SUBLABEL_CHECK_FOR_MISSING_FIRMWARE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_core_option_category_enable,   MENU_ENUM_SUBLABEL_CORE_OPTION_CATEGORY_ENABLE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_core_info_cache_enable,        MENU_ENUM_SUBLABEL_CORE_INFO_CACHE_ENABLE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_core_info_savestate_bypass,    MENU_ENUM_SUBLABEL_CORE_INFO_SAVESTATE_BYPASS)
@@ -959,6 +958,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_thumbnails_rgui,               MENU_
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_left_thumbnails_ozone,                   MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_OZONE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_ozone_menu_color_theme,                  MENU_ENUM_SUBLABEL_OZONE_MENU_COLOR_THEME)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_ozone_padding_factor,                    MENU_ENUM_SUBLABEL_OZONE_PADDING_FACTOR)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_ozone_header_icon,                       MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_ozone_header_separator,                  MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_ozone_collapse_sidebar,                  MENU_ENUM_SUBLABEL_OZONE_COLLAPSE_SIDEBAR)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_ozone_scroll_content_metadata,           MENU_ENUM_SUBLABEL_OZONE_SCROLL_CONTENT_METADATA)
@@ -1486,11 +1486,16 @@ static int action_bind_sublabel_core_info_entry(
       const char *label, const char *path,
       char *s, size_t len)
 {
-   if (list && list->list[i].label && strstr(list->list[i].label, "(md5)"))
+   if (!list || string_is_empty(list->list[i].label))
+      return 0;
+
+   if (strstr(list->list[i].label, "(md5)"))
    {
       int pos = string_find_index_substring_string(list->list[i].label, "(md5)");
       strlcpy(s, list->list[i].label + pos, len);
    }
+   else
+      strlcpy(s, list->list[i].label, len);
 
    return 0;
 }
@@ -3251,6 +3256,11 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_ozone_padding_factor);
 #endif
             break;
+         case MENU_ENUM_LABEL_OZONE_HEADER_ICON:
+#ifdef HAVE_OZONE
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_ozone_header_icon);
+#endif
+            break;
          case MENU_ENUM_LABEL_OZONE_HEADER_SEPARATOR:
 #ifdef HAVE_OZONE
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_ozone_header_separator);
@@ -4706,9 +4716,6 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_DUMMY_ON_CORE_SHUTDOWN:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_dummy_on_core_shutdown);
-            break;
-         case MENU_ENUM_LABEL_CHECK_FOR_MISSING_FIRMWARE:
-            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_dummy_check_missing_firmware);
             break;
          case MENU_ENUM_LABEL_CORE_OPTION_CATEGORY_ENABLE:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_core_option_category_enable);

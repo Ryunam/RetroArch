@@ -540,14 +540,6 @@ MSG_HASH(
    "Ürün Yazılımı"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
-   "- Not: 'Sistem Dosyaları İçerik Dizinindedir' seçeneği şu anda etkindir."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
-   "- Şuraya bakılıyor: %s"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
    "Eksik, Gerekli:"
    )
@@ -2190,8 +2182,8 @@ MSG_HASH(
    "Görüntü boyutunu değiştirmek için yatay ayarları düzenlemek üzere bu seçenekler arasında geçiş yapın."
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
-   "Dikey Merkezleme"
+   MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
+   "Görüntü ekranda doğru şekilde ortalanmamışsa bu seçenekler arasında gezinin."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CRT_SWITCH_HIRES_MENU,
@@ -9141,7 +9133,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_RESTART_CONTENT,
-   "İçeriği yeniden başlatın."
+   "İçeriği baştan başlatın. RetroPad Start sert sıfırlamayı tetikler."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CLOSE_CONTENT,
@@ -11200,16 +11192,8 @@ MSG_HASH(
    "Üst Küçük Resim"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_THUMBNAILS_RGUI,
-   "Oynatma listelerinin sağ üst köşesinde görüntülenecek küçük resim türü. Bu küçük resim türü, RetroPad Y tuşuna basılarak döndürülebilir."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_LEFT_THUMBNAILS_RGUI,
    "Alt Küçük Resim"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_LEFT_THUMBNAILS_RGUI,
-   "Oynatma listelerinin sağ alt kısmında gösterilecek küçük resim türü."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MENU_RGUI_SWAP_THUMBNAILS,
@@ -11942,6 +11926,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_OZONE_HEADER_SEPARATOR,
    "Üstbilgi ve altbilgi ayırıcıları için alternatif genişlik."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_NONE,
+   "Yok"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
+   "Dinamik"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,
