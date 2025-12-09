@@ -2284,7 +2284,7 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
 #else
    if (d3d11->flags & D3D11_ST_FLAG_WAITABLE_SWAPCHAINS)
       desc.Flags    |= DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-   desc.SwapEffect   = DXGI_SWAP_EFFECT_DISCARD; // FSE: Use DXGI_SWAP_EFFECT_DISCARD or DXGI_SWAP_EFFECT_SEQUENTIAL.
+   desc.SwapEffect   = DXGI_SWAP_EFFECT_DISCARD;
    desc.Flags       &= ~(DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING | DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT)
       ; d3d11->flags = 0
 
@@ -2355,18 +2355,22 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
          &desc, (IDXGISwapChain**)&d3d11->swapChain)))
          return false;
    }
-
-   /* Brute force DXGI to (re)enter FSE. */
+   /* Ensure DXGI (re)enters legacy flip upon reinit. */
 #ifdef HAVE_WINDOW
    IDXGISwapChain* sc = d3d11->swapChain;
-   for (int i = 0; i < 4; i++)
-   {                // ^ This is pretty sad, but it works.
-      HRESULT hr = sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
-      if (FAILED(hr))
-      {
-         sc->lpVtbl->SetFullscreenState(sc, FALSE, NULL);
-         sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
-      }
+
+   for (int i = 0; i < 16; i++)
+   {
+      sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
+
+      BOOL fs = FALSE;
+      IDXGIOutput* out = NULL;
+      sc->lpVtbl->GetFullscreenState(sc, &fs, &out);
+      if (out)
+         out->lpVtbl->Release(out);
+
+      if (fs)
+         break;
    }
 #endif
 

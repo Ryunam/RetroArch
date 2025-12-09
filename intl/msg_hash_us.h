@@ -2352,11 +2352,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_REFRESH_RATE_POLLED,
-   "Set Display-Reported Refresh Rate / Switch Fullscreen Presentation"
+   "Set Display-Reported Refresh Rate / Set Fullscreen State"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_REFRESH_RATE_POLLED,
-   "Press START to switch the fullscreen presentation model. Only applies to the d3d10 & d3d11 drivers."
+   "Press START to alternate the fullscreen presentation model. Only applies to the d3d10 & d3d11 drivers, and may be temporary."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_AUTOSWITCH_REFRESH_RATE,

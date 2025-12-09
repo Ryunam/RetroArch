@@ -7778,7 +7778,8 @@ static int setting_action_start_video_refresh_rate_polled(
       rarch_setting_t *setting)
 {
 #ifdef _WIN32
-   /* Trigger Alt+Enter (FSE) when "Set Display-Reported Refresh Rate" is used. */
+   /* OK: Set-Display Reported Refresh Rate
+      START: Set Fullscreen State (DXGI_ALT_ENTER) */
    if (string_is_equal(video_driver_get_ident(), "d3d11") ||
       string_is_equal(video_driver_get_ident(), "d3d10"))
    {
@@ -7791,11 +7792,10 @@ static int setting_action_start_video_refresh_rate_polled(
 
       SendInput(_countof(in), in, sizeof(INPUT));
 
-      return 0; /* Prevent refresh rate change. */
+      return 0;
    }
 #endif
 
-   /* Original action: A (down) button just changes refresh rate. */
    return setting_action_ok_video_refresh_rate_polled(setting, 0, false);
 }
 

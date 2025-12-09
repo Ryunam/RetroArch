@@ -1811,18 +1811,22 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
                NULL, flags, D3D10_SDK_VERSION, &desc,
                (IDXGISwapChain**)&d3d10->swapChain, &d3d10->device)))
       return false;
-
-   /* Brute force DXGI to (re)enter FSE. */
+   /* Ensure DXGI (re)enters legacy flip upon reinit. */
 #ifdef HAVE_WINDOW
    IDXGISwapChain* sc = d3d10->swapChain;
-   for (int i = 0; i < 4; i++)
-   {               
-      HRESULT hr = sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
-      if (FAILED(hr))
-      {
-         sc->lpVtbl->SetFullscreenState(sc, FALSE, NULL);
-         sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
-      }
+
+   for (int i = 0; i < 16; i++)
+   {
+      sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
+
+      BOOL fs = FALSE;
+      IDXGIOutput* out = NULL;
+      sc->lpVtbl->GetFullscreenState(sc, &fs, &out);
+      if (out)
+         out->lpVtbl->Release(out);
+
+      if (fs)
+         break;
    }
 #endif
    return true;
