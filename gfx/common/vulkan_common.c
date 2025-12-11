@@ -334,6 +334,7 @@ static bool vulkan_load_device_symbols(gfx_ctx_vulkan_data_t *vk)
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkAcquireNextImageKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkQueuePresentKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitForPresentKHR);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitForPresent2KHR);
    return true;
 }
 
@@ -564,19 +565,19 @@ static const char *vulkan_device_extensions[]  = {
 };
 
 static const char *vulkan_optional_device_extensions[] = {
-   "VK_NV_low_latency2",                    
-   "VK_EXT_present_mode_fifo_latest_ready", 
-   "VK_KHR_present_wait2",                
+   "VK_NV_low_latency2",
+   "VK_KHR_present_id",
+   "VK_KHR_present_id2",
+   "VK_KHR_present_wait",
+   "VK_KHR_present_wait2",
+   "VK_KHR_present_mode_fifo_latest_ready",
    "VK_KHR_maintenance1",
    "VK_KHR_maintenance2",
    "VK_KHR_maintenance3",
    "VK_KHR_maintenance4",
-   "VK_KHR_swapchain_mutable_format",
    "VK_KHR_synchronization2",
-   "VK_KHR_descriptor_update_template",
-   "VK_KHR_push_descriptor",
-   "VK_EXT_swapchain_maintenance1",
-   "VK_EXT_blend_operation_advanced",
+   "VK_KHR_swapchain_maintenance1",
+   "VK_KHR_timeline_semaphore",
    "VK_KHR_sampler_mirror_clamp_to_edge"
 };
 
@@ -2151,7 +2152,7 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
             case VK_PRESENT_MODE_FIFO_RELAXED_KHR:
                RARCH_DBG("[Vulkan] Swapchain supports present mode: FIFO_RELAXED.\n");
                break;
-            case VK_PRESENT_MODE_FIFO_LATEST_READY_EXT:
+            case VK_PRESENT_MODE_FIFO_LATEST_READY_KHR:
                RARCH_DBG("[Vulkan] Swapchain supports present mode: FIFO_LATEST_READY.\n");
                break;
             default:
@@ -2175,7 +2176,7 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
          case VK_PRESENT_MODE_FIFO_RELAXED_KHR:
             RARCH_DBG("[Vulkan] Creating swapchain with present mode: FIFO_RELAXED.\n");
             break;
-         case VK_PRESENT_MODE_FIFO_LATEST_READY_EXT:
+         case VK_PRESENT_MODE_FIFO_LATEST_READY_KHR:
             RARCH_DBG("[Vulkan] Creating swapchain with present mode: FIFO_LATEST_READY.\n");
             break;
          default:
