@@ -387,9 +387,8 @@ typedef struct gfx_ctx_vulkan_data
    struct vulkan_emulated_mailbox mailbox;
    uint8_t flags;
    enum vulkan_wsi_type wsi_type;
-   PFN_vkWaitForPresentKHR vkWaitForPresentKHR;
    PFN_vkWaitForPresent2KHR vkWaitForPresent2KHR;
-   uint32_t present_id;
+   uint64_t current_present_id;
 } gfx_ctx_vulkan_data_t;
 
 struct vulkan_display_surface_info

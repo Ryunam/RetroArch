@@ -333,7 +333,6 @@ static bool vulkan_load_device_symbols(gfx_ctx_vulkan_data_t *vk)
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkGetSwapchainImagesKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkAcquireNextImageKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkQueuePresentKHR);
-   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitForPresentKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitForPresent2KHR);
    return true;
 }
@@ -559,6 +558,8 @@ static bool vulkan_context_init_gpu(gfx_ctx_vulkan_data_t *vk)
 
 static const char *vulkan_device_extensions[]  = {
    "VK_KHR_swapchain",
+   "VK_KHR_present_id2",
+   "VK_KHR_present_wait2",
 #ifdef VK_USE_PLATFORM_WIN32_KHR
    "VK_EXT_full_screen_exclusive"
 #endif
@@ -566,10 +567,6 @@ static const char *vulkan_device_extensions[]  = {
 
 static const char *vulkan_optional_device_extensions[] = {
    "VK_NV_low_latency2",
-   "VK_KHR_present_id",
-   "VK_KHR_present_id2",
-   "VK_KHR_present_wait",
-   "VK_KHR_present_wait2",
    "VK_KHR_present_mode_fifo_latest_ready",
    "VK_KHR_maintenance1",
    "VK_KHR_maintenance2",
@@ -620,6 +617,7 @@ static VkDevice vulkan_context_create_device_wrapper(
 
 static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
 {
+   vk->current_present_id = 0;
    uint32_t queue_count;
    unsigned i;
    const char *enabled_device_extensions[8];
@@ -630,6 +628,18 @@ static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
    video_driver_state_t *video_st          = video_state_get_ptr();
 
    VkPhysicalDeviceFeatures features       = { false };
+
+   VkPhysicalDevicePresentWait2FeaturesKHR present_wait2_features = {
+      .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR,
+      .pNext = NULL,
+      .presentWait2 = VK_TRUE,
+   };
+
+   VkPhysicalDevicePresentId2FeaturesKHR present_id2_features = {
+      .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR,
+      .pNext = &present_wait2_features,
+      .presentId2 = VK_TRUE,
+   };
 
    unsigned enabled_device_extension_count = 0;
 
@@ -645,7 +655,7 @@ static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
    queue_info.pQueuePriorities             = NULL;
 
    device_info.sType                       = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-   device_info.pNext                       = NULL;
+   device_info.pNext                       = &present_id2_features;
    device_info.flags                       = 0;
    device_info.queueCreateInfoCount        = 0;
    device_info.pQueueCreateInfos           = NULL;
@@ -1994,7 +2004,6 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
        NULL,
        NULL
    };
-   /* Allow or disallow exclusive fullscreen based on user setting. */
    VkSurfaceFullScreenExclusiveInfoEXT fs_info       = {
        VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT,
        NULL,
@@ -2332,6 +2341,8 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
    info.sType                  = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
    info.pNext                  = NULL;
    info.flags                  = 0;
+   info.flags                 |= VK_SWAPCHAIN_CREATE_PRESENT_ID_2_BIT_KHR;
+   info.flags                 |= VK_SWAPCHAIN_CREATE_PRESENT_WAIT_2_BIT_KHR;
    info.surface                = vk->vk_surface;
    info.minImageCount          = desired_swapchain_images;
    info.imageFormat            = format.format;
@@ -2709,11 +2720,41 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
    present.pImageIndices           = &index;
    present.pResults                = &result;
 
+   uint64_t pid = vk->current_present_id;
+
+   VkPresentId2KHR pid2 = {
+      .sType = VK_STRUCTURE_TYPE_PRESENT_ID_2_KHR,
+      .pNext = NULL,
+      .swapchainCount = 1,
+      .pPresentIds = &pid
+   };
+
+   present.pNext = &pid2;
+
    /* Better hope QueuePresent doesn't block D: */
 #ifdef HAVE_THREADS
    slock_lock(vk->context.queue_lock);
 #endif
    err = vkQueuePresentKHR(vk->context.queue, &present);
+#if 0
+   if (vkWaitForPresent2KHR)
+   {
+      RARCH_DBG("[VULKAN] WaitForPresent: pid=%" PRIu64 "\n", pid);
+      VkPresentWait2InfoKHR wait_info = {
+          .sType = VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR,
+          .pNext = NULL,
+          .presentId = pid,
+          .timeout = UINT64_MAX
+      };
+
+      vkWaitForPresent2KHR(
+         vk->context.device,
+         vk->swapchain,
+         &wait_info
+      );
+   }
+#endif
+   vk->current_present_id++;
 
    /* VK_SUBOPTIMAL_KHR can be returned on
     * Android 10 when prerotate is not dealt with.
