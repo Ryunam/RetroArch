@@ -2527,6 +2527,7 @@ static struct config_uint_setting *populate_settings_uint(
    SETTING_UINT("video_hard_sync_frames",        &settings->uints.video_hard_sync_frames, true, DEFAULT_HARD_SYNC_FRAMES, false);
    SETTING_UINT("video_frame_delay",             &settings->uints.video_frame_delay,      true, DEFAULT_FRAME_DELAY, false);
    SETTING_UINT("video_max_swapchain_images",    &settings->uints.video_max_swapchain_images, true, DEFAULT_MAX_SWAPCHAIN_IMAGES, false);
+   SETTING_UINT("video_buffer_count",            &settings->uints.video_buffer_count, true, DEFAULT_BUFFER_COUNT, false);
    SETTING_UINT("video_black_frame_insertion",   &settings->uints.video_black_frame_insertion, true, DEFAULT_BLACK_FRAME_INSERTION, false);
    SETTING_UINT("video_bfi_dark_frames",         &settings->uints.video_bfi_dark_frames, true, DEFAULT_BFI_DARK_FRAMES, false);
    SETTING_UINT("video_shader_subframes",        &settings->uints.video_shader_subframes, true, DEFAULT_SHADER_SUBFRAMES, false);
@@ -4130,6 +4131,11 @@ static bool config_load_file(global_t *global,
       settings->uints.video_max_swapchain_images = MINIMUM_MAX_SWAPCHAIN_IMAGES;
    if (settings->uints.video_max_swapchain_images > MAXIMUM_MAX_SWAPCHAIN_IMAGES)
       settings->uints.video_max_swapchain_images = MAXIMUM_MAX_SWAPCHAIN_IMAGES;
+
+   if (settings->uints.video_buffer_count < MINIMUM_BUFFER_COUNT)
+      settings->uints.video_buffer_count = MINIMUM_BUFFER_COUNT;
+   if (settings->uints.video_buffer_count > MAXIMUM_BUFFER_COUNT)
+      settings->uints.video_buffer_count = MAXIMUM_BUFFER_COUNT;
 
    if (settings->uints.video_frame_delay > MAXIMUM_FRAME_DELAY)
       settings->uints.video_frame_delay = MAXIMUM_FRAME_DELAY;

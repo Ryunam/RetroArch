@@ -13702,6 +13702,18 @@ MSG_HASH(
    "Maximum amount of swapchain images. This can tell the video driver to use a specific video buffering mode.\nSingle buffering - 1\nDouble buffering - 2\nTriple buffering - 3\nSetting the right buffering mode can have a big impact on latency."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_BUFFER_COUNT,
+   "Backbuffers"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_BUFFER_COUNT,
+   "Tells the video driver to explicitly use a specified buffering mode."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_HELP_VIDEO_BUFFER_COUNT,
+   "Buffer count selection. This can tell the video driver to use a specific video buffering mode.\nSingle buffering - 1\nDouble buffering - 2\nTriple buffering - 3\nSetting the right buffering mode can have a big impact on latency."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_WAIT_FOR_PRESENT,
    "Wait For Present"
    )

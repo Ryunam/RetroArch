@@ -305,6 +305,7 @@ typedef struct
    unsigned              cur_mon_id;
    HANDLE                frameLatencyWaitableObject;
    DXGISwapChain         swapChain;
+   unsigned              buffer_count;
    D3D11Device           device;
    D3D_FEATURE_LEVEL     supportedFeatureLevel;
    D3D11DeviceContext    context;
@@ -2176,7 +2177,7 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
 #endif
       desc.Format                          = DXGI_FORMAT_R8G8B8A8_UNORM;
 #else
-   desc.BufferCount                        = 3;
+   desc.BufferCount                        = d3d11->buffer_count;
 
    desc.BufferDesc.Width                   = width;
    desc.BufferDesc.Height                  = height;
@@ -2454,6 +2455,8 @@ static void *d3d11_gfx_init(const video_info_t* video,
 #endif
    settings_t*    settings = config_get_ptr();
    d3d11_video_t* d3d11    = (d3d11_video_t*)calloc(1, sizeof(*d3d11));
+   d3d11->buffer_count = settings->uints.video_buffer_count;
+   RARCH_LOG("[D3D11] Got %u backbuffer(s).\n", d3d11->buffer_count);
 
    if (!d3d11)
       return NULL;

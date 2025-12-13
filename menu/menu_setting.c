@@ -13965,6 +13965,22 @@ static bool setting_append_list(
             SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
             MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
 
+            CONFIG_UINT(
+               list, list_info,
+               &settings->uints.video_buffer_count,
+               MENU_ENUM_LABEL_VIDEO_BUFFER_COUNT,
+               MENU_ENUM_LABEL_VALUE_VIDEO_BUFFER_COUNT,
+               DEFAULT_BUFFER_COUNT,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler);
+            (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
+            (*list)[list_info->index - 1].offset_by = MINIMUM_BUFFER_COUNT;
+            menu_settings_list_current_add_range(list, list_info, (*list)[list_info->index - 1].offset_by, MAXIMUM_BUFFER_COUNT, 1, true, true);
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
+
             CONFIG_BOOL(
                   list, list_info,
                   &settings->bools.video_waitable_swapchains,

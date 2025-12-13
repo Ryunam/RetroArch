@@ -195,6 +195,7 @@ typedef struct
 {
    unsigned              cur_mon_id;
    DXGISwapChain         swapChain;
+   unsigned              buffer_count;
    D3D10Device           device;
    D3D10RasterizerState  state;
    D3D10RenderTargetView renderTargetView;
@@ -1787,7 +1788,7 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
    UINT                 flags              = 0;
    DXGI_SWAP_CHAIN_DESC desc               = {{0}};
 
-   desc.BufferCount                        = 3;
+   desc.BufferCount                        = d3d10->buffer_count;
    desc.BufferDesc.Width                   = width;
    desc.BufferDesc.Height                  = height;
    desc.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -1843,6 +1844,8 @@ static void *d3d10_gfx_init(const video_info_t* video,
 #endif
    settings_t*     settings = config_get_ptr();
    d3d10_video_t*  d3d10    = (d3d10_video_t*)calloc(1, sizeof(*d3d10));
+   d3d10->buffer_count      = settings->uints.video_buffer_count;
+   RARCH_LOG("[D3D10] Got %u backbuffer(s).\n", d3d10->buffer_count);
 
    if (!d3d10)
       return NULL;
