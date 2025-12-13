@@ -13702,6 +13702,14 @@ MSG_HASH(
    "Maximum amount of swapchain images. This can tell the video driver to use a specific video buffering mode.\nSingle buffering - 1\nDouble buffering - 2\nTriple buffering - 3\nSetting the right buffering mode can have a big impact on latency."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_WAIT_FOR_PRESENT,
+   "Wait For Present"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_WAIT_FOR_PRESENT,
+   "Waits for the GPU to finish presenting the previous frame before continuing."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_WAITABLE_SWAPCHAINS,
    "Waitable Swapchains"
    )

@@ -2707,6 +2707,7 @@ void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
 
 void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
 {
+   settings_t* settings = config_get_ptr();
    VkPresentInfoKHR present;
    VkResult result                 = VK_SUCCESS;
    VkResult err                    = VK_SUCCESS;
@@ -2736,15 +2737,15 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
    slock_lock(vk->context.queue_lock);
 #endif
    err = vkQueuePresentKHR(vk->context.queue, &present);
-#if 0
-   if (vkWaitForPresent2KHR)
+
+   if (settings->bools.video_wait_for_present && vkWaitForPresent2KHR)
    {
       RARCH_DBG("[VULKAN] WaitForPresent: pid=%" PRIu64 "\n", pid);
       VkPresentWait2InfoKHR wait_info = {
-          .sType = VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR,
-          .pNext = NULL,
-          .presentId = pid,
-          .timeout = UINT64_MAX
+         .sType = VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR,
+         .pNext = NULL,
+         .presentId = pid,
+         .timeout = UINT64_MAX
       };
 
       vkWaitForPresent2KHR(
@@ -2753,7 +2754,7 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
          &wait_info
       );
    }
-#endif
+
    vk->current_present_id++;
 
    /* VK_SUBOPTIMAL_KHR can be returned on
