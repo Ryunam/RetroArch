@@ -637,6 +637,7 @@ typedef struct settings
       bool video_vsync;
       bool video_adaptive_vsync;
       bool video_hard_sync;
+      bool video_sequential_swapchain;
       bool video_waitable_swapchains;
       bool video_wait_for_present;
       bool video_vfilter;

@@ -13707,7 +13707,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_BUFFER_COUNT,
-   "Tells the video driver to explicitly use a specified buffering mode."
+   "Tells the video driver to explicitly use a specified buffering mode. (Reinit required)"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_HELP_VIDEO_BUFFER_COUNT,
@@ -13720,6 +13720,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_WAIT_FOR_PRESENT,
    "Waits for the GPU to finish presenting the previous frame before continuing."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_SEQUENTIAL_SWAPCHAIN,
+   "Sequential Swapchain"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_SEQUENTIAL_SWAPCHAIN,
+   "Uses a sequential presentation model instead of discarding backbuffers. (Reinit required)"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_WAITABLE_SWAPCHAINS,

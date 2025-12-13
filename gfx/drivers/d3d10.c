@@ -196,6 +196,7 @@ typedef struct
    unsigned              cur_mon_id;
    DXGISwapChain         swapChain;
    unsigned              buffer_count;
+   bool                  sequential_swapchain;
    D3D10Device           device;
    D3D10RasterizerState  state;
    D3D10RenderTargetView renderTargetView;
@@ -1801,7 +1802,9 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
    desc.SampleDesc.Count                   = 1;
    desc.SampleDesc.Quality                 = 0;
    desc.Windowed                           = FALSE;
-   desc.SwapEffect                         = DXGI_SWAP_EFFECT_DISCARD;
+   desc.SwapEffect                         = d3d10->sequential_swapchain
+                                           ? DXGI_SWAP_EFFECT_SEQUENTIAL
+                                           : DXGI_SWAP_EFFECT_DISCARD;
    desc.Flags                             |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 #ifdef DEBUG
    flags                                  |= D3D10_CREATE_DEVICE_DEBUG;
@@ -1812,6 +1815,9 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
                NULL, flags, D3D10_SDK_VERSION, &desc,
                (IDXGISwapChain**)&d3d10->swapChain, &d3d10->device)))
       return false;
+   RARCH_LOG("[D3D10] Creating a blit-%s swapchain.\n",
+      d3d10->sequential_swapchain ? "sequential"
+                                  : "discard");
    /* Ensure DXGI (re)enters legacy flip upon reinit. */
 #ifdef HAVE_WINDOW
    IDXGISwapChain* sc = d3d10->swapChain;
@@ -1846,6 +1852,8 @@ static void *d3d10_gfx_init(const video_info_t* video,
    d3d10_video_t*  d3d10    = (d3d10_video_t*)calloc(1, sizeof(*d3d10));
    d3d10->buffer_count      = settings->uints.video_buffer_count;
    RARCH_LOG("[D3D10] Got %u backbuffer(s).\n", d3d10->buffer_count);
+
+   d3d10->sequential_swapchain = settings->bools.video_sequential_swapchain;
 
    if (!d3d10)
       return NULL;

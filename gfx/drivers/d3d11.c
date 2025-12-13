@@ -306,6 +306,7 @@ typedef struct
    HANDLE                frameLatencyWaitableObject;
    DXGISwapChain         swapChain;
    unsigned              buffer_count;
+   bool                  sequential_swapchain;
    D3D11Device           device;
    D3D_FEATURE_LEVEL     supportedFeatureLevel;
    D3D11DeviceContext    context;
@@ -2285,7 +2286,7 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
 #else
    if (d3d11->flags & D3D11_ST_FLAG_WAITABLE_SWAPCHAINS)
       desc.Flags    |= DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-   desc.SwapEffect   = DXGI_SWAP_EFFECT_DISCARD;
+   desc.SwapEffect   = d3d11->sequential_swapchain ? DXGI_SWAP_EFFECT_SEQUENTIAL : DXGI_SWAP_EFFECT_DISCARD;
    desc.Flags       &= ~(DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING | DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT)
       ; d3d11->flags = 0
 
@@ -2306,7 +2307,9 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
          &allow_tearing_supported, sizeof(allow_tearing_supported)))
          && allow_tearing_supported)
       {
-         desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+         desc.SwapEffect = d3d11->sequential_swapchain
+                         ? DXGI_SWAP_EFFECT_SEQUENTIAL
+                         : DXGI_SWAP_EFFECT_DISCARD;
          desc.Flags     |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
          desc.Flags     |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
       }
@@ -2347,7 +2350,9 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
       }
 
       desc.Windowed   = FALSE;
-      desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+      desc.SwapEffect = d3d11->sequential_swapchain
+                      ? DXGI_SWAP_EFFECT_SEQUENTIAL
+                      : DXGI_SWAP_EFFECT_DISCARD;
       desc.Flags     |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
       desc.Flags     &= ~DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
@@ -2355,6 +2360,9 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
          dxgiFactory, (IUnknown*)d3d11->device,
          &desc, (IDXGISwapChain**)&d3d11->swapChain)))
          return false;
+      RARCH_LOG("[D3D11] Creating a blit-%s swapchain.\n",
+         d3d11->sequential_swapchain ? "sequential"
+                                     : "discard");
    }
    /* Ensure DXGI (re)enters legacy flip upon reinit. */
 #ifdef HAVE_WINDOW
@@ -2457,6 +2465,8 @@ static void *d3d11_gfx_init(const video_info_t* video,
    d3d11_video_t* d3d11    = (d3d11_video_t*)calloc(1, sizeof(*d3d11));
    d3d11->buffer_count = settings->uints.video_buffer_count;
    RARCH_LOG("[D3D11] Got %u backbuffer(s).\n", d3d11->buffer_count);
+
+   d3d11->sequential_swapchain = settings->bools.video_sequential_swapchain;
 
    if (!d3d11)
       return NULL;

@@ -10012,12 +10012,13 @@ unsigned menu_displaylist_build_list(
          break;
       case DISPLAYLIST_VIDEO_SYNCHRONIZATION_SETTINGS_LIST:
          {
-            bool video_vsync            = settings->bools.video_vsync;
-            bool video_hard_sync        = settings->bools.video_hard_sync;
-            bool video_wait_swap        = settings->bools.video_waitable_swapchains;
-            bool video_wait_for_present = settings->bools.video_wait_for_present;
-            unsigned bfi                = settings->uints.video_black_frame_insertion;
-            unsigned shader_subframes   = settings->uints.video_shader_subframes;
+            bool video_vsync                = settings->bools.video_vsync;
+            bool video_hard_sync            = settings->bools.video_hard_sync;
+            bool video_sequential_swapchain = settings->bools.video_sequential_swapchain;
+            bool video_wait_swap            = settings->bools.video_waitable_swapchains;
+            bool video_wait_for_present     = settings->bools.video_wait_for_present;
+            unsigned bfi                    = settings->uints.video_black_frame_insertion;
+            unsigned shader_subframes       = settings->uints.video_shader_subframes;
 
             if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
                      MENU_ENUM_LABEL_VIDEO_VSYNC,
@@ -10091,6 +10092,15 @@ unsigned menu_displaylist_build_list(
                if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
                   MENU_ENUM_LABEL_VIDEO_BUFFER_COUNT,
                   PARSE_ONLY_UINT, false) == 0)
+                  count++;
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "d3d11") ||
+               string_is_equal(video_driver_get_ident(), "d3d10"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_SEQUENTIAL_SWAPCHAIN,
+                  PARSE_ONLY_BOOL, false) == 0)
                   count++;
             }
 
@@ -10656,9 +10666,10 @@ unsigned menu_displaylist_build_list(
 #endif
       case DISPLAYLIST_LATENCY_SETTINGS_LIST:
          {
-            bool video_hard_sync          = settings->bools.video_hard_sync;
-            bool video_wait_swap          = settings->bools.video_waitable_swapchains;
-            bool video_wait_for_present   = settings->bools.video_wait_for_present;
+            bool video_hard_sync             = settings->bools.video_hard_sync;
+            bool video_sequential_swapchain  = settings->bools.video_sequential_swapchain;
+            bool video_wait_swap             = settings->bools.video_waitable_swapchains;
+            bool video_wait_for_present      = settings->bools.video_wait_for_present;
 #ifdef HAVE_RUNAHEAD
             bool runahead_supported       = true;
             bool runahead_enabled         = settings->bools.run_ahead_enabled;
@@ -10694,6 +10705,15 @@ unsigned menu_displaylist_build_list(
                if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
                   MENU_ENUM_LABEL_VIDEO_BUFFER_COUNT,
                   PARSE_ONLY_UINT, false) == 0)
+                  count++;
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "d3d11") ||
+               string_is_equal(video_driver_get_ident(), "d3d10"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_SEQUENTIAL_SWAPCHAIN,
+                  PARSE_ONLY_BOOL, false) == 0)
                   count++;
             }
 
