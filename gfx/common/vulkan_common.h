@@ -387,8 +387,13 @@ typedef struct gfx_ctx_vulkan_data
    struct vulkan_emulated_mailbox mailbox;
    uint8_t flags;
    enum vulkan_wsi_type wsi_type;
-   PFN_vkWaitForPresent2KHR vkWaitForPresent2KHR;
    uint64_t current_present_id;
+   PFN_vkWaitForPresent2KHR vkWaitForPresent2KHR;
+   PFN_vkQueueNotifyOutOfBandNV vkQueueNotifyOutOfBandNV;
+   PFN_vkSetLatencySleepModeNV vkSetLatencySleepModeNV;
+   PFN_vkLatencySleepNV vkLatencySleepNV;
+   PFN_vkSetLatencyMarkerNV vkSetLatencyMarkerNV;
+   PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
 } gfx_ctx_vulkan_data_t;
 
 struct vulkan_display_surface_info

@@ -5131,6 +5131,100 @@ typedef struct VkDeviceGroupSwapchainCreateInfoKHR {
     VkDeviceGroupPresentModeFlagsKHR    modes;
 } VkDeviceGroupSwapchainCreateInfoKHR;
 
+// VK_NV_low_latency2
+typedef enum VkLatencyMarkerNV {
+   VK_LATENCY_MARKER_SIMULATION_START_NV = 0,
+   VK_LATENCY_MARKER_SIMULATION_END_NV = 1,
+   VK_LATENCY_MARKER_RENDERSUBMIT_START_NV = 2,
+   VK_LATENCY_MARKER_RENDERSUBMIT_END_NV = 3,
+   VK_LATENCY_MARKER_PRESENT_START_NV = 4,
+   VK_LATENCY_MARKER_PRESENT_END_NV = 5,
+   VK_LATENCY_MARKER_INPUT_SAMPLE_NV = 6,
+   VK_LATENCY_MARKER_TRIGGER_FLASH_NV = 7,
+   VK_LATENCY_MARKER_OUT_OF_BAND_RENDERSUBMIT_START_NV = 8,
+   VK_LATENCY_MARKER_OUT_OF_BAND_RENDERSUBMIT_END_NV = 9,
+   VK_LATENCY_MARKER_OUT_OF_BAND_PRESENT_START_NV = 10,
+   VK_LATENCY_MARKER_OUT_OF_BAND_PRESENT_END_NV = 11,
+} VkLatencyMarkerNV;
+
+typedef enum VkOutOfBandQueueTypeNV {
+   VK_OUT_OF_BAND_QUEUE_TYPE_RENDER_NV = 0,
+   VK_OUT_OF_BAND_QUEUE_TYPE_PRESENT_NV = 1,
+} VkOutOfBandQueueTypeNV;
+
+typedef struct VkLatencyTimingsFrameReportNV {
+   VkStructureType    sType;
+   void* pNext;
+   uint64_t           presentID;
+   uint64_t           inputSampleTimeUs;
+   uint64_t           simStartTimeUs;
+   uint64_t           simEndTimeUs;
+   uint64_t           renderSubmitStartTimeUs;
+   uint64_t           renderSubmitEndTimeUs;
+   uint64_t           presentStartTimeUs;
+   uint64_t           presentEndTimeUs;
+   uint64_t           driverStartTimeUs;
+   uint64_t           driverEndTimeUs;
+   uint64_t           osRenderQueueStartTimeUs;
+   uint64_t           osRenderQueueEndTimeUs;
+   uint64_t           gpuRenderStartTimeUs;
+   uint64_t           gpuRenderEndTimeUs;
+} VkLatencyTimingsFrameReportNV;
+
+typedef struct VkLatencySleepModeInfoNV {
+   VkStructureType    sType;
+   const void* pNext;
+   VkBool32           lowLatencyMode;
+   VkBool32           lowLatencyBoost;
+   uint32_t           minimumIntervalUs;
+} VkLatencySleepModeInfoNV;
+
+typedef struct VkLatencySleepInfoNV {
+   VkStructureType    sType;
+   const void* pNext;
+   VkSemaphore        signalSemaphore;
+   uint64_t           value;
+} VkLatencySleepInfoNV;
+
+typedef struct VkSetLatencyMarkerInfoNV {
+   VkStructureType      sType;
+   const void* pNext;
+   uint64_t             presentID;
+   VkLatencyMarkerNV    marker;
+} VkSetLatencyMarkerInfoNV;
+
+typedef struct VkGetLatencyMarkerInfoNV {
+   VkStructureType                   sType;
+   const void* pNext;
+   uint32_t                          timingCount;
+   VkLatencyTimingsFrameReportNV* pTimings;
+} VkGetLatencyMarkerInfoNV;
+
+typedef struct VkLatencySubmissionPresentIdNV {
+   VkStructureType    sType;
+   const void* pNext;
+   uint64_t           presentID;
+} VkLatencySubmissionPresentIdNV;
+
+typedef struct VkOutOfBandQueueTypeInfoNV {
+   VkStructureType           sType;
+   const void* pNext;
+   VkOutOfBandQueueTypeNV    queueType;
+} VkOutOfBandQueueTypeInfoNV;
+
+typedef struct VkSwapchainLatencyCreateInfoNV {
+   VkStructureType    sType;
+   const void* pNext;
+   VkBool32           latencyModeEnable;
+} VkSwapchainLatencyCreateInfoNV;
+
+typedef struct VkLatencySurfaceCapabilitiesNV {
+   VkStructureType      sType;
+   const void* pNext;
+   uint32_t             presentModeCount;
+   VkPresentModeKHR* pPresentModes;
+} VkLatencySurfaceCapabilitiesNV;
+
 typedef VkResult (VKAPI_PTR *PFN_vkCreateSwapchainKHR)(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain);
 typedef void (VKAPI_PTR *PFN_vkDestroySwapchainKHR)(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks* pAllocator);
 typedef VkResult (VKAPI_PTR *PFN_vkGetSwapchainImagesKHR)(VkDevice device, VkSwapchainKHR swapchain, uint32_t* pSwapchainImageCount, VkImage* pSwapchainImages);
@@ -5142,6 +5236,11 @@ typedef VkResult (VKAPI_PTR *PFN_vkGetPhysicalDevicePresentRectanglesKHR)(VkPhys
 typedef VkResult (VKAPI_PTR *PFN_vkAcquireNextImage2KHR)(VkDevice device, const VkAcquireNextImageInfoKHR* pAcquireInfo, uint32_t* pImageIndex);
 typedef VkResult (VKAPI_PTR *PFN_vkWaitForPresentKHR)(VkDevice device, VkSwapchainKHR swapchain, uint64_t presentId, uint64_t timeout);
 typedef VkResult (VKAPI_PTR *PFN_vkWaitForPresent2KHR)(VkDevice device, VkSwapchainKHR swapchain, const VkPresentWait2InfoKHR* pPresentWait2Info);
+typedef void (VKAPI_PTR* PFN_vkQueueNotifyOutOfBandNV)(VkQueue queue, const VkOutOfBandQueueTypeInfoNV* pQueueTypeInfo);
+typedef VkResult(VKAPI_PTR* PFN_vkSetLatencySleepModeNV)(VkDevice device,VkSwapchainKHR swapchain,const VkLatencySleepModeInfoNV* pSleepModeInfo);
+typedef VkResult(VKAPI_PTR* PFN_vkLatencySleepNV)(VkDevice device,VkSwapchainKHR swapchain,const VkLatencySleepInfoNV* pSleepInfo);
+typedef void (VKAPI_PTR* PFN_vkSetLatencyMarkerNV)(VkDevice device,VkSwapchainKHR swapchain,const VkSetLatencyMarkerInfoNV* pLatencyMarkerInfo);
+typedef void (VKAPI_PTR* PFN_vkGetLatencyTimingsNV)(VkDevice device,VkSwapchainKHR swapchain,VkGetLatencyMarkerInfoNV* pLatencyMarkerInfo);
 
 #ifndef VK_NO_PROTOTYPES
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(
