@@ -6,6 +6,20 @@
 #pragma warning(disable:4566)
 #endif
 
+/*
+##### NOTE FOR TRANSLATORS ####
+
+PLEASE do NOT modify any `msg_hash_*.h` files, besides `msg_hash_us.h`!
+
+Translations are handled using the localization platform Crowdin:
+https://crowdin.com/project/retroarch
+
+Translations from Crowdin are applied automatically and will overwrite
+any changes made to the other localization files.
+As a result, any submissions directly altering `msg_hash_*.h` files
+other than `msg_hash_us.h` will be rejected.
+*/
+
 /* Top-Level Menu */
 
 MSG_HASH(
@@ -2204,6 +2218,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_PORCH_ADJUST,
    "Duyệt qua các tùy chọn này để điều chỉnh cài đặt theo chiều ngang nhằm thay đổi kích thước hình ảnh."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
+   "Căn giữa theo chiều dọc"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
@@ -11534,6 +11552,14 @@ MSG_HASH(
    "Hệ số trong suốt của chủ đề màu"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NONE,
+   "Không"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NORMAL,
+   "Bình thường"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_FONT,
    "Phông chữ"
    )
@@ -11924,6 +11950,14 @@ MSG_HASH(
    "Thay đổi kích thước đệm ngang."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON,
+   "Biểu tượng phần đầu"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON,
+   "Logo phần đầu có thể được ẩn, thay đổi linh hoạt tùy theo cách điều hướng, hoặc cố định theo kiểu “classic invader”."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR,
    "Ngăn cách tiêu đề"
    )
@@ -11938,6 +11972,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
    "Động"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_FIXED,
+   "Cố định"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

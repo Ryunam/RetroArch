@@ -6,6 +6,20 @@
 #pragma warning(disable:4566)
 #endif
 
+/*
+##### NOTE FOR TRANSLATORS ####
+
+PLEASE do NOT modify any `msg_hash_*.h` files, besides `msg_hash_us.h`!
+
+Translations are handled using the localization platform Crowdin:
+https://crowdin.com/project/retroarch
+
+Translations from Crowdin are applied automatically and will overwrite
+any changes made to the other localization files.
+As a result, any submissions directly altering `msg_hash_*.h` files
+other than `msg_hash_us.h` will be rejected.
+*/
+
 /* Top-Level Menu */
 
 MSG_HASH(
@@ -4636,6 +4650,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_MENU_HORIZONTAL_ANIMATION,
    "Ενεργοποίηση οριζόντιας απεικόνισης για το μενού. Θα επηρεάσει την απόδοση."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NONE,
+   "Κανείς"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NORMAL,
+   "Φυσιολογικά"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_XMB_THEME,

@@ -6,6 +6,20 @@
 #pragma warning(disable:4566)
 #endif
 
+/*
+##### NOTE FOR TRANSLATORS ####
+
+PLEASE do NOT modify any `msg_hash_*.h` files, besides `msg_hash_us.h`!
+
+Translations are handled using the localization platform Crowdin:
+https://crowdin.com/project/retroarch
+
+Translations from Crowdin are applied automatically and will overwrite
+any changes made to the other localization files.
+As a result, any submissions directly altering `msg_hash_*.h` files
+other than `msg_hash_us.h` will be rejected.
+*/
+
 /* Top-Level Menu */
 
 MSG_HASH(
@@ -11492,6 +11506,22 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_ALPHA_FACTOR,
    "Transparencia del tema de colores"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON,
+   "Icono actual del menú"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_XMB_CURRENT_MENU_ICON,
+   "El icono actual del menú puede ocultarse o colocarse bajo el menú horizontal o en el título del encabezado."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NONE,
+   "No compartir"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_TITLE,
+   "Título"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_FONT,

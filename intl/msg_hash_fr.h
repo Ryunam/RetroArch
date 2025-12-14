@@ -6,6 +6,20 @@
 #pragma warning(disable:4566)
 #endif
 
+/*
+##### NOTE FOR TRANSLATORS ####
+
+PLEASE do NOT modify any `msg_hash_*.h` files, besides `msg_hash_us.h`!
+
+Translations are handled using the localization platform Crowdin:
+https://crowdin.com/project/retroarch
+
+Translations from Crowdin are applied automatically and will overwrite
+any changes made to the other localization files.
+As a result, any submissions directly altering `msg_hash_*.h` files
+other than `msg_hash_us.h` will be rejected.
+*/
+
 /* Top-Level Menu */
 
 MSG_HASH(
@@ -2172,6 +2186,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_PORCH_ADJUST,
    "Parcourez ces options pour ajuster les réglages horizontaux afin de modifier la taille de l'image."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
+   "Centrage vertical"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
@@ -11466,6 +11484,26 @@ MSG_HASH(
    "Facteur de la couche alpha du thème de couleur"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON,
+   "Icône du menu actuel"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_XMB_CURRENT_MENU_ICON,
+   "L'icône du menu actuel peut être masquée, sous le menu horizontal ou dans le titre de l'en-tête."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NONE,
+   "Aucune"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NORMAL,
+   "Normale"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_TITLE,
+   "Titre"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_FONT,
    "Police"
    )
@@ -11852,6 +11890,14 @@ MSG_HASH(
    "Mettre à l'échelle la taille du remplissage horizontal."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON,
+   "Icône de l'en-tête"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON,
+   "Le logo de l'en-tête peut être masqué, dynamique selon la navigation ou déterminé sur l'envahisseur classique."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR,
    "Séparateur d'en-tête"
    )
@@ -11866,6 +11912,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
    "Dynamique"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_FIXED,
+   "Déterminé"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,

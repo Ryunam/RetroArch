@@ -6,6 +6,20 @@
 #pragma warning(disable:4566)
 #endif
 
+/*
+##### NOTE FOR TRANSLATORS ####
+
+PLEASE do NOT modify any `msg_hash_*.h` files, besides `msg_hash_us.h`!
+
+Translations are handled using the localization platform Crowdin:
+https://crowdin.com/project/retroarch
+
+Translations from Crowdin are applied automatically and will overwrite
+any changes made to the other localization files.
+As a result, any submissions directly altering `msg_hash_*.h` files
+other than `msg_hash_us.h` will be rejected.
+*/
+
 /* Top-Level Menu */
 
 MSG_HASH(
@@ -534,6 +548,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_SAVESTATE_DETERMINISTIC,
    "Deterministico (salva/carica, riavvolgi, esecuzione anticipata, netplay)"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
+   "Nota: 'I file di sistema sono nella cartella contenuti' è abilitato."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
+   "Guardando in: %s"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
@@ -2124,6 +2146,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_PORCH_ADJUST,
    "Scorri queste opzioni per regolare le impostazioni della dimensione orizzontale o per cambiare la dimensione dell'immagine."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CRT_SWITCH_VERTICAL_ADJUST,
+   "Centraggio verticale"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_CRT_SWITCH_VERTICAL_ADJUST,
@@ -11326,6 +11352,14 @@ MSG_HASH(
    "Colore Tema Fattore Alfa"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NONE,
+   "Nessuno"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NORMAL,
+   "Normale"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_FONT,
    "Carattere"
    )
@@ -11708,6 +11742,14 @@ MSG_HASH(
    "Scala la dimensione orizzontale del riempimento."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON,
+   "Logo dell'intestazione"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_OZONE_HEADER_ICON,
+   "Il logo dell'intestazione può essere nascosto, dinamico a seconda della navigazione o fissato all'invasore classico."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR,
    "Separatore intestazione"
    )
@@ -11722,6 +11764,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_DYNAMIC,
    "Dinamico"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_OZONE_HEADER_ICON_FIXED,
+   "Fisso"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_OZONE_HEADER_SEPARATOR_NONE,
