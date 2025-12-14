@@ -394,6 +394,10 @@ typedef struct gfx_ctx_vulkan_data
    PFN_vkLatencySleepNV vkLatencySleepNV;
    PFN_vkSetLatencyMarkerNV vkSetLatencyMarkerNV;
    PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
+   PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
+   PFN_vkWaitSemaphoresKHR vkWaitSemaphoresKHR;
+   PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
+
 } gfx_ctx_vulkan_data_t;
 
 struct vulkan_display_surface_info
