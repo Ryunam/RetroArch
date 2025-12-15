@@ -8060,8 +8060,11 @@ void core_run(void)
 #endif
 
    /* NV_LOW_LATENCY2 */
-   if (early_polling || late_polling)
+   if ((early_polling || late_polling) &&
+      config_get_ptr()->bools.video_low_latency)
+   {
       video_driver_latency_sleep();
+   }
 
    if (early_polling)
       input_driver_poll();

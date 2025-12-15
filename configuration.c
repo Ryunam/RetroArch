@@ -1916,6 +1916,7 @@ static struct config_bool_setting *populate_settings_bool(
    SETTING_BOOL("video_waitable_swapchains",     &settings->bools.video_waitable_swapchains, true, DEFAULT_WAITABLE_SWAPCHAINS, false);
    SETTING_BOOL("video_wait_for_present",        &settings->bools.video_wait_for_present, true, DEFAULT_WAIT_FOR_PRESENT, false);
    SETTING_BOOL("video_unlimited_wait",          &settings->bools.video_unlimited_wait, true, DEFAULT_UNLIMITED_WAIT, false);
+   SETTING_BOOL("video_low_latency",             &settings->bools.video_low_latency, true, DEFAULT_LOW_LATENCY, false);
    SETTING_BOOL("video_disable_composition",     &settings->bools.video_disable_composition, true, DEFAULT_DISABLE_COMPOSITION, false);
    SETTING_BOOL("video_gpu_screenshot",          &settings->bools.video_gpu_screenshot, true, DEFAULT_GPU_SCREENSHOT, false);
    SETTING_BOOL("video_post_filter_record",      &settings->bools.video_post_filter_record, true, DEFAULT_POST_FILTER_RECORD, false);

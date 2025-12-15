@@ -2807,6 +2807,7 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
       );
    }
 
+   /* Note: WaitForPresent doesn't work on Flycast, and possibly other cores. */
    if (settings->bools.video_wait_for_present && vkWaitForPresent2KHR)
    {
       RARCH_DBG("[Vulkan] WaitForPresent: pid=%" PRIu64 "\n", pid); // This will clog the entire log, if it's working.

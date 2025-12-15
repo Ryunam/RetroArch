@@ -13764,6 +13764,14 @@ MSG_HASH(
    "Allows the GPU to block indefinitely when using 'Wait For Present'."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_LOW_LATENCY,
+   "Low Latency Mode"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_LOW_LATENCY,
+   "NVIDIA driver feature that allows the GPU to delay rendering to reduce queued frames. Effectiveness depends on driver behavior. (Experimental)"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_SEQUENTIAL_SWAPCHAIN,
    "Sequential Swapchain"
    )

@@ -10018,6 +10018,7 @@ unsigned menu_displaylist_build_list(
             bool video_wait_swap            = settings->bools.video_waitable_swapchains;
             bool video_wait_for_present     = settings->bools.video_wait_for_present;
             bool video_unlimited_wait       = settings->bools.video_unlimited_wait;
+            bool video_low_latency          = settings->bools.video_low_latency;
             unsigned bfi                    = settings->uints.video_black_frame_insertion;
             unsigned shader_subframes       = settings->uints.video_shader_subframes;
 
@@ -10131,6 +10132,14 @@ unsigned menu_displaylist_build_list(
                      PARSE_ONLY_BOOL, false);
                   count++;
                }
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "vulkan"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_LOW_LATENCY,
+                  PARSE_ONLY_BOOL, false) == 0)
+                  count++;
             }
 
             if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
@@ -10673,6 +10682,7 @@ unsigned menu_displaylist_build_list(
             bool video_wait_swap             = settings->bools.video_waitable_swapchains;
             bool video_wait_for_present      = settings->bools.video_wait_for_present;
             bool video_unlimited_wait        = settings->bools.video_unlimited_wait;
+            bool video_low_latency           = settings->bools.video_low_latency;
 #ifdef HAVE_RUNAHEAD
             bool runahead_supported       = true;
             bool runahead_enabled         = settings->bools.run_ahead_enabled;
@@ -10748,6 +10758,14 @@ unsigned menu_displaylist_build_list(
                      PARSE_ONLY_BOOL, false);
                   count++;
                }
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "vulkan"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_LOW_LATENCY,
+                  PARSE_ONLY_BOOL, false) == 0)
+                  count++;
             }
 
             if (video_driver_test_all_flags(GFX_CTX_FLAGS_HARD_SYNC))
