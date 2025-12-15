@@ -641,6 +641,7 @@ typedef struct settings
       bool video_sequential_swapchain;
       bool video_waitable_swapchains;
       bool video_wait_for_present;
+      bool video_unlimited_wait;
       bool video_vfilter;
       bool video_smooth;
       bool video_ctx_scaling;

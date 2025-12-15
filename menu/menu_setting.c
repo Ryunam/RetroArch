@@ -14065,6 +14065,27 @@ static bool setting_append_list(
             MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
             SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_LAKKA_ADVANCED);
 
+            CONFIG_BOOL(
+               list, list_info,
+               &settings->bools.video_unlimited_wait,
+               MENU_ENUM_LABEL_VIDEO_UNLIMITED_WAIT,
+               MENU_ENUM_LABEL_VALUE_VIDEO_UNLIMITED_WAIT,
+               DEFAULT_UNLIMITED_WAIT,
+               MENU_ENUM_LABEL_VALUE_OFF,
+               MENU_ENUM_LABEL_VALUE_ON,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler,
+               SD_FLAG_NONE);
+            (*list)[list_info->index - 1].action_ok = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_left = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_right = setting_bool_action_right_with_refresh;
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
+            MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_LAKKA_ADVANCED);
+
             CONFIG_INT(
                   list, list_info,
                   &settings->ints.video_max_frame_latency,

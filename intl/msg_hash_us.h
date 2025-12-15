@@ -13756,6 +13756,14 @@ MSG_HASH(
    "Waits for the GPU to finish presenting the previous frame before continuing."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_UNLIMITED_WAIT,
+   "Unlimited Wait"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_UNLIMITED_WAIT,
+   "Allows the GPU to block indefinitely when using 'Wait For Present'."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_SEQUENTIAL_SWAPCHAIN,
    "Sequential Swapchain"
    )

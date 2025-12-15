@@ -375,6 +375,8 @@
 #define MAXIMUM_MAX_SWAPCHAIN_IMAGES 4
 
 #define DEFAULT_WAIT_FOR_PRESENT false
+#define DEFAULT_UNLIMITED_WAIT false
+
 
 /* D3D1x specific */
 #if defined(__WINRT__) || defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP

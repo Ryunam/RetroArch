@@ -2810,12 +2810,17 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
    if (settings->bools.video_wait_for_present && vkWaitForPresent2KHR)
    {
       RARCH_DBG("[Vulkan] WaitForPresent: pid=%" PRIu64 "\n", pid); // This will clog the entire log, if it's working.
+      uint64_t wait_timeout =
+         settings->bools.video_unlimited_wait
+         ? UINT64_MAX
+         : (10 * 1000 * 1000);
+         /* 10ms reduces stutter upon reinits. */
       VkPresentWait2InfoKHR wait_info = {
          .sType = VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR,
          .pNext = NULL,
          .presentId = pid,
-         .timeout = 10 * 1000 * 1000
-      };         /* 10ms: reduces stutter upon reinits. */
+         .timeout = wait_timeout
+      };
 
       vkWaitForPresent2KHR(
          vk->context.device,
