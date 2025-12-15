@@ -397,7 +397,6 @@ typedef struct gfx_ctx_vulkan_data
    PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
    PFN_vkWaitSemaphoresKHR vkWaitSemaphoresKHR;
    PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
-
 } gfx_ctx_vulkan_data_t;
 
 struct vulkan_display_surface_info
@@ -506,6 +505,8 @@ void vulkan_acquire_next_image(gfx_ctx_vulkan_data_t *vk);
 bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
       unsigned width, unsigned height,
       int8_t swap_interval);
+
+void vulkan_latency_sleep(void* data);
 
 void vulkan_debug_mark_image(VkDevice device, VkImage image);
 void vulkan_debug_mark_memory(VkDevice device, VkDeviceMemory memory);

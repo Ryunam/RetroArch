@@ -65,6 +65,8 @@
 #include "../retroarch.h"
 #include "../verbosity.h"
 
+#include "../common/vulkan_common.h"
+
 #define TIME_TO_FPS(last_time, new_time, frames) ((1000000.0f * (frames)) / ((new_time) - (last_time)))
 
 #define FRAME_DELAY_AUTO_DEBUG 0
@@ -1824,6 +1826,21 @@ void video_driver_set_size(unsigned width, unsigned height)
 #else
    video_st->width                = width;
    video_st->height               = height;
+#endif
+}
+
+/* NV_LOW_LATENCY2 */
+void video_driver_latency_sleep(void)
+{
+   video_driver_state_t* video_st = video_state_get_ptr();
+   if (!video_st)
+      return;
+
+#ifdef HAVE_VULKAN
+   if (!video_st->current_video ||
+      !string_is_equal(video_st->current_video->ident, "vulkan") ||
+      !video_st->data)
+      return;
 #endif
 }
 

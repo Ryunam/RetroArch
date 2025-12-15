@@ -334,6 +334,14 @@ static bool vulkan_load_device_symbols(gfx_ctx_vulkan_data_t *vk)
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkAcquireNextImageKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkQueuePresentKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitForPresent2KHR);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkQueueNotifyOutOfBandNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSetLatencySleepModeNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkLatencySleepNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSetLatencyMarkerNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkGetLatencyTimingsNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkGetSemaphoreCounterValueKHR);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitSemaphoresKHR);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSignalSemaphoreKHR);
    return true;
 }
 
@@ -558,8 +566,6 @@ static bool vulkan_context_init_gpu(gfx_ctx_vulkan_data_t *vk)
 
 static const char *vulkan_device_extensions[]  = {
    "VK_KHR_swapchain",
-   "VK_KHR_present_id2",
-   "VK_KHR_present_wait2",
 #ifdef VK_USE_PLATFORM_WIN32_KHR
    "VK_EXT_full_screen_exclusive"
 #endif
@@ -567,6 +573,8 @@ static const char *vulkan_device_extensions[]  = {
 
 static const char *vulkan_optional_device_extensions[] = {
    "VK_NV_low_latency2",
+   "VK_KHR_present_id2",
+   "VK_KHR_present_wait2",
    "VK_KHR_present_mode_fifo_latest_ready",
    "VK_KHR_maintenance1",
    "VK_KHR_maintenance2",
@@ -2705,6 +2713,34 @@ void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
    }
 }
 
+/* NV_LOW_LATENCY2: Mostly experimental, and probably pointless. */
+void vulkan_latency_sleep(gfx_ctx_vulkan_data_t* vk)
+{
+   if (!vk || !vk->vkLatencySleepNV)
+      return;
+
+   VkLatencySleepModeInfoNV mode;
+   memset(&mode, 0, sizeof(mode));
+   mode.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_MODE_INFO_NV;
+   mode.pNext = NULL;
+   mode.lowLatencyMode = VK_TRUE;
+   mode.lowLatencyBoost = VK_TRUE;
+   mode.minimumIntervalUs = 0;
+
+   VkLatencySleepInfoNV sleep;
+   memset(&sleep, 0, sizeof(sleep));
+   sleep.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_INFO_NV;
+   sleep.pNext = &mode;
+
+   VkResult res = vk->vkLatencySleepNV(
+      vk->context.device,
+      vk->swapchain,
+      &sleep
+   );
+
+   RARCH_DBG("[Vulkan] LatencySleep returned %d.\n", res); // Never seen this log.
+}
+
 void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
 {
    settings_t* settings = config_get_ptr();
@@ -2736,17 +2772,50 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
 #ifdef HAVE_THREADS
    slock_lock(vk->context.queue_lock);
 #endif
+
+   if (vk->vkSetLatencyMarkerNV)
+   {
+      VkSetLatencyMarkerInfoNV marker = {
+         .sType = VK_STRUCTURE_TYPE_SET_LATENCY_MARKER_INFO_NV,
+         .pNext = NULL,
+         .presentID = pid,
+         .marker = VK_LATENCY_MARKER_PRESENT_START_NV
+      };
+
+      vk->vkSetLatencyMarkerNV(
+         vk->context.device,
+         vk->swapchain,
+         &marker
+      );
+   }
+
    err = vkQueuePresentKHR(vk->context.queue, &present);
+
+   if (vk->vkSetLatencyMarkerNV)
+   {
+      VkSetLatencyMarkerInfoNV marker = {
+         .sType = VK_STRUCTURE_TYPE_SET_LATENCY_MARKER_INFO_NV,
+         .pNext = NULL,
+         .presentID = pid,
+         .marker = VK_LATENCY_MARKER_PRESENT_END_NV
+      };
+
+      vk->vkSetLatencyMarkerNV(
+         vk->context.device,
+         vk->swapchain,
+         &marker
+      );
+   }
 
    if (settings->bools.video_wait_for_present && vkWaitForPresent2KHR)
    {
-      RARCH_DBG("[VULKAN] WaitForPresent: pid=%" PRIu64 "\n", pid);
+      RARCH_DBG("[Vulkan] WaitForPresent: pid=%" PRIu64 "\n", pid); // This will clog the entire log, if it's working.
       VkPresentWait2InfoKHR wait_info = {
          .sType = VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR,
          .pNext = NULL,
          .presentId = pid,
-         .timeout = UINT64_MAX
-      };
+         .timeout = 10 * 1000 * 1000
+      };         /* 10ms: reduces stutter upon reinits. */
 
       vkWaitForPresent2KHR(
          vk->context.device,
