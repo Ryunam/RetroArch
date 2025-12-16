@@ -634,15 +634,12 @@ static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
    static const float one                  = 1.0f;
    bool found_queue                        = false;
    video_driver_state_t *video_st          = video_state_get_ptr();
-
    VkPhysicalDeviceFeatures features       = { false };
-
    VkPhysicalDevicePresentWait2FeaturesKHR present_wait2_features = {
       .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR,
       .pNext = NULL,
       .presentWait2 = VK_TRUE,
    };
-
    VkPhysicalDevicePresentId2FeaturesKHR present_id2_features = {
       .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR,
       .pNext = &present_wait2_features,
@@ -2713,7 +2710,7 @@ void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
    }
 }
 
-/* NV_LOW_LATENCY2: Mostly experimental, and probably pointless. */
+/* NV_LOW_LATENCY2 (Experimental) */
 void vulkan_latency_sleep(gfx_ctx_vulkan_data_t* vk)
 {
    if (!vk || !vk->vkLatencySleepNV)
@@ -2738,7 +2735,19 @@ void vulkan_latency_sleep(gfx_ctx_vulkan_data_t* vk)
       &sleep
    );
 
-   RARCH_DBG("[Vulkan] LatencySleep returned %d.\n", res); // Never seen this log.
+   static uint64_t latency_last_log_us = 0;
+   static VkResult latency_last_res = VK_SUCCESS;
+   uint64_t now_us = cpu_features_get_time_usec();
+
+   /* Never seen this log; unable to confirm that this has any effect. */
+   if (latency_last_log_us == 0 ||
+      res != latency_last_res ||
+      (now_us - latency_last_log_us) >= (30 * 1000 * 1000))
+   {
+      RARCH_DBG("[Vulkan] LatencySleep active. (res=%d)\n", res);
+      latency_last_log_us = now_us;
+      latency_last_res = res;
+   }
 }
 
 void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
@@ -2810,7 +2819,14 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
    /* Note: WaitForPresent doesn't work on Flycast, and possibly other cores. */
    if (settings->bools.video_wait_for_present && vkWaitForPresent2KHR)
    {
-      RARCH_DBG("[Vulkan] WaitForPresent: pid=%" PRIu64 "\n", pid); // This will clog the entire log, if it's working.
+      static uint64_t last_log_us = 0;
+      uint64_t now_us = cpu_features_get_time_usec();
+      if (last_log_us == 0 || (now_us - last_log_us) >= (30 * 1000 * 1000))
+      {
+         RARCH_DBG("[Vulkan] WaitForPresent active. (pid=%" PRIu64 ")\n", pid);
+         last_log_us = now_us;
+      }
+
       uint64_t wait_timeout =
          settings->bools.video_unlimited_wait
          ? UINT64_MAX

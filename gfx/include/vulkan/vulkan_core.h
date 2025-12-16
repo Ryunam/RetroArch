@@ -5131,7 +5131,6 @@ typedef struct VkDeviceGroupSwapchainCreateInfoKHR {
     VkDeviceGroupPresentModeFlagsKHR    modes;
 } VkDeviceGroupSwapchainCreateInfoKHR;
 
-// VK_NV_low_latency2
 typedef enum VkLatencyMarkerNV {
    VK_LATENCY_MARKER_SIMULATION_START_NV = 0,
    VK_LATENCY_MARKER_SIMULATION_END_NV = 1,
