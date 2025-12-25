@@ -2360,11 +2360,11 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
          dxgiFactory, (IUnknown*)d3d11->device,
          &desc, (IDXGISwapChain**)&d3d11->swapChain)))
          return false;
-      RARCH_LOG("[D3D11] Creating a blit-%s swapchain.\n",
-         d3d11->sequential_swapchain ? "sequential"
-                                     : "discard");
+      RARCH_LOG("[D3D11] Creating a %s swapchain.\n",
+         d3d11->sequential_swapchain ? "blit-sequential"
+                                     : "blit-discard");
    }
-   /* Ensure DXGI (re)enters legacy flip upon reinit. */
+   /* Ensure DXGI (re)enters FSE upon reinit. */
 #ifdef HAVE_WINDOW
    IDXGISwapChain* sc = d3d11->swapChain;
 

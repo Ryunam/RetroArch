@@ -1829,7 +1829,7 @@ void video_driver_set_size(unsigned width, unsigned height)
 #endif
 }
 
-/* NV_LOW_LATENCY2 */
+/* VK_LATENCY_SLEEP_NV */
 void video_driver_latency_sleep(void)
 {
    video_driver_state_t *video_st = video_state_get_ptr();

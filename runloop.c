@@ -8059,7 +8059,7 @@ void core_run(void)
    }
 #endif
 
-   /* NV_LOW_LATENCY2 */
+   /* VK_LATENCY_SLEEP_NV */
    if ((early_polling || late_polling) &&
       config_get_ptr()->bools.video_low_latency)
    {

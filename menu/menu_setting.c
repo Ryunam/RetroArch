@@ -7803,7 +7803,7 @@ static int setting_action_start_video_refresh_rate_polled(
 {
 #ifdef _WIN32
    /* OK: Set-Display Reported Refresh Rate
-      START: Set Fullscreen State (DXGI_ALT_ENTER) */
+      START: Set Fullscreen State (DXGI) */
    if (string_is_equal(video_driver_get_ident(), "d3d11") ||
       string_is_equal(video_driver_get_ident(), "d3d10"))
    {

@@ -1815,10 +1815,10 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
                NULL, flags, D3D10_SDK_VERSION, &desc,
                (IDXGISwapChain**)&d3d10->swapChain, &d3d10->device)))
       return false;
-   RARCH_LOG("[D3D10] Creating a blit-%s swapchain.\n",
-      d3d10->sequential_swapchain ? "sequential"
-                                  : "discard");
-   /* Ensure DXGI (re)enters legacy flip upon reinit. */
+   RARCH_LOG("[D3D10] Creating a %s swapchain.\n",
+      d3d10->sequential_swapchain ? "blit-sequential"
+                                  : "blit-discard");
+   /* Ensure DXGI (re)enters FSE upon reinit. */
 #ifdef HAVE_WINDOW
    IDXGISwapChain* sc = d3d10->swapChain;
 

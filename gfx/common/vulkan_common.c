@@ -334,14 +334,10 @@ static bool vulkan_load_device_symbols(gfx_ctx_vulkan_data_t *vk)
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkAcquireNextImageKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkQueuePresentKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitForPresent2KHR);
-   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkQueueNotifyOutOfBandNV);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSetLatencySleepModeNV);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkLatencySleepNV);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSetLatencyMarkerNV);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkGetLatencyTimingsNV);
-   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkGetSemaphoreCounterValueKHR);
-   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitSemaphoresKHR);
-   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSignalSemaphoreKHR);
    return true;
 }
 
@@ -565,25 +561,17 @@ static bool vulkan_context_init_gpu(gfx_ctx_vulkan_data_t *vk)
 }
 
 static const char *vulkan_device_extensions[]  = {
-   "VK_KHR_swapchain",
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-   "VK_EXT_full_screen_exclusive"
-#endif
+   "VK_KHR_swapchain"
 };
 
 static const char *vulkan_optional_device_extensions[] = {
-   "VK_NV_low_latency2",
+   "VK_KHR_sampler_mirror_clamp_to_edge",
    "VK_KHR_present_id2",
    "VK_KHR_present_wait2",
    "VK_KHR_present_mode_fifo_latest_ready",
-   "VK_KHR_maintenance1",
-   "VK_KHR_maintenance2",
-   "VK_KHR_maintenance3",
-   "VK_KHR_maintenance4",
-   "VK_KHR_synchronization2",
-   "VK_KHR_swapchain_maintenance1",
    "VK_KHR_timeline_semaphore",
-   "VK_KHR_sampler_mirror_clamp_to_edge"
+   "VK_EXT_full_screen_exclusive",
+   "VK_NV_low_latency2"
 };
 
 static VkDevice vulkan_context_create_device_wrapper(
@@ -953,7 +941,6 @@ static VkInstance vulkan_context_create_instance_wrapper(void *opaque, const VkI
          break;
       case VULKAN_WSI_WIN32:
          required_extensions[required_extension_count++] = "VK_KHR_win32_surface";
-         required_extensions[required_extension_count++] = "VK_KHR_get_surface_capabilities2";
          break;
       case VULKAN_WSI_XLIB:
          required_extensions[required_extension_count++] = "VK_KHR_xlib_surface";
@@ -2373,7 +2360,7 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
       vkDestroySwapchainKHR(vk->context.device, old_swapchain, NULL);
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-   /* VK_FULL_SCREEN_EXCLUSIVE */                                                                           
+   /* VK_FULL_SCREEN_EXCLUSIVE_EXT */                                                                           
    fse_monitor       = MonitorFromWindow(GetActiveWindow(), MONITOR_DEFAULTTONEAREST);
    fs_win32.hmonitor = fse_monitor; // Tie FSE to the window's monitor.           
    fs_info.pNext     = &fs_win32;  // Allow or disallow FSE based on user setting. 
@@ -2710,7 +2697,7 @@ void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
    }
 }
 
-/* NV_LOW_LATENCY2 (Experimental) */
+/* VK_LATENCY_SLEEP_NV */
 void vulkan_latency_sleep(gfx_ctx_vulkan_data_t* vk)
 {
    if (!vk || !vk->vkLatencySleepNV)
@@ -2830,8 +2817,8 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
       uint64_t wait_timeout =
          settings->bools.video_unlimited_wait
          ? UINT64_MAX
-         : (10 * 1000 * 1000);
-         /* 10ms reduces stutter upon reinits. */
+         : (5 * 1000 * 1000);
+
       VkPresentWait2InfoKHR wait_info = {
          .sType = VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR,
          .pNext = NULL,

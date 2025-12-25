@@ -639,12 +639,12 @@ void d3d9_make_d3dpp(d3d9_video_t *d3d,
       }
    }
 
-   settings_t* settings = config_get_ptr();
+   settings_t *settings = config_get_ptr();
    unsigned buffer_count = settings->uints.video_buffer_count;
 
    d3dpp->SwapEffect = D3DSWAPEFFECT_FLIP;
    d3dpp->BackBufferCount = buffer_count;
-   RARCH_LOG("[D3D9 HLSL] Got %u backbuffer(s).\n", d3dpp->BackBufferCount);
+   RARCH_LOG("[D3D9] Got %u backbuffer(s).\n", d3dpp->BackBufferCount);
 
 #ifdef _XBOX
    d3dpp->BackBufferFormat        = d3d9_get_color_format_backbuffer(
