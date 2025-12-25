@@ -3224,10 +3224,6 @@ MSG_HASH(
    "Detekovat"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_PAUSE_ON_DISCONNECT,
-   "Pozastavení obsahu při odpojení ovladače"
-   )
-MSG_HASH(
    MENU_ENUM_SUBLABEL_PAUSE_ON_DISCONNECT,
    "Pozastavení obsahu při odpojení libovolného ovladače. Obnovení pomocí tlačítka Start."
    )
@@ -4248,6 +4244,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_TURBO,
    "Turbo střelba"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_HOLD,
+   "Držet"
    )
 
 /* Settings > Latency */

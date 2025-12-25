@@ -3380,10 +3380,6 @@ MSG_HASH(
    "Algıla"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_PAUSE_ON_DISCONNECT,
-   "Kontrolcü Bağlantısı Kesildiğinde İçeriği Duraklat"
-   )
-MSG_HASH(
    MENU_ENUM_SUBLABEL_PAUSE_ON_DISCONNECT,
    "Herhangi bir kontrolcünün bağlantısı kesildiğinde içeriği duraklatın. Başlat ile devam edin."
    )
@@ -4496,6 +4492,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_TURBO,
    "Turbo Ateş"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_HOLD,
+   "Bekleme"
    )
 
 /* Settings > Latency */

@@ -3088,10 +3088,6 @@ MSG_HASH(
    "Wykryj"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_PAUSE_ON_DISCONNECT,
-   "Wstrzymaj zawartość po rozłączeniu kontrolera"
-   )
-MSG_HASH(
    MENU_ENUM_SUBLABEL_PAUSE_ON_DISCONNECT,
    "Wstrzymuj zawartość po odłączeniu dowolnego kontrolera. Wznów za pomocą Start."
    )
@@ -3900,6 +3896,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_TURBO,
    "Turbo Ogień"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_HOLD,
+   "Przytrzymaj"
    )
 
 /* Settings > Latency */

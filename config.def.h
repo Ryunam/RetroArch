@@ -505,14 +505,10 @@
 #define DEFAULT_USE_METAL_ARG_BUFFERS (!!__builtin_available(macOS 12, iOS 13, tvOS 12, *))
 #endif
 
-/* Enable use of shaders. */
-#ifdef RARCH_CONSOLE
+/* Enable use of shaders */
 #define DEFAULT_SHADER_ENABLE true
-#else
-#define DEFAULT_SHADER_ENABLE false
-#endif
 
-/* Should we enable hdr when its supported*/
+/* Should we enable hdr when its supported */
 #define DEFAULT_VIDEO_HDR_ENABLE false
 
 /* The maximum nunmber of nits the actual display can show - needs to be calibrated */
@@ -1863,6 +1859,9 @@
 #define DEFAULT_BUILDBOT_SERVER_URL "http://buildbot.libretro.com/nightly/windows/x86_64/latest/"
 #elif defined(__i386__) || defined(__i486__) || defined(__i686__) || defined(_M_IX86) || defined(_M_IA64)
 #define DEFAULT_BUILDBOT_SERVER_URL "http://buildbot.libretro.com/nightly/windows/x86/latest/"
+#elif defined(__aarch64__) || defined(_M_ARM64)
+/* No official MinGW/clang ARM64 buildbot yet – use empty default */
+#define DEFAULT_BUILDBOT_SERVER_URL ""
 #endif
 #endif
 #elif defined(__linux__)

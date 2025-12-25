@@ -232,6 +232,30 @@ MSG_HASH(
    "Sulje RetroArch. Kokoonpanon tallennus suljettaessa on käytössä."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_SYNC_NOW,
+   "Synkronoi nyt"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CLOUD_SYNC_SYNC_NOW,
+   "Käynnistä pilvisynkronointi manuaalisesti."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_RESOLVE_KEEP_LOCAL,
+   "Ratkaise ristiriidat: säilytä paikallinen"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CLOUD_SYNC_RESOLVE_KEEP_LOCAL,
+   "Ratkaise kaikki ristiriidat lähettämällä paikalliset tiedostot palvelimelle."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_RESOLVE_KEEP_SERVER,
+   "Ratkaise ristiriidat: säilytä palvelimen"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CLOUD_SYNC_RESOLVE_KEEP_SERVER,
+   "Ratkaise kaikki ristiriidat lataamalla tiedostot palvelimelta ja korvaamalla paikalliset kopiot."
+   )
+MSG_HASH(
    MENU_ENUM_SUBLABEL_QUIT_RETROARCH_NOSAVE,
    "Sulje RetroArch. Kokoonpanon tallennus suljettaessa ei ole käytössä."
    )
@@ -554,6 +578,14 @@ MSG_HASH(
    "Laiteohjelmisto"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY,
+   "Huomautus: 'Järjestelmätiedostot ovat sisälltökansiossa' on käytössä."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH,
+   "Etsitään kansiosta: %s"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MISSING_REQUIRED,
    "Puuttuu, Pakollinen:"
    )
@@ -572,6 +604,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_LOCK,
    "Lukitse asennettu ydin"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CORE_LOCK,
+   "Estä nykyisen asennetun ytimen muokkaaminen. Tätä voidaan käyttää ei-toivottujen päivitysten välttämiseen, kun sisältö vaatii tietyn ytimen version (esim. Arcade-ROM-kokoelmat) tai kun ytimen oma tallennustilamuoto muuttuu."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_SET_STANDALONE_EXEMPT,
@@ -3772,6 +3808,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_TURBO,
    "Turbotulitus"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_HOLD,
+   "Pidä"
    )
 
 /* Settings > Latency */
@@ -10032,12 +10072,20 @@ MSG_HASH(
    "Animaatio, joka näytetään kun avaat alavalikon."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON,
+   "Nykyisen valikon kuvake"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NONE,
    "Ei mitään"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NORMAL,
    "Normaali"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_TITLE,
+   "Otsikko"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_FONT,

@@ -232,6 +232,22 @@ MSG_HASH(
    "Spreag sioncrónú scamall de láimh."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_RESOLVE_KEEP_LOCAL,
+   "Réitigh Coimhlintí: Fan Áitiúil"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CLOUD_SYNC_RESOLVE_KEEP_LOCAL,
+   "Réitigh gach coimhlint trí chomhaid áitiúla a uaslódáil chuig an bhfreastalaí."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CLOUD_SYNC_RESOLVE_KEEP_SERVER,
+   "Réiteach Coimhlintí: Coinnigh an Freastalaí"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CLOUD_SYNC_RESOLVE_KEEP_SERVER,
+   "Réitigh gach coimhlint trí chomhaid an fhreastalaí a íoslódáil, agus cóipeanna áitiúla a athsholáthar."
+   )
+MSG_HASH(
    MENU_ENUM_SUBLABEL_QUIT_RETROARCH_NOSAVE,
    "Scoir feidhmchlár RetroArch. Tá sábháil chumraíochta ar scor díchumasaithe. Scoir feidhmchlár RetroArch. Tá sábháil chumraíochta ar scor díchumasaithe."
    )
@@ -3393,7 +3409,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_PAUSE_ON_DISCONNECT,
-   "Cuir an t-ábhar ar sos nuair a dhícheanglaíonn an rialtóir"
+   "Cuir Ábhar ar Sos nuair a Dhícheanglaítear an Rialaitheoir"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_PAUSE_ON_DISCONNECT,
@@ -4516,6 +4532,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_TURBO,
    "Tine Turbo"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_HOLD,
+   "Coinnigh"
    )
 
 /* Settings > Latency */
@@ -11568,12 +11588,24 @@ MSG_HASH(
    "Fachtóir Alfa Téama Dath"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON,
+   "Deilbhín an Roghchláir Reatha"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_XMB_CURRENT_MENU_ICON,
+   "Is féidir deilbhín an roghchláir reatha a cheilt, faoin roghchlár cothrománach nó sa teideal ceanntásca."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NONE,
    "Dada"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_NORMAL,
    "Gnáth"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_XMB_CURRENT_MENU_ICON_TITLE,
+   "Teideal"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_FONT,
