@@ -43,6 +43,8 @@
 #include <windows.h>
 #endif
 
+#include "../video_driver.h"
+
 #define VENDOR_ID_AMD 0x1002
 #define VENDOR_ID_NV 0x10DE
 #define VENDOR_ID_INTEL 0x8086
@@ -561,15 +563,14 @@ static bool vulkan_context_init_gpu(gfx_ctx_vulkan_data_t *vk)
 }
 
 static const char *vulkan_device_extensions[]  = {
-   "VK_KHR_swapchain"
+   "VK_KHR_swapchain",
+   "VK_KHR_present_id2",
+   "VK_KHR_present_wait2"
 };
 
 static const char *vulkan_optional_device_extensions[] = {
    "VK_KHR_sampler_mirror_clamp_to_edge",
-   "VK_KHR_present_id2",
-   "VK_KHR_present_wait2",
    "VK_KHR_present_mode_fifo_latest_ready",
-   "VK_KHR_timeline_semaphore",
    "VK_EXT_full_screen_exclusive",
    "VK_NV_low_latency2"
 };
@@ -2696,6 +2697,17 @@ void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
       vk->gpu_list = NULL;
    }
 }
+
+#ifdef HAVE_VULKAN
+void video_driver_backend_latency_sleep(void)
+{
+   video_driver_state_t* video_st = video_state_get_ptr();
+   if (!video_st || !video_st->data)
+      return;
+
+   vulkan_latency_sleep((gfx_ctx_vulkan_data_t*)video_st->data);
+}
+#endif
 
 /* VK_LATENCY_SLEEP_NV */
 void vulkan_latency_sleep(gfx_ctx_vulkan_data_t* vk)
