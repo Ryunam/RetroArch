@@ -1835,7 +1835,7 @@ void video_driver_backend_latency_sleep(void)
 }
 #endif
 
-/* VK_LATENCY_SLEEP_NV */
+/* VK_NV_low_latency2 */
 void video_driver_latency_sleep(void)
 {
    video_driver_backend_latency_sleep();

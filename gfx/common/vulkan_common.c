@@ -2005,6 +2005,14 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
            : VK_FULL_SCREEN_EXCLUSIVE_ALLOWED_EXT
    };
 #endif
+   void *pnext = NULL;
+   VkSwapchainLatencyCreateInfoNV latency_info = {
+   .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_LATENCY_CREATE_INFO_NV,
+   .pNext = NULL,
+   .latencyModeEnable = VK_TRUE
+   };
+   latency_info.pNext = pnext;
+   pnext = &latency_info;
 
    format.format                           = VK_FORMAT_UNDEFINED;
    format.colorSpace                       = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -2360,13 +2368,14 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
    if (old_swapchain != VK_NULL_HANDLE)
       vkDestroySwapchainKHR(vk->context.device, old_swapchain, NULL);
 
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-   /* VK_FULL_SCREEN_EXCLUSIVE_EXT */                                                                           
+#ifdef VK_USE_PLATFORM_WIN32_KHR                                                                         
    fse_monitor       = MonitorFromWindow(GetActiveWindow(), MONITOR_DEFAULTTONEAREST);
-   fs_win32.hmonitor = fse_monitor; // Tie FSE to the window's monitor.           
-   fs_info.pNext     = &fs_win32;  // Allow or disallow FSE based on user setting. 
-   info.pNext        = &fs_info;  // Attach FS info to swapchain creation struct. 
-#endif            
+   fs_win32.hmonitor = fse_monitor;     
+   fs_win32.pNext    = pnext;
+   fs_info.pNext     = &fs_win32;
+   pnext             = &fs_info;
+#endif
+   info.pNext        = pnext;
 
    if (vkCreateSwapchainKHR(vk->context.device,
             &info, NULL, &vk->swapchain) != VK_SUCCESS)
@@ -2701,7 +2710,7 @@ void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
 #ifdef HAVE_VULKAN
 void video_driver_backend_latency_sleep(void)
 {
-   video_driver_state_t* video_st = video_state_get_ptr();
+   video_driver_state_t *video_st = video_state_get_ptr();
    if (!video_st || !video_st->data)
       return;
 
@@ -2709,11 +2718,28 @@ void video_driver_backend_latency_sleep(void)
 }
 #endif
 
-/* VK_LATENCY_SLEEP_NV */
-void vulkan_latency_sleep(gfx_ctx_vulkan_data_t* vk)
+/* VK_NV_low_latency2 */
+void vulkan_latency_sleep(void *data)
 {
-   if (!vk || !vk->vkLatencySleepNV)
+   gfx_ctx_vulkan_data_t *vk = (gfx_ctx_vulkan_data_t*)data;
+
+   if (!vk)
       return;
+
+   static uint64_t last_log_us = 0;
+   uint64_t now_us = cpu_features_get_time_usec();
+   bool time_to_log = (last_log_us == 0 || (now_us - last_log_us) >= (30 * 1000 * 1000));
+
+   if (!vk->vkSetLatencySleepModeNV || !vk->vkLatencySleepNV)
+   {
+      if (time_to_log)
+      {
+         RARCH_DBG("[Vulkan] LowLatency: missing function pointers (SetLatencySleepModeNV=%p, LatencySleepNV=%p)\n",
+            (void*)vk->vkSetLatencySleepModeNV, (void*)vk->vkLatencySleepNV);
+         last_log_us = now_us;
+      }
+      return;
+   }
 
    VkLatencySleepModeInfoNV mode;
    memset(&mode, 0, sizeof(mode));
@@ -2723,35 +2749,32 @@ void vulkan_latency_sleep(gfx_ctx_vulkan_data_t* vk)
    mode.lowLatencyBoost = VK_TRUE;
    mode.minimumIntervalUs = 0;
 
+   VkResult set_res = vk->vkSetLatencySleepModeNV(
+      vk->context.device,
+      vk->swapchain,
+      &mode);
+
    VkLatencySleepInfoNV sleep;
    memset(&sleep, 0, sizeof(sleep));
    sleep.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_INFO_NV;
-   sleep.pNext = &mode;
+   sleep.pNext = NULL;
 
-   VkResult res = vk->vkLatencySleepNV(
+   VkResult sleep_res = vk->vkLatencySleepNV(
       vk->context.device,
       vk->swapchain,
-      &sleep
-   );
+      &sleep);
 
-   static uint64_t latency_last_log_us = 0;
-   static VkResult latency_last_res = VK_SUCCESS;
-   uint64_t now_us = cpu_features_get_time_usec();
-
-   /* Never seen this log; unable to confirm that this has any effect. */
-   if (latency_last_log_us == 0 ||
-      res != latency_last_res ||
-      (now_us - latency_last_log_us) >= (30 * 1000 * 1000))
+   if (time_to_log || set_res != VK_SUCCESS || sleep_res != VK_SUCCESS)
    {
-      RARCH_DBG("[Vulkan] LatencySleep active. (res=%d)\n", res);
-      latency_last_log_us = now_us;
-      latency_last_res = res;
+      RARCH_DBG("[Vulkan] LowLatency: SetLatencySleepModeNV=%d, LatencySleepNV=%d\n",
+         (int)set_res, (int)sleep_res);
+      last_log_us = now_us;
    }
 }
 
 void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
 {
-   settings_t* settings = config_get_ptr();
+   settings_t *settings = config_get_ptr();
    VkPresentInfoKHR present;
    VkResult result                 = VK_SUCCESS;
    VkResult err                    = VK_SUCCESS;
