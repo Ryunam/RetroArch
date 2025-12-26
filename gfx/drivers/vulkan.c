@@ -5200,17 +5200,20 @@ static bool vulkan_frame(void *data, const void *frame,
    slock_lock(vk->context->queue_lock);
 #endif
    /* VK_NV_low_latency2 */
-   VkLatencySubmissionPresentIdNV latency_submit;
-   memset(&latency_submit, 0, sizeof(latency_submit));
+   gfx_ctx_vulkan_data_t *ctx =
+      (gfx_ctx_vulkan_data_t*)vk->ctx_driver;
 
-   latency_submit.sType = VK_STRUCTURE_TYPE_LATENCY_SUBMISSION_PRESENT_ID_NV;
-   latency_submit.pNext = submit_info.pNext;
-
-   latency_submit.presentID =
-      ((gfx_ctx_vulkan_data_t*)vk->ctx_driver)->current_present_id;
-
-   submit_info.pNext = &latency_submit;
-
+   if (ctx &&
+      ctx->vkSetLatencySleepModeNV &&
+      ctx->vkLatencySleepNV)
+   {
+      VkLatencySubmissionPresentIdNV latency_submit = {
+          .sType = VK_STRUCTURE_TYPE_LATENCY_SUBMISSION_PRESENT_ID_NV,
+          .pNext = submit_info.pNext,
+          .presentID = ctx->current_present_id,
+      };
+      submit_info.pNext = &latency_submit;
+   }
    vkQueueSubmit(vk->context->queue, 1,
          &submit_info, vk->context->swapchain_fences[frame_index]);
    vk->context->swapchain_fences_signalled[frame_index] = true;

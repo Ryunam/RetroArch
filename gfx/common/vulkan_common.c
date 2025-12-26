@@ -340,6 +340,7 @@ static bool vulkan_load_device_symbols(gfx_ctx_vulkan_data_t *vk)
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkLatencySleepNV);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSetLatencyMarkerNV);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkGetLatencyTimingsNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitSemaphoresKHR);
    return true;
 }
 
@@ -571,6 +572,7 @@ static const char *vulkan_device_extensions[]  = {
 static const char *vulkan_optional_device_extensions[] = {
    "VK_KHR_sampler_mirror_clamp_to_edge",
    "VK_KHR_present_mode_fifo_latest_ready",
+   "VK_KHR_timeline_semaphore",
    "VK_EXT_full_screen_exclusive",
    "VK_NV_low_latency2"
 };
@@ -896,6 +898,27 @@ static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
       return false;
    }
 #endif
+
+   VkSemaphoreTypeCreateInfoKHR type_info = {
+      .sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO_KHR,
+      .pNext = NULL,
+      .semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE_KHR,
+      .initialValue = 0,
+   };
+
+   VkSemaphoreCreateInfo sem_info = {
+      .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+      .pNext = &type_info,
+   };
+
+   vkCreateSemaphore(
+      vk->context.device,
+      &sem_info,
+      NULL,
+      &vk->latency_timeline_sem
+   );
+
+   vk->latency_timeline_value = 0;
 
    return true;
 }
@@ -2758,11 +2781,28 @@ void vulkan_latency_sleep(void *data)
    memset(&sleep, 0, sizeof(sleep));
    sleep.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_INFO_NV;
    sleep.pNext = NULL;
+   sleep.signalSemaphore = vk->latency_timeline_sem;
+   sleep.value = vk->latency_timeline_value;
 
    VkResult sleep_res = vk->vkLatencySleepNV(
       vk->context.device,
       vk->swapchain,
       &sleep);
+
+   VkSemaphoreWaitInfoKHR wait_info;
+   memset(&wait_info, 0, sizeof(wait_info));
+   wait_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR;
+   wait_info.semaphoreCount = 1;
+   wait_info.pSemaphores = &vk->latency_timeline_sem;
+   uint64_t wait_value = vk->latency_timeline_value;
+
+   wait_info.pValues = &wait_value;
+
+   vk->vkWaitSemaphoresKHR(
+      vk->context.device,
+      &wait_info,
+      UINT64_MAX
+   );
 
    if (time_to_log || set_res != VK_SUCCESS || sleep_res != VK_SUCCESS)
    {

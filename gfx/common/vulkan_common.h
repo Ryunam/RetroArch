@@ -397,6 +397,8 @@ typedef struct gfx_ctx_vulkan_data
    PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
    PFN_vkWaitSemaphoresKHR vkWaitSemaphoresKHR;
    PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
+   VkSemaphore latency_timeline_sem;
+   uint64_t    latency_timeline_value;
 } gfx_ctx_vulkan_data_t;
 
 struct vulkan_display_surface_info
