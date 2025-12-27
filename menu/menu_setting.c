@@ -7801,7 +7801,7 @@ static int setting_action_start_video_refresh_rate_auto(
 static int setting_action_start_video_refresh_rate_polled(
       rarch_setting_t *setting)
 {
-#if defined(_WIN32) && defined(WINAPI_FAMILY)
+#if defined(_WIN32) && defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
    /* OK: Set-Display Reported Refresh Rate
       START: Set Fullscreen State (DXGI) */
    if (string_is_equal(video_driver_get_ident(), "d3d11") ||

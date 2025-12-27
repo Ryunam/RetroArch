@@ -2367,7 +2367,7 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
    }
    /* Ensure DXGI (re)enters FSE upon reinit. */
 #ifdef HAVE_WINDOW
-   IDXGISwapChain* sc = d3d11->swapChain;
+   DXGISwapChain sc = d3d11->swapChain;
 
    for (int i = 0; i < 16; i++)
    {
