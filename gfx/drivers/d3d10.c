@@ -1820,7 +1820,7 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
                                   : "blit-discard");
    /* Ensure DXGI (re)enters FSE upon reinit. */
 #ifdef HAVE_WINDOW
-   IDXGISwapChain* sc = d3d10->swapChain;
+   DXGISwapChain sc = d3d10->swapChain;
 
    for (int i = 0; i < 16; i++)
    {
