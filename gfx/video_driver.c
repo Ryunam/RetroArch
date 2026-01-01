@@ -1831,7 +1831,7 @@ void video_driver_set_size(unsigned width, unsigned height)
 #ifndef HAVE_VULKAN
 void video_driver_backend_latency_sleep(void)
 {
-   /* no-op */
+   /* NO-OP */
 }
 #endif
 

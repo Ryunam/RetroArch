@@ -616,16 +616,21 @@ static VkDevice vulkan_context_create_device_wrapper(
 
 static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
 {
-   vk->current_present_id = 0;
+   vk->current_present_id = 1;
    uint32_t queue_count;
    unsigned i;
-   const char *enabled_device_extensions[8];
+   const char* enabled_device_extensions[64] = { 0 };
    VkDeviceCreateInfo device_info;
    VkDeviceQueueCreateInfo queue_info;
    static const float one                  = 1.0f;
    bool found_queue                        = false;
    video_driver_state_t *video_st          = video_state_get_ptr();
    VkPhysicalDeviceFeatures features       = { false };
+   VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timeline_features = {
+      .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR,
+      .pNext = NULL,
+      .timelineSemaphore = VK_TRUE,
+   };
    VkPhysicalDevicePresentWait2FeaturesKHR present_wait2_features = {
       .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR,
       .pNext = NULL,
@@ -636,6 +641,8 @@ static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
       .pNext = &present_wait2_features,
       .presentId2 = VK_TRUE,
    };
+
+   present_wait2_features.pNext = &timeline_features;
 
    unsigned enabled_device_extension_count = 0;
 
@@ -905,7 +912,6 @@ static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
       .semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE_KHR,
       .initialValue = 0,
    };
-
    VkSemaphoreCreateInfo sem_info = {
       .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
       .pNext = &type_info,
@@ -2030,9 +2036,9 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
 #endif
    void *pnext = NULL;
    VkSwapchainLatencyCreateInfoNV latency_info = {
-   .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_LATENCY_CREATE_INFO_NV,
-   .pNext = NULL,
-   .latencyModeEnable = VK_TRUE
+      .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_LATENCY_CREATE_INFO_NV,
+      .pNext = NULL,
+      .latencyModeEnable = VK_TRUE
    };
    latency_info.pNext = pnext;
    pnext = &latency_info;
@@ -2386,19 +2392,19 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
    info.presentMode            = swapchain_present_mode;
    info.clipped                = VK_TRUE;
    info.oldSwapchain           = old_swapchain;
+   info.oldSwapchain           = VK_NULL_HANDLE;
 
-   info.oldSwapchain = VK_NULL_HANDLE;
    if (old_swapchain != VK_NULL_HANDLE)
       vkDestroySwapchainKHR(vk->context.device, old_swapchain, NULL);
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR                                                                         
-   fse_monitor       = MonitorFromWindow(GetActiveWindow(), MONITOR_DEFAULTTONEAREST);
-   fs_win32.hmonitor = fse_monitor;     
-   fs_win32.pNext    = pnext;
-   fs_info.pNext     = &fs_win32;
-   pnext             = &fs_info;
+   fse_monitor                 = MonitorFromWindow(GetActiveWindow(), MONITOR_DEFAULTTONEAREST);
+   fs_win32.hmonitor           = fse_monitor;     
+   fs_win32.pNext              = pnext;
+   fs_info.pNext               = &fs_win32;
+   pnext                       = &fs_info;
 #endif
-   info.pNext        = pnext;
+   info.pNext                  = pnext;
 
    if (vkCreateSwapchainKHR(vk->context.device,
             &info, NULL, &vk->swapchain) != VK_SUCCESS)
@@ -2663,7 +2669,6 @@ bool vulkan_context_init(gfx_ctx_vulkan_data_t *vk,
    return true;
 }
 
-
 void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
       bool destroy_surface)
 {
@@ -2730,17 +2735,6 @@ void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
    }
 }
 
-#ifdef HAVE_VULKAN
-void video_driver_backend_latency_sleep(void)
-{
-   video_driver_state_t *video_st = video_state_get_ptr();
-   if (!video_st || !video_st->data)
-      return;
-
-   vulkan_latency_sleep((gfx_ctx_vulkan_data_t*)video_st->data);
-}
-#endif
-
 /* VK_NV_low_latency2 */
 void vulkan_latency_sleep(void *data)
 {
@@ -2757,7 +2751,7 @@ void vulkan_latency_sleep(void *data)
    {
       if (time_to_log)
       {
-         RARCH_DBG("[Vulkan] LowLatency: missing function pointers (SetLatencySleepModeNV=%p, LatencySleepNV=%p)\n",
+         RARCH_DBG("[Vulkan] LatencyMode: Missing function pointers. (SetLatencySleepModeNV=%p, LatencySleepNV=%p)\n",
             (void*)vk->vkSetLatencySleepModeNV, (void*)vk->vkLatencySleepNV);
          last_log_us = now_us;
       }
@@ -2806,19 +2800,27 @@ void vulkan_latency_sleep(void *data)
 
    if (time_to_log || set_res != VK_SUCCESS || sleep_res != VK_SUCCESS)
    {
-      RARCH_DBG("[Vulkan] LowLatency: SetLatencySleepModeNV=%d, LatencySleepNV=%d\n",
+      RARCH_DBG("[Vulkan] LatencyMode: SetLatencySleepModeNV=%d, LatencySleepNV=%d\n",
          (int)set_res, (int)sleep_res);
       last_log_us = now_us;
    }
 }
 
+void video_driver_backend_latency_sleep(void)
+{
+   video_driver_state_t *video_st = video_state_get_ptr();
+   if (!video_st || !video_st->data)
+      return;
+
+   vulkan_latency_sleep((gfx_ctx_vulkan_data_t*)video_st->data);
+}
+
 void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
 {
-   settings_t *settings = config_get_ptr();
+   settings_t *settings            = config_get_ptr();
    VkPresentInfoKHR present;
    VkResult result                 = VK_SUCCESS;
    VkResult err                    = VK_SUCCESS;
-
    present.sType                   = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
    present.pNext                   = NULL;
    present.waitSemaphoreCount      = 1;
@@ -2827,17 +2829,14 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
    present.pSwapchains             = &vk->swapchain;
    present.pImageIndices           = &index;
    present.pResults                = &result;
-
-   uint64_t pid = vk->current_present_id;
-
+   uint64_t pid                    = vk->current_present_id;
    VkPresentId2KHR pid2 = {
       .sType = VK_STRUCTURE_TYPE_PRESENT_ID_2_KHR,
       .pNext = NULL,
       .swapchainCount = 1,
       .pPresentIds = &pid
    };
-
-   present.pNext = &pid2;
+   present.pNext                   = &pid2;
 
    /* Better hope QueuePresent doesn't block D: */
 #ifdef HAVE_THREADS

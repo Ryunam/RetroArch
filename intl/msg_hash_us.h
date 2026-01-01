@@ -13773,7 +13773,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_WAIT_FOR_PRESENT,
-   "Waits for the GPU to finish presenting the previous frame before continuing."
+   "Forces the CPU to wait for the previous frame to finish presenting. Compatibility is core-dependent."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_UNLIMITED_WAIT,
@@ -13781,7 +13781,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_UNLIMITED_WAIT,
-   "Allows the GPU to block indefinitely when using 'Wait For Present'."
+   "Allows the CPU to block indefinitely when using 'Wait For Present'."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_LOW_LATENCY,
@@ -13789,7 +13789,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_LOW_LATENCY,
-   "NVIDIA driver feature that allows the GPU to delay rendering to reduce queued frames. Effectiveness depends on driver behavior. (Experimental)"
+   "NVIDIA driver feature intended to reduce CPU-to-GPU frame queuing. Does not override driver heuristics. (Experimental)"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_SEQUENTIAL_SWAPCHAIN,

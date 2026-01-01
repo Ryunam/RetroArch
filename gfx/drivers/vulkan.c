@@ -5203,14 +5203,12 @@ static bool vulkan_frame(void *data, const void *frame,
    gfx_ctx_vulkan_data_t *ctx =
       (gfx_ctx_vulkan_data_t*)vk->ctx_driver;
 
-   if (ctx &&
-      ctx->vkSetLatencySleepModeNV &&
-      ctx->vkLatencySleepNV)
+   if (ctx && ctx->vkSetLatencyMarkerNV)
    {
       VkLatencySubmissionPresentIdNV latency_submit = {
-          .sType = VK_STRUCTURE_TYPE_LATENCY_SUBMISSION_PRESENT_ID_NV,
-          .pNext = submit_info.pNext,
-          .presentID = ctx->current_present_id,
+         .sType = VK_STRUCTURE_TYPE_LATENCY_SUBMISSION_PRESENT_ID_NV,
+         .pNext = submit_info.pNext,
+         .presentID = ctx->current_present_id,
       };
       submit_info.pNext = &latency_submit;
    }
