@@ -8061,11 +8061,8 @@ void core_run(void)
 
    /* VK_NV_low_latency2 */
 #ifdef HAVE_VULKAN
-   if ((early_polling || late_polling) &&
-      config_get_ptr()->bools.video_low_latency)
-   {
+   if (config_get_ptr()->bools.video_low_latency)
       video_driver_latency_sleep();
-   }
 #endif
 
    if (early_polling)
