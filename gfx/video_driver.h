@@ -406,6 +406,7 @@ typedef struct video_frame_info
    unsigned runahead_frames;
    unsigned aspect_ratio_idx;
    unsigned max_swapchain_images;
+   unsigned buffer_count;
    unsigned monitor_index;
    unsigned crt_switch_resolution;
    unsigned crt_switch_resolution_super;
@@ -970,6 +971,10 @@ bool video_driver_is_hw_context(void);
 struct retro_hw_render_callback *video_driver_get_hw_context(void);
 
 bool video_driver_get_viewport_info(struct video_viewport *viewport);
+
+void video_driver_latency_sleep(void);
+
+void video_driver_backend_latency_sleep(void);
 
 /**
  * config_get_video_driver_options:

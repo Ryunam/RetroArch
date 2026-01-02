@@ -208,7 +208,7 @@ static bool wasapi_select_device_format(WAVEFORMATEXTENSIBLE *format, IAudioClie
          RARCH_WARN("[WASAPI] Requested format not supported, and Windows could not suggest one. RetroArch will do so.\n");
          for (i = 0; i < ARRAY_SIZE(preferred_formats); ++i)
          {
-            static const unsigned preferred_rates[] = { 48000, 44100, 96000, 192000, 32000 };
+            static const unsigned preferred_rates[] = { 44100, 48000, 96000, 192000, 32000 };
             for (j = 0; j < ARRAY_SIZE(preferred_rates); ++j)
             {
                HRESULT format_check_hr;

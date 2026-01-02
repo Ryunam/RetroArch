@@ -305,6 +305,8 @@ typedef struct
    unsigned              cur_mon_id;
    HANDLE                frameLatencyWaitableObject;
    DXGISwapChain         swapChain;
+   unsigned              buffer_count;
+   bool                  sequential_swapchain;
    D3D11Device           device;
    D3D_FEATURE_LEVEL     supportedFeatureLevel;
    D3D11DeviceContext    context;
@@ -2177,7 +2179,7 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
 #endif
       desc.Format                          = DXGI_FORMAT_R8G8B8A8_UNORM;
 #else
-   desc.BufferCount                        = 2;
+   desc.BufferCount                        = d3d11->buffer_count;
 
    desc.BufferDesc.Width                   = width;
    desc.BufferDesc.Height                  = height;
@@ -2188,8 +2190,8 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
    else
 #endif
       desc.BufferDesc.Format               = DXGI_FORMAT_R8G8B8A8_UNORM;
-   desc.BufferDesc.RefreshRate.Numerator   = 60;
-   desc.BufferDesc.RefreshRate.Denominator = 1;
+   desc.BufferDesc.RefreshRate.Numerator   = 0;
+   desc.BufferDesc.RefreshRate.Denominator = 0;
 #endif
    desc.BufferUsage                        = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 #ifdef HAVE_WINDOW
@@ -2198,7 +2200,7 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
    desc.SampleDesc.Count                   = 1;
    desc.SampleDesc.Quality                 = 0;
 #ifdef HAVE_WINDOW
-   desc.Windowed                           = TRUE;
+   desc.Windowed                           = FALSE;
 #endif
 
 #ifdef DEBUG
@@ -2284,15 +2286,14 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
       return false;
 #else
    if (d3d11->flags & D3D11_ST_FLAG_WAITABLE_SWAPCHAINS)
-      desc.Flags                          |= DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-   desc.SwapEffect                         = DXGI_SWAP_EFFECT_DISCARD;
+      desc.Flags    |= DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+   desc.SwapEffect   = d3d11->sequential_swapchain ? DXGI_SWAP_EFFECT_SEQUENTIAL : DXGI_SWAP_EFFECT_DISCARD;
+   desc.Flags       &= ~(DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING | DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT)
+      ; d3d11->flags = 0
 
-   adapter->lpVtbl->GetParent(
-         adapter, uuidof(IDXGIFactory1), (void**)&dxgiFactory);
+      ; adapter->lpVtbl->GetParent(
+            adapter, uuidof(IDXGIFactory1), (void**)&dxgiFactory);
 
-   /* Check for ALLOW_TEARING support before trying to use it.
-    * Also don't use the flip model if it's not supported, because then we can't uncap our
-    * present rate. */
 #ifdef __cplusplus
    if (SUCCEEDED(dxgiFactory->lpVtbl->QueryInterface(dxgiFactory,
       libretro_IID_IDXGIFactory5, (void**)&dxgiFactory5)))
@@ -2307,44 +2308,79 @@ static bool d3d11_init_swapchain(d3d11_video_t* d3d11,
          &allow_tearing_supported, sizeof(allow_tearing_supported)))
          && allow_tearing_supported)
       {
-         desc.SwapEffect            = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-         desc.Flags                |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
-         d3d11->flags              |= D3D11_ST_FLAG_HAS_FLIP_MODEL
-                                    | D3D11_ST_FLAG_HAS_ALLOW_TEARING;
-
-         RARCH_LOG("[D3D11] Flip model and tear control supported and enabled.\n");
+         desc.SwapEffect = d3d11->sequential_swapchain
+                         ? DXGI_SWAP_EFFECT_SEQUENTIAL
+                         : DXGI_SWAP_EFFECT_DISCARD;
+         desc.Flags     |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+         desc.Flags     |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
       }
 
       dxgiFactory5->lpVtbl->Release(dxgiFactory5);
-   }
 
-   if (FAILED(dxgiFactory->lpVtbl->CreateSwapChain(
-               dxgiFactory, (IUnknown*)d3d11->device,
-               &desc, (IDXGISwapChain**)&d3d11->swapChain)))
-   {
-      RARCH_WARN("[D3D11] Failed to create swapchain with flip model, try non-flip model.\n");
+      IDXGIDevice* dxgi_dev = NULL;
+      IDXGIAdapter* adapter = NULL;
+      IDXGIOutput* target_out = NULL;
 
-      /* Failed to create swapchain, try non-flip model */
-      desc.SwapEffect           =  DXGI_SWAP_EFFECT_DISCARD;
-      desc.Flags               &= ~DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
-      d3d11->flags             &= ~(D3D11_ST_FLAG_HAS_FLIP_MODEL
-                                  | D3D11_ST_FLAG_HAS_ALLOW_TEARING
-                                   );
+      DXGI_MODE_DESC desired = desc.BufferDesc;
+      DXGI_MODE_DESC closest; ZeroMemory(&closest, sizeof(closest));
+
+      if (SUCCEEDED(d3d11->device->lpVtbl->QueryInterface(d3d11->device,
+         &IID_IDXGIDevice, (void**)&dxgi_dev)) &&
+         SUCCEEDED(dxgi_dev->lpVtbl->GetAdapter(dxgi_dev, &adapter)))
+      {
+         HMONITOR mon = MonitorFromWindow(desc.OutputWindow, MONITOR_DEFAULTTONEAREST);
+         for (UINT i = 0;; ++i) {
+            IDXGIOutput* out = NULL;
+            if (adapter->lpVtbl->EnumOutputs(adapter, i, &out) == DXGI_ERROR_NOT_FOUND)
+               break;
+
+            DXGI_OUTPUT_DESC odesc;
+            if (SUCCEEDED(out->lpVtbl->GetDesc(out, &odesc)) && odesc.Monitor == mon) {
+               target_out = out;
+               break;
+            }
+            out->lpVtbl->Release(out);
+         }
+      }
+
+      if (target_out &&
+         SUCCEEDED(target_out->lpVtbl->FindClosestMatchingMode(
+            target_out, &desired, &closest, (IUnknown*)d3d11->device)))
+      {
+         desc.BufferDesc = closest;
+      }
+
+      desc.Windowed   = FALSE;
+      desc.SwapEffect = d3d11->sequential_swapchain
+                      ? DXGI_SWAP_EFFECT_SEQUENTIAL
+                      : DXGI_SWAP_EFFECT_DISCARD;
+      desc.Flags     |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+      desc.Flags     &= ~DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
       if (FAILED(dxgiFactory->lpVtbl->CreateSwapChain(
-                  dxgiFactory, (IUnknown*)d3d11->device,
-                  &desc, (IDXGISwapChain**)&d3d11->swapChain)))
+         dxgiFactory, (IUnknown*)d3d11->device,
+         &desc, (IDXGISwapChain**)&d3d11->swapChain)))
          return false;
+      RARCH_LOG("[D3D11] Creating a %s swapchain.\n",
+         d3d11->sequential_swapchain ? "blit-sequential"
+                                     : "blit-discard");
    }
-
+   /* Ensure DXGI (re)enters FSE upon reinit. */
 #ifdef HAVE_WINDOW
-   /* Don't let DXGI mess with the full screen state,
-    * because otherwise we end up with a mismatch
-    * between the window size and the buffers.
-    * RetroArch only uses windowed mode (see above). */
-   if (FAILED(dxgiFactory->lpVtbl->MakeWindowAssociation(dxgiFactory, desc.OutputWindow, DXGI_MWA_NO_ALT_ENTER)))
+   DXGISwapChain sc = d3d11->swapChain;
+
+   for (int i = 0; i < 16; i++)
    {
-      RARCH_ERR("[D3D11] Failed to make disable DXGI ALT+ENTER handling.\n");
+      sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
+
+      BOOL fs = FALSE;
+      IDXGIOutput* out = NULL;
+      sc->lpVtbl->GetFullscreenState(sc, &fs, &out);
+      if (out)
+         out->lpVtbl->Release(out);
+
+      if (fs)
+         break;
    }
 #endif
 
@@ -2428,6 +2464,10 @@ static void *d3d11_gfx_init(const video_info_t* video,
 #endif
    settings_t*    settings = config_get_ptr();
    d3d11_video_t* d3d11    = (d3d11_video_t*)calloc(1, sizeof(*d3d11));
+   d3d11->buffer_count = settings->uints.video_buffer_count;
+   RARCH_LOG("[D3D11] Got %u backbuffer(s).\n", d3d11->buffer_count);
+
+   d3d11->sequential_swapchain = settings->bools.video_sequential_swapchain;
 
    if (!d3d11)
       return NULL;

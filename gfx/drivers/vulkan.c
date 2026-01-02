@@ -3658,12 +3658,11 @@ static void *vulkan_init(const video_info_t *video,
       vk->flags         &= ~VK_FLAG_FULLSCREEN;
    vk->tex_w             = RARCH_SCALE_BASE * video->input_scale;
    vk->tex_h             = RARCH_SCALE_BASE * video->input_scale;
-   vk->tex_fmt           = video->rgb32 ? VK_FORMAT_B8G8R8A8_UNORM : VK_FORMAT_R5G6B5_UNORM_PACK16;
+   vk->tex_fmt           = VK_FORMAT_B8G8R8A8_UNORM;
    if (video->force_aspect)
       vk->flags         |=  VK_FLAG_KEEP_ASPECT;
    else
       vk->flags         &= ~VK_FLAG_KEEP_ASPECT;
-   RARCH_LOG("[Vulkan] Using %s format.\n", video->rgb32 ? "BGRA8888" : "RGB565");
 
    /* Set the viewport to fix recording, since it needs to know
     * the viewport sizes before we start running. */
@@ -5200,6 +5199,19 @@ static bool vulkan_frame(void *data, const void *frame,
 #ifdef HAVE_THREADS
    slock_lock(vk->context->queue_lock);
 #endif
+   /* VK_NV_low_latency2 */
+   gfx_ctx_vulkan_data_t *ctx =
+      (gfx_ctx_vulkan_data_t*)vk->ctx_driver;
+
+   if (ctx && ctx->vkSetLatencyMarkerNV)
+   {
+      VkLatencySubmissionPresentIdNV latency_submit = {
+         .sType = VK_STRUCTURE_TYPE_LATENCY_SUBMISSION_PRESENT_ID_NV,
+         .pNext = submit_info.pNext,
+         .presentID = ctx->current_present_id,
+      };
+      submit_info.pNext = &latency_submit;
+   }
    vkQueueSubmit(vk->context->queue, 1,
          &submit_info, vk->context->swapchain_fences[frame_index]);
    vk->context->swapchain_fences_signalled[frame_index] = true;

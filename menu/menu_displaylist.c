@@ -10012,11 +10012,15 @@ unsigned menu_displaylist_build_list(
          break;
       case DISPLAYLIST_VIDEO_SYNCHRONIZATION_SETTINGS_LIST:
          {
-            bool video_vsync          = settings->bools.video_vsync;
-            bool video_hard_sync      = settings->bools.video_hard_sync;
-            bool video_wait_swap      = settings->bools.video_waitable_swapchains;
-            unsigned bfi              = settings->uints.video_black_frame_insertion;
-            unsigned shader_subframes = settings->uints.video_shader_subframes;
+            bool video_vsync                = settings->bools.video_vsync;
+            bool video_hard_sync            = settings->bools.video_hard_sync;
+            bool video_sequential_swapchain = settings->bools.video_sequential_swapchain;
+            bool video_wait_swap            = settings->bools.video_waitable_swapchains;
+            bool video_wait_for_present     = settings->bools.video_wait_for_present;
+            bool video_unlimited_wait       = settings->bools.video_unlimited_wait;
+            bool video_low_latency          = settings->bools.video_low_latency;
+            unsigned bfi                    = settings->uints.video_black_frame_insertion;
+            unsigned shader_subframes       = settings->uints.video_shader_subframes;
 
             if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
                      MENU_ENUM_LABEL_VIDEO_VSYNC,
@@ -10083,6 +10087,25 @@ unsigned menu_displaylist_build_list(
                   count++;
             }
 
+            if (string_is_equal(video_driver_get_ident(), "d3d11") ||
+               string_is_equal(video_driver_get_ident(), "d3d10") ||
+               string_is_equal(video_driver_get_ident(), "d3d9_hlsl"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_BUFFER_COUNT,
+                  PARSE_ONLY_UINT, false) == 0)
+                  count++;
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "d3d11") ||
+               string_is_equal(video_driver_get_ident(), "d3d10"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_SEQUENTIAL_SWAPCHAIN,
+                  PARSE_ONLY_BOOL, false) == 0)
+                  count++;
+            }
+
             if (video_driver_test_all_flags(GFX_CTX_FLAGS_CUSTOMIZABLE_FRAME_LATENCY))
             {
                if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
@@ -10094,6 +10117,29 @@ unsigned menu_displaylist_build_list(
                            MENU_ENUM_LABEL_VIDEO_MAX_FRAME_LATENCY,
                            PARSE_ONLY_INT, false) == 0)
                      count++;
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "vulkan"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_WAIT_FOR_PRESENT,
+                  PARSE_ONLY_BOOL, false) == 0)
+                  count++;
+               if (video_wait_for_present)
+               {
+                  MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                     MENU_ENUM_LABEL_VIDEO_UNLIMITED_WAIT,
+                     PARSE_ONLY_BOOL, false);
+                  count++;
+               }
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "vulkan"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_LOW_LATENCY,
+                  PARSE_ONLY_BOOL, false) == 0)
+                  count++;
             }
 
             if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
@@ -10631,8 +10677,12 @@ unsigned menu_displaylist_build_list(
 #endif
       case DISPLAYLIST_LATENCY_SETTINGS_LIST:
          {
-            bool video_hard_sync          = settings->bools.video_hard_sync;
-            bool video_wait_swap          = settings->bools.video_waitable_swapchains;
+            bool video_hard_sync             = settings->bools.video_hard_sync;
+            bool video_sequential_swapchain  = settings->bools.video_sequential_swapchain;
+            bool video_wait_swap             = settings->bools.video_waitable_swapchains;
+            bool video_wait_for_present      = settings->bools.video_wait_for_present;
+            bool video_unlimited_wait        = settings->bools.video_unlimited_wait;
+            bool video_low_latency           = settings->bools.video_low_latency;
 #ifdef HAVE_RUNAHEAD
             bool runahead_supported       = true;
             bool runahead_enabled         = settings->bools.run_ahead_enabled;
@@ -10661,6 +10711,25 @@ unsigned menu_displaylist_build_list(
                count++;
             }
 
+            if (string_is_equal(video_driver_get_ident(), "d3d11") ||
+               string_is_equal(video_driver_get_ident(), "d3d10") ||
+               string_is_equal(video_driver_get_ident(), "d3d9_hlsl"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_BUFFER_COUNT,
+                  PARSE_ONLY_UINT, false) == 0)
+                  count++;
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "d3d11") ||
+               string_is_equal(video_driver_get_ident(), "d3d10"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_SEQUENTIAL_SWAPCHAIN,
+                  PARSE_ONLY_BOOL, false) == 0)
+                  count++;
+            }
+
             if (video_driver_test_all_flags(GFX_CTX_FLAGS_CUSTOMIZABLE_FRAME_LATENCY))
             {
                MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
@@ -10674,6 +10743,29 @@ unsigned menu_displaylist_build_list(
                         PARSE_ONLY_INT, false);
                      count++;
                }
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "vulkan"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_WAIT_FOR_PRESENT,
+                  PARSE_ONLY_BOOL, false) == 0)
+                  count++;
+               if (video_wait_for_present)
+               {
+                  MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                     MENU_ENUM_LABEL_VIDEO_UNLIMITED_WAIT,
+                     PARSE_ONLY_BOOL, false);
+                  count++;
+               }
+            }
+
+            if (string_is_equal(video_driver_get_ident(), "vulkan"))
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                  MENU_ENUM_LABEL_VIDEO_LOW_LATENCY,
+                  PARSE_ONLY_BOOL, false) == 0)
+                  count++;
             }
 
             if (video_driver_test_all_flags(GFX_CTX_FLAGS_HARD_SYNC))

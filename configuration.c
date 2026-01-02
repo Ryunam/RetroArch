@@ -1913,7 +1913,11 @@ static struct config_bool_setting *populate_settings_bool(
    SETTING_BOOL("video_vsync",                   &settings->bools.video_vsync, true, DEFAULT_VSYNC, false);
    SETTING_BOOL("video_adaptive_vsync",          &settings->bools.video_adaptive_vsync, true, DEFAULT_ADAPTIVE_VSYNC, false);
    SETTING_BOOL("video_hard_sync",               &settings->bools.video_hard_sync, true, DEFAULT_HARD_SYNC, false);
+   SETTING_BOOL("video_sequential_swapchain",    &settings->bools.video_sequential_swapchain, true, DEFAULT_SEQUENTIAL_SWAPCHAIN, false);
    SETTING_BOOL("video_waitable_swapchains",     &settings->bools.video_waitable_swapchains, true, DEFAULT_WAITABLE_SWAPCHAINS, false);
+   SETTING_BOOL("video_wait_for_present",        &settings->bools.video_wait_for_present, true, DEFAULT_WAIT_FOR_PRESENT, false);
+   SETTING_BOOL("video_unlimited_wait",          &settings->bools.video_unlimited_wait, true, DEFAULT_UNLIMITED_WAIT, false);
+   SETTING_BOOL("video_low_latency",             &settings->bools.video_low_latency, true, DEFAULT_LOW_LATENCY, false);
    SETTING_BOOL("video_disable_composition",     &settings->bools.video_disable_composition, true, DEFAULT_DISABLE_COMPOSITION, false);
    SETTING_BOOL("video_gpu_screenshot",          &settings->bools.video_gpu_screenshot, true, DEFAULT_GPU_SCREENSHOT, false);
    SETTING_BOOL("video_post_filter_record",      &settings->bools.video_post_filter_record, true, DEFAULT_POST_FILTER_RECORD, false);
@@ -2528,6 +2532,7 @@ static struct config_uint_setting *populate_settings_uint(
    SETTING_UINT("video_hard_sync_frames",        &settings->uints.video_hard_sync_frames, true, DEFAULT_HARD_SYNC_FRAMES, false);
    SETTING_UINT("video_frame_delay",             &settings->uints.video_frame_delay,      true, DEFAULT_FRAME_DELAY, false);
    SETTING_UINT("video_max_swapchain_images",    &settings->uints.video_max_swapchain_images, true, DEFAULT_MAX_SWAPCHAIN_IMAGES, false);
+   SETTING_UINT("video_buffer_count",            &settings->uints.video_buffer_count, true, DEFAULT_BUFFER_COUNT, false);
    SETTING_UINT("video_black_frame_insertion",   &settings->uints.video_black_frame_insertion, true, DEFAULT_BLACK_FRAME_INSERTION, false);
    SETTING_UINT("video_bfi_dark_frames",         &settings->uints.video_bfi_dark_frames, true, DEFAULT_BFI_DARK_FRAMES, false);
    SETTING_UINT("video_shader_subframes",        &settings->uints.video_shader_subframes, true, DEFAULT_SHADER_SUBFRAMES, false);
@@ -4131,6 +4136,11 @@ static bool config_load_file(global_t *global,
       settings->uints.video_max_swapchain_images = MINIMUM_MAX_SWAPCHAIN_IMAGES;
    if (settings->uints.video_max_swapchain_images > MAXIMUM_MAX_SWAPCHAIN_IMAGES)
       settings->uints.video_max_swapchain_images = MAXIMUM_MAX_SWAPCHAIN_IMAGES;
+
+   if (settings->uints.video_buffer_count < MINIMUM_BUFFER_COUNT)
+      settings->uints.video_buffer_count = MINIMUM_BUFFER_COUNT;
+   if (settings->uints.video_buffer_count > MAXIMUM_BUFFER_COUNT)
+      settings->uints.video_buffer_count = MAXIMUM_BUFFER_COUNT;
 
    if (settings->uints.video_frame_delay > MAXIMUM_FRAME_DELAY)
       settings->uints.video_frame_delay = MAXIMUM_FRAME_DELAY;

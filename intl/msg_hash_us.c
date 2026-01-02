@@ -457,6 +457,9 @@ int msg_hash_get_help_us_enum(enum msg_hash_enums msg, char *s, size_t len)
           case MENU_ENUM_LABEL_VIDEO_MAX_SWAPCHAIN_IMAGES:
              strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_HELP_VIDEO_MAX_SWAPCHAIN_IMAGES), len);
              break;
+          case MENU_ENUM_LABEL_VIDEO_BUFFER_COUNT:
+             strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_HELP_VIDEO_BUFFER_COUNT), len);
+             break;
           case MENU_ENUM_LABEL_UI_COMPANION_START_ON_BOOT:
              strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_HELP_UI_COMPANION_START_ON_BOOT), len);
              break;

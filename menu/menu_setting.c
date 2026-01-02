@@ -7801,7 +7801,25 @@ static int setting_action_start_video_refresh_rate_auto(
 static int setting_action_start_video_refresh_rate_polled(
       rarch_setting_t *setting)
 {
-   /* Relay action to ok to prevent duplicate notifications */
+#if defined(_WIN32) && defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
+   /* OK: Set Display-Reported Refresh Rate
+      START: Set Fullscreen State (DXGI) */
+   if (string_is_equal(video_driver_get_ident(), "d3d11") ||
+      string_is_equal(video_driver_get_ident(), "d3d10"))
+   {
+      INPUT in[4] = { 0 };
+
+      in[0].type = INPUT_KEYBOARD; in[0].ki.wVk = VK_MENU;
+      in[1].type = INPUT_KEYBOARD; in[1].ki.wVk = VK_RETURN;
+      in[2].type = INPUT_KEYBOARD; in[2].ki.wVk = VK_RETURN; in[2].ki.dwFlags = KEYEVENTF_KEYUP;
+      in[3].type = INPUT_KEYBOARD; in[3].ki.wVk = VK_MENU;   in[3].ki.dwFlags = KEYEVENTF_KEYUP;
+
+      SendInput(_countof(in), in, sizeof(INPUT));
+
+      return 0;
+   }
+#endif
+
    return setting_action_ok_video_refresh_rate_polled(setting, 0, false);
 }
 
@@ -13999,6 +14017,41 @@ static bool setting_append_list(
             SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
             MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
 
+            CONFIG_UINT(
+               list, list_info,
+               &settings->uints.video_buffer_count,
+               MENU_ENUM_LABEL_VIDEO_BUFFER_COUNT,
+               MENU_ENUM_LABEL_VALUE_VIDEO_BUFFER_COUNT,
+               DEFAULT_BUFFER_COUNT,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler);
+            (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
+            (*list)[list_info->index - 1].offset_by = MINIMUM_BUFFER_COUNT;
+            menu_settings_list_current_add_range(list, list_info, (*list)[list_info->index - 1].offset_by, MAXIMUM_BUFFER_COUNT, 1, true, true);
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
+
+            CONFIG_BOOL(
+               list, list_info,
+               &settings->bools.video_sequential_swapchain,
+               MENU_ENUM_LABEL_VIDEO_SEQUENTIAL_SWAPCHAIN,
+               MENU_ENUM_LABEL_VALUE_VIDEO_SEQUENTIAL_SWAPCHAIN,
+               DEFAULT_SEQUENTIAL_SWAPCHAIN,
+               MENU_ENUM_LABEL_VALUE_OFF,
+               MENU_ENUM_LABEL_VALUE_ON,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler,
+               SD_FLAG_NONE);
+            (*list)[list_info->index - 1].action_ok = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_left = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_right = setting_bool_action_right_with_refresh;
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
+
             CONFIG_BOOL(
                   list, list_info,
                   &settings->bools.video_waitable_swapchains,
@@ -14018,6 +14071,69 @@ static bool setting_append_list(
             (*list)[list_info->index - 1].action_right  = setting_bool_action_right_with_refresh;
             SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
             MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
+
+            CONFIG_BOOL(
+               list, list_info,
+               &settings->bools.video_wait_for_present,
+               MENU_ENUM_LABEL_VIDEO_WAIT_FOR_PRESENT,
+               MENU_ENUM_LABEL_VALUE_VIDEO_WAIT_FOR_PRESENT,
+               DEFAULT_WAIT_FOR_PRESENT,
+               MENU_ENUM_LABEL_VALUE_OFF,
+               MENU_ENUM_LABEL_VALUE_ON,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler,
+               SD_FLAG_NONE);
+            (*list)[list_info->index - 1].action_ok = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_left = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_right = setting_bool_action_right_with_refresh;
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
+            MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_LAKKA_ADVANCED);
+
+            CONFIG_BOOL(
+               list, list_info,
+               &settings->bools.video_unlimited_wait,
+               MENU_ENUM_LABEL_VIDEO_UNLIMITED_WAIT,
+               MENU_ENUM_LABEL_VALUE_VIDEO_UNLIMITED_WAIT,
+               DEFAULT_UNLIMITED_WAIT,
+               MENU_ENUM_LABEL_VALUE_OFF,
+               MENU_ENUM_LABEL_VALUE_ON,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler,
+               SD_FLAG_NONE);
+            (*list)[list_info->index - 1].action_ok = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_left = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_right = setting_bool_action_right_with_refresh;
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
+            MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_LAKKA_ADVANCED);
+
+            CONFIG_BOOL(
+               list, list_info,
+               &settings->bools.video_low_latency,
+               MENU_ENUM_LABEL_VIDEO_LOW_LATENCY,
+               MENU_ENUM_LABEL_VALUE_VIDEO_LOW_LATENCY,
+               DEFAULT_LOW_LATENCY,
+               MENU_ENUM_LABEL_VALUE_OFF,
+               MENU_ENUM_LABEL_VALUE_ON,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler,
+               SD_FLAG_NONE);
+            (*list)[list_info->index - 1].action_ok = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_left = setting_bool_action_left_with_refresh;
+            (*list)[list_info->index - 1].action_right = setting_bool_action_right_with_refresh;
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
+            MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
+            SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_LAKKA_ADVANCED);
 
             CONFIG_INT(
                   list, list_info,

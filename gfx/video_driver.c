@@ -1828,6 +1828,19 @@ void video_driver_set_size(unsigned width, unsigned height)
 #endif
 }
 
+#ifndef HAVE_VULKAN
+void video_driver_backend_latency_sleep(void)
+{
+   /* NO-OP */
+}
+#endif
+
+/* VK_NV_low_latency2 */
+void video_driver_latency_sleep(void)
+{
+   video_driver_backend_latency_sleep();
+}
+
 /**
  * video_monitor_fps_statistics
  * @refresh_rate       : Monitor refresh rate.
@@ -3023,6 +3036,7 @@ void video_driver_build_info(video_frame_info_t *video_info)
    video_info->input_menu_swap_ok_cancel_buttons
                                            = settings->bools.input_menu_swap_ok_cancel_buttons;
    video_info->max_swapchain_images        = settings->uints.video_max_swapchain_images;
+   video_info->buffer_count                = settings->uints.video_buffer_count;
    video_info->windowed_fullscreen         = settings->bools.video_windowed_fullscreen;
    video_info->fullscreen                  = settings->bools.video_fullscreen
          || (video_st->flags & VIDEO_FLAG_FORCE_FULLSCREEN);

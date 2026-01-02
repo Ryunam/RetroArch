@@ -241,7 +241,7 @@
  * WinRT and Winapi Family builds */
 #define DEFAULT_FULLSCREEN true
 #else
-#define DEFAULT_FULLSCREEN false
+#define DEFAULT_FULLSCREEN true
 #endif
 
 /* To use windowed mode or not when going fullscreen. */
@@ -249,7 +249,7 @@
 /* Do not use windowed mode for WinRT and Winapi Family builds on the Xbox UWP with fixed resolution shrinks the image into the left top corner of the screen with some libretro cores */
 #define DEFAULT_WINDOWED_FULLSCREEN false
 #else
-#define DEFAULT_WINDOWED_FULLSCREEN true
+#define DEFAULT_WINDOWED_FULLSCREEN false
 #endif
 
 /* Enable automatic switching of the screen refresh rate when using the specified screen mode(s),
@@ -374,6 +374,12 @@
 #define MINIMUM_MAX_SWAPCHAIN_IMAGES 2
 #define MAXIMUM_MAX_SWAPCHAIN_IMAGES 4
 
+#define DEFAULT_WAIT_FOR_PRESENT false
+#define DEFAULT_UNLIMITED_WAIT false
+
+#define DEFAULT_LOW_LATENCY false
+
+
 /* D3D1x specific */
 #if defined(__WINRT__) || defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
 #define DEFAULT_WAITABLE_SWAPCHAINS false
@@ -382,6 +388,12 @@
 #endif
 #define DEFAULT_MAX_FRAME_LATENCY 1
 #define MAXIMUM_MAX_FRAME_LATENCY 4
+
+#define DEFAULT_SEQUENTIAL_SWAPCHAIN false
+
+#define DEFAULT_BUFFER_COUNT 2
+#define MINIMUM_BUFFER_COUNT 1
+#define MAXIMUM_BUFFER_COUNT 3
 
 /* GL specific */
 #define DEFAULT_ADAPTIVE_VSYNC false

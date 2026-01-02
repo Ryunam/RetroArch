@@ -400,7 +400,12 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_bluetooth_ertm_disable,        MENU_
 #endif
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_user_language,                 MENU_ENUM_SUBLABEL_USER_LANGUAGE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_max_swapchain_images,          MENU_ENUM_SUBLABEL_VIDEO_MAX_SWAPCHAIN_IMAGES)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_buffer_count,                  MENU_ENUM_SUBLABEL_VIDEO_BUFFER_COUNT)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_sequential_swapchain,          MENU_ENUM_SUBLABEL_VIDEO_SEQUENTIAL_SWAPCHAIN)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_waitable_swapchains,           MENU_ENUM_SUBLABEL_VIDEO_WAITABLE_SWAPCHAINS)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_wait_for_present,              MENU_ENUM_SUBLABEL_VIDEO_WAIT_FOR_PRESENT)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_unlimited_wait,                MENU_ENUM_SUBLABEL_VIDEO_UNLIMITED_WAIT)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_low_latency,                   MENU_ENUM_SUBLABEL_VIDEO_LOW_LATENCY)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_max_frame_latency,             MENU_ENUM_SUBLABEL_VIDEO_MAX_FRAME_LATENCY)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_online_updater,                MENU_ENUM_SUBLABEL_ONLINE_UPDATER)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_updater_settings,              MENU_ENUM_SUBLABEL_UPDATER_SETTINGS)
@@ -5147,8 +5152,23 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
          case MENU_ENUM_LABEL_VIDEO_MAX_SWAPCHAIN_IMAGES:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_max_swapchain_images);
             break;
+         case MENU_ENUM_LABEL_VIDEO_BUFFER_COUNT:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_buffer_count);
+            break;
+         case MENU_ENUM_LABEL_VIDEO_SEQUENTIAL_SWAPCHAIN:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_sequential_swapchain);
+            break;
          case MENU_ENUM_LABEL_VIDEO_WAITABLE_SWAPCHAINS:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_waitable_swapchains);
+            break;
+         case MENU_ENUM_LABEL_VIDEO_WAIT_FOR_PRESENT:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_wait_for_present);
+            break;
+         case MENU_ENUM_LABEL_VIDEO_UNLIMITED_WAIT:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_unlimited_wait);
+            break;
+         case MENU_ENUM_LABEL_VIDEO_LOW_LATENCY:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_low_latency);
             break;
          case MENU_ENUM_LABEL_VIDEO_MAX_FRAME_LATENCY:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_max_frame_latency);

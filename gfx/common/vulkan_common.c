@@ -43,6 +43,8 @@
 #include <windows.h>
 #endif
 
+#include "../video_driver.h"
+
 #define VENDOR_ID_AMD 0x1002
 #define VENDOR_ID_NV 0x10DE
 #define VENDOR_ID_INTEL 0x8086
@@ -333,6 +335,12 @@ static bool vulkan_load_device_symbols(gfx_ctx_vulkan_data_t *vk)
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkGetSwapchainImagesKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkAcquireNextImageKHR);
    VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkQueuePresentKHR);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitForPresent2KHR);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSetLatencySleepModeNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkLatencySleepNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkSetLatencyMarkerNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkGetLatencyTimingsNV);
+   VULKAN_SYMBOL_WRAPPER_LOAD_DEVICE_EXTENSION_SYMBOL(vk->context.device, vkWaitSemaphoresKHR);
    return true;
 }
 
@@ -396,6 +404,15 @@ static bool vulkan_find_instance_extensions(
    memcpy((void*)(enabled + count), exts, num_exts * sizeof(*exts));
    count += num_exts;
 
+
+   for (i = 0; i < num_exts; i++)
+   {
+      if (vulkan_find_extensions(&exts[i], 1, properties, property_count))
+         RARCH_DBG("[Vulkan] Instance extension supported: %s.\n", exts[i]);
+      else
+         RARCH_DBG("[Vulkan] Instance extension NOT supported: %s.\n", exts[i]);
+   }
+
    for (i = 0; i < num_optional_exts; i++)
       if (vulkan_find_extensions(&optional_exts[i], 1, properties, property_count))
          enabled[count++] = optional_exts[i];
@@ -443,9 +460,31 @@ static bool vulkan_find_device_extensions(VkPhysicalDevice gpu,
    memcpy((void*)(enabled + count), exts, num_exts * sizeof(*exts));
    count += num_exts;
 
+   for (i = 0; i < num_exts; i++)
+   {
+      if (vulkan_find_extensions(&exts[i], 1, properties, property_count))
+      {
+         RARCH_DBG("[Vulkan] Device extension supported: %s.\n", exts[i]);
+         enabled[count++] = exts[i];
+      }
+      else
+      {
+         RARCH_DBG("[Vulkan] Device extension NOT supported: %s.\n", exts[i]);
+      }
+   }
+
    for (i = 0; i < num_optional_exts; i++)
+   {
       if (vulkan_find_extensions(&optional_exts[i], 1, properties, property_count))
+      {
+         RARCH_DBG("[Vulkan] Optional device extension supported: %s.\n", optional_exts[i]);
          enabled[count++] = optional_exts[i];
+      }
+      else
+      {
+         RARCH_DBG("[Vulkan] Optional device extension NOT supported: %s.\n", optional_exts[i]);
+      }
+   }
 
 end:
    free(properties);
@@ -526,13 +565,16 @@ static bool vulkan_context_init_gpu(gfx_ctx_vulkan_data_t *vk)
 
 static const char *vulkan_device_extensions[]  = {
    "VK_KHR_swapchain",
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-   "VK_EXT_full_screen_exclusive"
-#endif
+   "VK_KHR_present_id2",
+   "VK_KHR_present_wait2"
 };
 
 static const char *vulkan_optional_device_extensions[] = {
    "VK_KHR_sampler_mirror_clamp_to_edge",
+   "VK_KHR_present_mode_fifo_latest_ready",
+   "VK_KHR_timeline_semaphore",
+   "VK_EXT_full_screen_exclusive",
+   "VK_NV_low_latency2"
 };
 
 static VkDevice vulkan_context_create_device_wrapper(
@@ -574,16 +616,33 @@ static VkDevice vulkan_context_create_device_wrapper(
 
 static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
 {
+   vk->current_present_id = 1;
    uint32_t queue_count;
    unsigned i;
-   const char *enabled_device_extensions[8];
+   const char* enabled_device_extensions[64] = { 0 };
    VkDeviceCreateInfo device_info;
    VkDeviceQueueCreateInfo queue_info;
    static const float one                  = 1.0f;
    bool found_queue                        = false;
    video_driver_state_t *video_st          = video_state_get_ptr();
-
    VkPhysicalDeviceFeatures features       = { false };
+   VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timeline_features = {
+      .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR,
+      .pNext = NULL,
+      .timelineSemaphore = VK_TRUE,
+   };
+   VkPhysicalDevicePresentWait2FeaturesKHR present_wait2_features = {
+      .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR,
+      .pNext = NULL,
+      .presentWait2 = VK_TRUE,
+   };
+   VkPhysicalDevicePresentId2FeaturesKHR present_id2_features = {
+      .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR,
+      .pNext = &present_wait2_features,
+      .presentId2 = VK_TRUE,
+   };
+
+   present_wait2_features.pNext = &timeline_features;
 
    unsigned enabled_device_extension_count = 0;
 
@@ -599,7 +658,7 @@ static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
    queue_info.pQueuePriorities             = NULL;
 
    device_info.sType                       = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-   device_info.pNext                       = NULL;
+   device_info.pNext                       = &present_id2_features;
    device_info.flags                       = 0;
    device_info.queueCreateInfoCount        = 0;
    device_info.pQueueCreateInfos           = NULL;
@@ -847,6 +906,26 @@ static bool vulkan_context_init_device(gfx_ctx_vulkan_data_t *vk)
    }
 #endif
 
+   VkSemaphoreTypeCreateInfoKHR type_info = {
+      .sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO_KHR,
+      .pNext = NULL,
+      .semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE_KHR,
+      .initialValue = 0,
+   };
+   VkSemaphoreCreateInfo sem_info = {
+      .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+      .pNext = &type_info,
+   };
+
+   vkCreateSemaphore(
+      vk->context.device,
+      &sem_info,
+      NULL,
+      &vk->latency_timeline_sem
+   );
+
+   vk->latency_timeline_value = 0;
+
    return true;
 }
 
@@ -892,7 +971,6 @@ static VkInstance vulkan_context_create_instance_wrapper(void *opaque, const VkI
          break;
       case VULKAN_WSI_WIN32:
          required_extensions[required_extension_count++] = "VK_KHR_win32_surface";
-         required_extensions[required_extension_count++] = "VK_KHR_get_surface_capabilities2";
          break;
       case VULKAN_WSI_XLIB:
          required_extensions[required_extension_count++] = "VK_KHR_xlib_surface";
@@ -1948,7 +2026,6 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
        NULL,
        NULL
    };
-   /* Allow or disallow exclusive fullscreen based on user setting. */
    VkSurfaceFullScreenExclusiveInfoEXT fs_info       = {
        VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT,
        NULL,
@@ -1957,6 +2034,14 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
            : VK_FULL_SCREEN_EXCLUSIVE_ALLOWED_EXT
    };
 #endif
+   void *pnext = NULL;
+   VkSwapchainLatencyCreateInfoNV latency_info = {
+      .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_LATENCY_CREATE_INFO_NV,
+      .pNext = NULL,
+      .latencyModeEnable = VK_TRUE
+   };
+   latency_info.pNext = pnext;
+   pnext = &latency_info;
 
    format.format                           = VK_FORMAT_UNDEFINED;
    format.colorSpace                       = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -2106,6 +2191,9 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
             case VK_PRESENT_MODE_FIFO_RELAXED_KHR:
                RARCH_DBG("[Vulkan] Swapchain supports present mode: FIFO_RELAXED.\n");
                break;
+            case VK_PRESENT_MODE_FIFO_LATEST_READY_KHR:
+               RARCH_DBG("[Vulkan] Swapchain supports present mode: FIFO_LATEST_READY.\n");
+               break;
             default:
                break;
          }
@@ -2126,6 +2214,9 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
             break;
          case VK_PRESENT_MODE_FIFO_RELAXED_KHR:
             RARCH_DBG("[Vulkan] Creating swapchain with present mode: FIFO_RELAXED.\n");
+            break;
+         case VK_PRESENT_MODE_FIFO_LATEST_READY_KHR:
+            RARCH_DBG("[Vulkan] Creating swapchain with present mode: FIFO_LATEST_READY.\n");
             break;
          default:
             break;
@@ -2280,6 +2371,8 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
    info.sType                  = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
    info.pNext                  = NULL;
    info.flags                  = 0;
+   info.flags                 |= VK_SWAPCHAIN_CREATE_PRESENT_ID_2_BIT_KHR;
+   info.flags                 |= VK_SWAPCHAIN_CREATE_PRESENT_WAIT_2_BIT_KHR;
    info.surface                = vk->vk_surface;
    info.minImageCount          = desired_swapchain_images;
    info.imageFormat            = format.format;
@@ -2299,20 +2392,19 @@ bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
    info.presentMode            = swapchain_present_mode;
    info.clipped                = VK_TRUE;
    info.oldSwapchain           = old_swapchain;
+   info.oldSwapchain           = VK_NULL_HANDLE;
 
-   info.oldSwapchain = VK_NULL_HANDLE;
    if (old_swapchain != VK_NULL_HANDLE)
       vkDestroySwapchainKHR(vk->context.device, old_swapchain, NULL);
 
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-   /* Tie exclusive mode to the window's monitor. */
-   fse_monitor       = MonitorFromWindow(GetActiveWindow(), MONITOR_DEFAULTTONEAREST);
-   fs_win32.hmonitor = fse_monitor;
-   /* Allow or disallow exclusive fullscreen based on user setting. */
-   fs_info.pNext     = &fs_win32;
-   /* Attach fullscreen info to swapchain creation struct. */
-   info.pNext        = &fs_info;
+#ifdef VK_USE_PLATFORM_WIN32_KHR                                                                         
+   fse_monitor                 = MonitorFromWindow(GetActiveWindow(), MONITOR_DEFAULTTONEAREST);
+   fs_win32.hmonitor           = fse_monitor;     
+   fs_win32.pNext              = pnext;
+   fs_info.pNext               = &fs_win32;
+   pnext                       = &fs_info;
 #endif
+   info.pNext                  = pnext;
 
    if (vkCreateSwapchainKHR(vk->context.device,
             &info, NULL, &vk->swapchain) != VK_SUCCESS)
@@ -2577,7 +2669,6 @@ bool vulkan_context_init(gfx_ctx_vulkan_data_t *vk,
    return true;
 }
 
-
 void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
       bool destroy_surface)
 {
@@ -2644,12 +2735,92 @@ void vulkan_context_destroy(gfx_ctx_vulkan_data_t *vk,
    }
 }
 
+/* VK_NV_low_latency2 */
+void vulkan_latency_sleep(void *data)
+{
+   gfx_ctx_vulkan_data_t *vk = (gfx_ctx_vulkan_data_t*)data;
+
+   if (!vk)
+      return;
+
+   static uint64_t last_log_us = 0;
+   uint64_t now_us = cpu_features_get_time_usec();
+   bool time_to_log = (last_log_us == 0 || (now_us - last_log_us) >= (30 * 1000 * 1000));
+
+   if (!vk->vkSetLatencySleepModeNV || !vk->vkLatencySleepNV)
+   {
+      if (time_to_log)
+      {
+         RARCH_DBG("[Vulkan] LatencyMode: Missing function pointers. (SetLatencySleepModeNV=%p, LatencySleepNV=%p)\n",
+            (void*)vk->vkSetLatencySleepModeNV, (void*)vk->vkLatencySleepNV);
+         last_log_us = now_us;
+      }
+      return;
+   }
+
+   VkLatencySleepModeInfoNV mode;
+   memset(&mode, 0, sizeof(mode));
+   mode.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_MODE_INFO_NV;
+   mode.pNext = NULL;
+   mode.lowLatencyMode = VK_TRUE;
+   mode.lowLatencyBoost = VK_TRUE;
+   mode.minimumIntervalUs = 0;
+
+   VkResult set_res = vk->vkSetLatencySleepModeNV(
+      vk->context.device,
+      vk->swapchain,
+      &mode);
+
+   VkLatencySleepInfoNV sleep;
+   memset(&sleep, 0, sizeof(sleep));
+   sleep.sType = VK_STRUCTURE_TYPE_LATENCY_SLEEP_INFO_NV;
+   sleep.pNext = NULL;
+   sleep.signalSemaphore = vk->latency_timeline_sem;
+   sleep.value = vk->latency_timeline_value;
+
+   VkResult sleep_res = vk->vkLatencySleepNV(
+      vk->context.device,
+      vk->swapchain,
+      &sleep);
+
+   VkSemaphoreWaitInfoKHR wait_info;
+   memset(&wait_info, 0, sizeof(wait_info));
+   wait_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR;
+   wait_info.semaphoreCount = 1;
+   wait_info.pSemaphores = &vk->latency_timeline_sem;
+   uint64_t wait_value = vk->latency_timeline_value;
+
+   wait_info.pValues = &wait_value;
+
+   vk->vkWaitSemaphoresKHR(
+      vk->context.device,
+      &wait_info,
+      UINT64_MAX
+   );
+
+   if (time_to_log || set_res != VK_SUCCESS || sleep_res != VK_SUCCESS)
+   {
+      RARCH_DBG("[Vulkan] LatencyMode: SetLatencySleepModeNV=%d, LatencySleepNV=%d\n",
+         (int)set_res, (int)sleep_res);
+      last_log_us = now_us;
+   }
+}
+
+void video_driver_backend_latency_sleep(void)
+{
+   video_driver_state_t *video_st = video_state_get_ptr();
+   if (!video_st || !video_st->data)
+      return;
+
+   vulkan_latency_sleep((gfx_ctx_vulkan_data_t*)video_st->data);
+}
+
 void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
 {
+   settings_t *settings            = config_get_ptr();
    VkPresentInfoKHR present;
    VkResult result                 = VK_SUCCESS;
    VkResult err                    = VK_SUCCESS;
-
    present.sType                   = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
    present.pNext                   = NULL;
    present.waitSemaphoreCount      = 1;
@@ -2658,12 +2829,85 @@ void vulkan_present(gfx_ctx_vulkan_data_t *vk, unsigned index)
    present.pSwapchains             = &vk->swapchain;
    present.pImageIndices           = &index;
    present.pResults                = &result;
+   uint64_t pid                    = vk->current_present_id;
+   VkPresentId2KHR pid2 = {
+      .sType = VK_STRUCTURE_TYPE_PRESENT_ID_2_KHR,
+      .pNext = NULL,
+      .swapchainCount = 1,
+      .pPresentIds = &pid
+   };
+   present.pNext                   = &pid2;
 
    /* Better hope QueuePresent doesn't block D: */
 #ifdef HAVE_THREADS
    slock_lock(vk->context.queue_lock);
 #endif
+
+   if (vk->vkSetLatencyMarkerNV)
+   {
+      VkSetLatencyMarkerInfoNV marker = {
+         .sType = VK_STRUCTURE_TYPE_SET_LATENCY_MARKER_INFO_NV,
+         .pNext = NULL,
+         .presentID = pid,
+         .marker = VK_LATENCY_MARKER_PRESENT_START_NV
+      };
+
+      vk->vkSetLatencyMarkerNV(
+         vk->context.device,
+         vk->swapchain,
+         &marker
+      );
+   }
+
    err = vkQueuePresentKHR(vk->context.queue, &present);
+
+   if (vk->vkSetLatencyMarkerNV)
+   {
+      VkSetLatencyMarkerInfoNV marker = {
+         .sType = VK_STRUCTURE_TYPE_SET_LATENCY_MARKER_INFO_NV,
+         .pNext = NULL,
+         .presentID = pid,
+         .marker = VK_LATENCY_MARKER_PRESENT_END_NV
+      };
+
+      vk->vkSetLatencyMarkerNV(
+         vk->context.device,
+         vk->swapchain,
+         &marker
+      );
+   }
+
+   /* Note: WaitForPresent doesn't work on Flycast, and possibly other cores. */
+   if (settings->bools.video_wait_for_present && vkWaitForPresent2KHR)
+   {
+      static uint64_t last_log_us = 0;
+      uint64_t now_us = cpu_features_get_time_usec();
+      if (last_log_us == 0 || (now_us - last_log_us) >= (30 * 1000 * 1000))
+      {
+         RARCH_DBG("[Vulkan] WaitForPresent active. (pid=%" PRIu64 ")\n", pid);
+         last_log_us = now_us;
+      }
+
+      uint64_t wait_timeout =
+         settings->bools.video_unlimited_wait
+         ? UINT64_MAX
+         : (5 * 1000 * 1000);
+
+      VkPresentWait2InfoKHR wait_info = {
+         .sType = VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR,
+         .pNext = NULL,
+         .presentId = pid,
+         .timeout = wait_timeout
+      };
+
+      vkWaitForPresent2KHR(
+         vk->context.device,
+         vk->swapchain,
+         &wait_info
+      );
+   }
+
+   vk->current_present_id++;
 
    /* VK_SUBOPTIMAL_KHR can be returned on
     * Android 10 when prerotate is not dealt with.

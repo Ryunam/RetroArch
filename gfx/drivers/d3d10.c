@@ -195,6 +195,8 @@ typedef struct
 {
    unsigned              cur_mon_id;
    DXGISwapChain         swapChain;
+   unsigned              buffer_count;
+   bool                  sequential_swapchain;
    D3D10Device           device;
    D3D10RasterizerState  state;
    D3D10RenderTargetView renderTargetView;
@@ -1787,21 +1789,23 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
    UINT                 flags              = 0;
    DXGI_SWAP_CHAIN_DESC desc               = {{0}};
 
-   desc.BufferCount                        = 1;
+   desc.BufferCount                        = d3d10->buffer_count;
    desc.BufferDesc.Width                   = width;
    desc.BufferDesc.Height                  = height;
    desc.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM;
-   desc.BufferDesc.RefreshRate.Numerator   = 60;
-   desc.BufferDesc.RefreshRate.Denominator = 1;
+   desc.BufferDesc.RefreshRate.Numerator   = 0;
+   desc.BufferDesc.RefreshRate.Denominator = 0;
    desc.BufferUsage                        = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 #ifdef HAVE_WINDOW
    desc.OutputWindow                       = (HWND)corewindow;
 #endif
    desc.SampleDesc.Count                   = 1;
    desc.SampleDesc.Quality                 = 0;
-   desc.Windowed                           = TRUE;
-   desc.SwapEffect                         = DXGI_SWAP_EFFECT_SEQUENTIAL;
-
+   desc.Windowed                           = FALSE;
+   desc.SwapEffect                         = d3d10->sequential_swapchain
+                                           ? DXGI_SWAP_EFFECT_SEQUENTIAL
+                                           : DXGI_SWAP_EFFECT_DISCARD;
+   desc.Flags                             |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 #ifdef DEBUG
    flags                                  |= D3D10_CREATE_DEVICE_DEBUG;
 #endif
@@ -1811,6 +1815,27 @@ static bool d3d10_init_swapchain(d3d10_video_t *d3d10,
                NULL, flags, D3D10_SDK_VERSION, &desc,
                (IDXGISwapChain**)&d3d10->swapChain, &d3d10->device)))
       return false;
+   RARCH_LOG("[D3D10] Creating a %s swapchain.\n",
+      d3d10->sequential_swapchain ? "blit-sequential"
+                                  : "blit-discard");
+   /* Ensure DXGI (re)enters FSE upon reinit. */
+#ifdef HAVE_WINDOW
+   DXGISwapChain sc = d3d10->swapChain;
+
+   for (int i = 0; i < 16; i++)
+   {
+      sc->lpVtbl->SetFullscreenState(sc, TRUE, NULL);
+
+      BOOL fs = FALSE;
+      IDXGIOutput* out = NULL;
+      sc->lpVtbl->GetFullscreenState(sc, &fs, &out);
+      if (out)
+         out->lpVtbl->Release(out);
+
+      if (fs)
+         break;
+   }
+#endif
    return true;
 }
 
@@ -1825,6 +1850,10 @@ static void *d3d10_gfx_init(const video_info_t* video,
 #endif
    settings_t*     settings = config_get_ptr();
    d3d10_video_t*  d3d10    = (d3d10_video_t*)calloc(1, sizeof(*d3d10));
+   d3d10->buffer_count      = settings->uints.video_buffer_count;
+   RARCH_LOG("[D3D10] Got %u backbuffer(s).\n", d3d10->buffer_count);
+
+   d3d10->sequential_swapchain = settings->bools.video_sequential_swapchain;
 
    if (!d3d10)
       return NULL;

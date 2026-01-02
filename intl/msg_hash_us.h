@@ -2382,11 +2382,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_REFRESH_RATE_POLLED,
-   "Set Display-Reported Refresh Rate"
+   "Set Display-Reported Refresh Rate / Set Fullscreen State"
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_REFRESH_RATE_POLLED,
-   "The refresh rate as reported by the display driver."
+   "Press START to alternate the fullscreen presentation model. Only applies to the d3d10 & d3d11 drivers, and may be temporary."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_AUTOSWITCH_REFRESH_RATE,
@@ -13754,6 +13754,50 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_HELP_VIDEO_MAX_SWAPCHAIN_IMAGES,
    "Maximum amount of swapchain images. This can tell the video driver to use a specific video buffering mode.\nSingle buffering - 1\nDouble buffering - 2\nTriple buffering - 3\nSetting the right buffering mode can have a big impact on latency."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_BUFFER_COUNT,
+   "Backbuffers"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_BUFFER_COUNT,
+   "Tells the video driver to explicitly use a specified buffering mode. (Reinit required)"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_HELP_VIDEO_BUFFER_COUNT,
+   "Buffer count selection. This can tell the video driver to use a specific video buffering mode.\nSingle buffering - 1\nDouble buffering - 2\nTriple buffering - 3\nSetting the right buffering mode can have a big impact on latency."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_WAIT_FOR_PRESENT,
+   "Wait For Present"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_WAIT_FOR_PRESENT,
+   "Forces the CPU to wait for the previous frame to finish presenting. Compatibility is core-dependent."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_UNLIMITED_WAIT,
+   "Unlimited Wait"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_UNLIMITED_WAIT,
+   "Allows the CPU to block indefinitely when using 'Wait For Present'."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_LOW_LATENCY,
+   "Low Latency Mode"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_LOW_LATENCY,
+   "NVIDIA driver feature intended to reduce CPU-to-GPU frame queuing. Does not override driver heuristics. (Experimental)"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_SEQUENTIAL_SWAPCHAIN,
+   "Sequential Swapchain"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_SEQUENTIAL_SWAPCHAIN,
+   "Uses a sequential presentation model instead of discarding backbuffers. (Reinit required)"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_WAITABLE_SWAPCHAINS,

@@ -387,6 +387,18 @@ typedef struct gfx_ctx_vulkan_data
    struct vulkan_emulated_mailbox mailbox;
    uint8_t flags;
    enum vulkan_wsi_type wsi_type;
+   uint64_t current_present_id;
+   PFN_vkWaitForPresent2KHR vkWaitForPresent2KHR;
+   PFN_vkQueueNotifyOutOfBandNV vkQueueNotifyOutOfBandNV;
+   PFN_vkSetLatencySleepModeNV vkSetLatencySleepModeNV;
+   PFN_vkLatencySleepNV vkLatencySleepNV;
+   PFN_vkSetLatencyMarkerNV vkSetLatencyMarkerNV;
+   PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
+   PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
+   PFN_vkWaitSemaphoresKHR vkWaitSemaphoresKHR;
+   PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
+   VkSemaphore latency_timeline_sem;
+   uint64_t    latency_timeline_value;
 } gfx_ctx_vulkan_data_t;
 
 struct vulkan_display_surface_info
@@ -495,6 +507,8 @@ void vulkan_acquire_next_image(gfx_ctx_vulkan_data_t *vk);
 bool vulkan_create_swapchain(gfx_ctx_vulkan_data_t *vk,
       unsigned width, unsigned height,
       int8_t swap_interval);
+
+void vulkan_latency_sleep(void* data);
 
 void vulkan_debug_mark_image(VkDevice device, VkImage image);
 void vulkan_debug_mark_memory(VkDevice device, VkDeviceMemory memory);

@@ -257,6 +257,7 @@ typedef struct settings
       unsigned video_scale_integer_axis;
       unsigned video_scale_integer_scaling;
       unsigned video_max_swapchain_images;
+      unsigned video_buffer_count;
       unsigned video_swap_interval;
       unsigned video_hard_sync_frames;
       unsigned video_frame_delay;
@@ -637,7 +638,11 @@ typedef struct settings
       bool video_vsync;
       bool video_adaptive_vsync;
       bool video_hard_sync;
+      bool video_sequential_swapchain;
       bool video_waitable_swapchains;
+      bool video_wait_for_present;
+      bool video_unlimited_wait;
+      bool video_low_latency;
       bool video_vfilter;
       bool video_smooth;
       bool video_ctx_scaling;
