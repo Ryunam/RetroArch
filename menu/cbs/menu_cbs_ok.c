@@ -754,6 +754,15 @@ int generic_action_ok_displaylist_push(
          info.enum_idx      = MENU_ENUM_LABEL_DEFERRED_EXPLORE_LIST;
          dl_type            = DISPLAYLIST_GENERIC;
          break;
+      case ACTION_OK_DL_MOST_PLAYED_LIST:
+         info.type          = type;
+         info.directory_ptr = idx;
+         info_path          = label;
+         info_label         = msg_hash_to_str(
+               MENU_ENUM_LABEL_GOTO_MOST_PLAYED);
+         info.enum_idx      = MENU_ENUM_LABEL_GOTO_MOST_PLAYED;
+         dl_type            = DISPLAYLIST_GENERIC;
+         break;
       case ACTION_OK_DL_CONTENTLESS_CORES_LIST:
          info.type          = type;
          info.directory_ptr = idx;
@@ -6580,6 +6589,7 @@ STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_cdrom_info_list, ACTION_OK_DL_CDROM_INFO
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_goto_video, ACTION_OK_DL_VIDEO_LIST)
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_goto_music, ACTION_OK_DL_MUSIC_LIST)
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_goto_explore, ACTION_OK_DL_EXPLORE_LIST)
+STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_goto_most_played, ACTION_OK_DL_MOST_PLAYED_LIST)
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_goto_contentless_cores, ACTION_OK_DL_CONTENTLESS_CORES_LIST)
 #if defined(HAVE_CG) || defined(HAVE_GLSL) || defined(HAVE_SLANG) || defined(HAVE_HLSL)
 STATIC_DEFAULT_ACTION_OK_FUNC(action_ok_shader_preset_manager, ACTION_OK_DL_SHADER_PRESET_MANAGER_LIST)
@@ -9250,6 +9260,7 @@ static int menu_cbs_init_bind_ok_compare_label(menu_file_list_cbs_t *cbs,
          {MENU_ENUM_LABEL_GOTO_IMAGES,                         action_ok_goto_images},
          {MENU_ENUM_LABEL_GOTO_VIDEO,                          action_ok_goto_video},
          {MENU_ENUM_LABEL_GOTO_EXPLORE,                        action_ok_goto_explore},
+         {MENU_ENUM_LABEL_GOTO_MOST_PLAYED,                    action_ok_goto_most_played},
          {MENU_ENUM_LABEL_GOTO_CONTENTLESS_CORES,              action_ok_goto_contentless_cores},
          {MENU_ENUM_LABEL_BROWSE_START,                        action_ok_browse_url_start},
          {MENU_ENUM_LABEL_FILE_BROWSER_CORE,                   action_ok_load_core},
@@ -9528,6 +9539,7 @@ static int menu_cbs_init_bind_ok_compare_label(menu_file_list_cbs_t *cbs,
          {MENU_ENUM_LABEL_CORE_STEAM_UNINSTALL,                action_ok_core_steam_uninstall},
 #endif
          {MENU_ENUM_LABEL_EXPLORE_TAB,                         action_ok_push_default},
+         {MENU_ENUM_LABEL_MOST_PLAYED_TAB,                     action_ok_push_default},
          {MENU_ENUM_LABEL_CONTENTLESS_CORES_TAB,               action_ok_push_default},
       };
 

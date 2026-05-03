@@ -848,6 +848,7 @@
 #if defined(HAVE_LIBRETRODB)
 #define DEFAULT_MENU_CONTENT_SHOW_EXPLORE true
 #endif
+#define DEFAULT_MENU_CONTENT_SHOW_MOST_PLAYED true
 #define DEFAULT_MENU_CONTENT_SHOW_CONTENTLESS_CORES MENU_CONTENTLESS_CORES_DISPLAY_SINGLE_PURPOSE
 
 #ifdef HAVE_XMB
@@ -1498,6 +1499,9 @@
 /* Number of entries that will be kept in content favorites playlist file.
  * -1 == 'unlimited' (99999) */
 #define DEFAULT_CONTENT_FAVORITES_SIZE 200
+
+/* Number of entries that will be shown in the 'Most Played' tab. */
+#define DEFAULT_CONTENT_MOST_PLAYED_SIZE 100
 
 /* Sort all playlists (apart from histories) alphabetically */
 #define DEFAULT_PLAYLIST_SORT_ALPHABETICAL true

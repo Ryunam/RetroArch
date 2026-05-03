@@ -154,7 +154,8 @@ enum
 #if defined(HAVE_LIBRETRODB)
    OZONE_SYSTEM_TAB_EXPLORE,
 #endif
-
+   OZONE_SYSTEM_TAB_MOST_PLAYED,
+   
    /* End of this enum - use the last one to determine num of possible tabs */
    OZONE_SYSTEM_TAB_LAST
 };
@@ -2042,6 +2043,9 @@ static uintptr_t ozone_entries_icon_get_texture(
             return icons_tex[OZONE_ENTRIES_ICONS_TEXTURE_CURSOR];
       case MENU_ENUM_LABEL_DEFERRED_EXPLORE_LIST:
          return icons_tex[OZONE_ENTRIES_ICONS_TEXTURE_RDB];
+      case MENU_ENUM_LABEL_GOTO_MOST_PLAYED:
+      case MENU_ENUM_LABEL_MOST_PLAYED_TAB:
+         return icons_tex[OZONE_ENTRIES_ICONS_TEXTURE_PLAYLIST];
       case MENU_ENUM_LABEL_GOTO_CONTENTLESS_CORES:
       case MENU_ENUM_LABEL_DEFERRED_CONTENTLESS_CORES_LIST:
          return icons_tex[OZONE_ENTRIES_ICONS_TEXTURE_CORE];
@@ -3381,8 +3385,9 @@ const enum msg_hash_enums ozone_system_tabs_label[OZONE_SYSTEM_TAB_LAST] = {
       MENU_ENUM_LABEL_ADD_TAB,
       MENU_ENUM_LABEL_CONTENTLESS_CORES_TAB,
 #ifdef HAVE_LIBRETRODB
-      MENU_ENUM_LABEL_EXPLORE_TAB
+      MENU_ENUM_LABEL_EXPLORE_TAB,
 #endif
+      MENU_ENUM_LABEL_MOST_PLAYED_TAB
 };
 
 static void ozone_draw_sidebar(
@@ -3418,7 +3423,8 @@ static void ozone_draw_sidebar(
       MENU_ENUM_LABEL_VALUE_ADD_TAB,
       MENU_ENUM_LABEL_VALUE_CONTENTLESS_CORES_TAB,
 #ifdef HAVE_LIBRETRODB
-      MENU_ENUM_LABEL_VALUE_EXPLORE_TAB
+      MENU_ENUM_LABEL_VALUE_EXPLORE_TAB,
+      MENU_ENUM_LABEL_VALUE_MOST_PLAYED_TAB
 #endif
    };
    static const unsigned ozone_system_tabs_icons[OZONE_SYSTEM_TAB_LAST]            = {
@@ -3439,6 +3445,7 @@ static void ozone_draw_sidebar(
       OZONE_TAB_TEXTURE_SCAN_CONTENT,
       OZONE_TAB_TEXTURE_CONTENTLESS_CORES,
 #ifdef HAVE_LIBRETRODB
+      OZONE_TAB_TEXTURE_EXPLORE,
       OZONE_TAB_TEXTURE_EXPLORE
 #endif
    };
@@ -4820,8 +4827,9 @@ static void ozone_sidebar_goto(ozone_handle_t *ozone, size_t new_selection)
       MENU_ENUM_LABEL_ADD_TAB,
       MENU_ENUM_LABEL_CONTENTLESS_CORES_TAB,
 #ifdef HAVE_LIBRETRODB
-      MENU_ENUM_LABEL_EXPLORE_TAB
+      MENU_ENUM_LABEL_EXPLORE_TAB,
 #endif
+      MENU_ENUM_LABEL_MOST_PLAYED_TAB
    };
    static const enum menu_settings_type ozone_system_tabs_type[OZONE_SYSTEM_TAB_LAST] = {
       MENU_SETTINGS,
@@ -4841,8 +4849,9 @@ static void ozone_sidebar_goto(ozone_handle_t *ozone, size_t new_selection)
       MENU_ADD_TAB,
       MENU_CONTENTLESS_CORES_TAB,
 #ifdef HAVE_LIBRETRODB
-      MENU_EXPLORE_TAB
+      MENU_EXPLORE_TAB,
 #endif
+      MENU_MOST_PLAYED_TAB
    };
 
    unsigned video_info_height = ozone->last_height;
@@ -5340,6 +5349,9 @@ static void ozone_refresh_system_tabs_list(ozone_handle_t * ozone)
    if (settings->bools.menu_content_show_explore)
       ozone->tabs[++ozone->system_tab_end] = OZONE_SYSTEM_TAB_EXPLORE;
 #endif
+
+   if (settings->bools.menu_content_show_most_played)
+      ozone->tabs[++ozone->system_tab_end] = OZONE_SYSTEM_TAB_MOST_PLAYED;
 }
 
 static int ozone_get_entries_padding_old_list(ozone_handle_t* ozone)
@@ -12537,6 +12549,10 @@ static void ozone_set_header(ozone_handle_t *ozone)
          if (ozone->categories_selection_ptr <= ozone->system_tab_end)
          {
             size_t tab_texture = ozone->tabs[ozone->categories_selection_ptr];
+
+            if (tab_texture == OZONE_SYSTEM_TAB_MOST_PLAYED)
+               tab_texture = OZONE_TAB_TEXTURE_EXPLORE;
+
             ozone->header_icon = ozone->tab_textures[tab_texture];
 
             if (label && !strcmp(label,
@@ -12700,6 +12716,10 @@ static void ozone_populate_entries(
 
    if ((menu_st->flags & MENU_ST_FLAG_PREVENT_POPULATE) > 0)
    {
+      bool is_most_played_list =
+               string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_GOTO_MOST_PLAYED))
+            || string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_MOST_PLAYED_TAB));
+
       menu_st->flags                 &=  ~MENU_ST_FLAG_PREVENT_POPULATE;
       ozone_selection_changed(ozone, false);
 
@@ -12749,6 +12769,16 @@ static void ozone_populate_entries(
             }
 
             ozone->num_search_terms_old = num_search_terms;
+         }
+
+         if (is_most_played_list)
+         {
+            if (   gfx_thumbnail_is_enabled(menu_st->thumbnail_path_data, GFX_THUMBNAIL_RIGHT)
+                || gfx_thumbnail_is_enabled(menu_st->thumbnail_path_data, GFX_THUMBNAIL_LEFT))
+            {
+               ozone_set_thumbnail_content(ozone, "");
+               ozone_update_thumbnail_image(ozone);
+            }
          }
       }
       return;
@@ -12820,6 +12850,12 @@ static void ozone_populate_entries(
    else
       ozone->flags &= ~OZONE_FLAG_IS_PLAYLIST;
 
+   if (     !(ozone->flags & OZONE_FLAG_IS_PLAYLIST)
+         && (  string_is_equal(label, MENU_ENUM_LABEL_GOTO_MOST_PLAYED_STR)
+         ||    string_is_equal(label, MENU_ENUM_LABEL_MOST_PLAYED_TAB_STR))
+      )
+   ozone->flags |= OZONE_FLAG_IS_PLAYLIST;
+   
    if (     !(ozone->flags & OZONE_FLAG_IS_PLAYLIST)
          && string_is_equal(label, MENU_ENUM_LABEL_PLAYLISTS_TAB_STR))
       ozone->flags2 |=  OZONE_FLAG2_IS_PLAYLISTS_TAB;

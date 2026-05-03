@@ -59,6 +59,10 @@ MSG_HASH(
    "Explore"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_MOST_PLAYED_TAB,
+   "Most Played"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CONTENTLESS_CORES_TAB,
    "Contentless Cores"
    )
@@ -351,6 +355,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_GOTO_EXPLORE,
    "Browse all content matching the database via a categorized search interface."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_GOTO_MOST_PLAYED,
+   "Most Played"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_GOTO_MOST_PLAYED,
+   "Browse playlist entries sorted by runtime."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_GOTO_CONTENTLESS_CORES,
@@ -6553,6 +6565,14 @@ MSG_HASH(
    "Show the content explorer option."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CONTENT_SHOW_MOST_PLAYED,
+   "Show 'Most Played'"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CONTENT_SHOW_MOST_PLAYED,
+   "Show the option for browsing playlist entries sorted by runtime."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CONTENT_SHOW_CONTENTLESS_CORES,
    "Show 'Contentless Cores'"
    )
@@ -9051,6 +9071,21 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_EXPLORE_VIEW_DELETED,
    "View was deleted"
+   )
+
+/* Most Played tab */
+
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CONTENT_MOST_PLAYED_SIZE,
+   "Number of entries displayed"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CONTENT_MOST_PLAYED_SIZE,
+   "Define the number of entries shown in the 'Most Played' tab. "
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_MOST_PLAYED_INITIALISING_LIST,
+   "Refreshing Most Played list..."
    )
 
 /* Playlist > Playlist Item */

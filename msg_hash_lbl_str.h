@@ -5,6 +5,12 @@
 #include "config.h"
 #endif
 
+#define MENU_ENUM_LABEL_MOST_PLAYED_TAB_STR "most_played_tab"
+#define MENU_ENUM_LABEL_MOST_PLAYED_INITIALISING_LIST_STR "most_played_initialising_list"
+#define MENU_ENUM_LABEL_CONTENT_MOST_PLAYED_SIZE_STR "content_most_played_size"
+#define MENU_ENUM_LABEL_CONTENT_SHOW_MOST_PLAYED_STR "content_show_most_played"
+#define MENU_ENUM_LABEL_GOTO_MOST_PLAYED_STR "goto_most_played"
+
 #define MENU_ENUM_LABEL_SWITCH_CPU_PROFILE_STR "switch_cpu_profile"
 #define MENU_ENUM_LABEL_ACCOUNTS_CHEEVOS_USERNAME_STR "accounts_cheevos_username"
 #define MENU_ENUM_LABEL_ACCOUNTS_LIST_STR "accounts_list"

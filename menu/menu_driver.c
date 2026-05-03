@@ -2387,6 +2387,9 @@ static bool menu_driver_displaylist_push_internal(
    else if (string_is_equal(label, MENU_ENUM_LABEL_EXPLORE_TAB_STR))
       return menu_displaylist_ctl(DISPLAYLIST_EXPLORE, info, settings);
 #endif
+   else if (   string_is_equal(label, MENU_ENUM_LABEL_MOST_PLAYED_TAB_STR)
+            || string_is_equal(label, MENU_ENUM_LABEL_GOTO_MOST_PLAYED_STR))
+      return menu_displaylist_ctl(DISPLAYLIST_MOST_PLAYED, info, settings);
    else if (string_is_equal(label, MENU_ENUM_LABEL_CONTENTLESS_CORES_TAB_STR))
       return menu_displaylist_ctl(DISPLAYLIST_CONTENTLESS_CORES, info, settings);
    else if (string_is_equal(label, MENU_ENUM_LABEL_NETPLAY_TAB_STR))
@@ -6720,6 +6723,8 @@ bool menu_driver_ctl(enum rarch_menu_ctl_state state, void *data)
          menu_explore_wait_for_init_task();
          menu_explore_free();
 #endif
+         menu_most_played_wait_for_init_task();
+         menu_most_played_free();
          menu_contentless_cores_free();
 #endif
 

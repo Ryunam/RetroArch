@@ -237,6 +237,7 @@ typedef struct settings
       unsigned bundle_assets_extract_version_current;
       unsigned bundle_assets_extract_last_version;
       unsigned content_history_size;
+      unsigned content_most_played_size;
       unsigned frontend_log_level;
       unsigned libretro_log_level;
       unsigned rewind_granularity;
@@ -893,6 +894,7 @@ typedef struct settings
       bool menu_content_show_playlists;
       bool menu_content_show_playlist_tabs;
       bool menu_content_show_explore;
+      bool menu_content_show_most_played;
       bool menu_use_preferred_system_color_theme;
       bool menu_preferred_system_color_theme_set;
       bool menu_unified_controls;

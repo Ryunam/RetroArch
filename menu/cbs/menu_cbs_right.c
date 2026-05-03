@@ -1365,6 +1365,7 @@ static int menu_cbs_init_bind_right_compare_label(menu_file_list_cbs_t *cbs,
             case MENU_ENUM_LABEL_NO_PLAYLIST_ENTRIES_AVAILABLE:
             case MENU_ENUM_LABEL_NO_CORES_AVAILABLE:
             case MENU_ENUM_LABEL_EXPLORE_INITIALISING_LIST:
+            case MENU_ENUM_LABEL_MOST_PLAYED_INITIALISING_LIST:
                if (
                      string_ends_with_size(menu_lbl, "_tab",
                         menu_lbl_len,

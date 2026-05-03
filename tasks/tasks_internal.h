@@ -295,6 +295,14 @@ bool menu_explore_init_in_progress(void *data);
 void menu_explore_wait_for_init_task(void);
 #endif
 
+/* Menu most played tasks */
+#if defined(HAVE_MENU)
+bool task_push_menu_most_played_init(const char *directory_playlist,
+      const char *directory_runtime_log);
+bool menu_most_played_init_in_progress(void *data);
+void menu_most_played_wait_for_init_task(void);
+#endif
+
 extern const char* const input_builtin_autoconfs[];
 
 /* cloud sync tasks */

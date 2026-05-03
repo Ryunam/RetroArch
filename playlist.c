@@ -36,6 +36,10 @@
 #include "file_path_special.h"
 #include "core_info.h"
 
+#ifdef HAVE_MENU
+#include "menu/menu_most_played.h"
+#endif
+
 #if defined(ANDROID)
 #include "play_feature_delivery/play_feature_delivery.h"
 #endif
@@ -1693,6 +1697,10 @@ void playlist_write_runtime_file(playlist_t *playlist)
                                | CNT_PLAYLIST_FLG_OLD_FMT
                                | CNT_PLAYLIST_FLG_COMPRESSED);
 
+#ifdef HAVE_MENU
+   menu_most_played_mark_dirty();
+#endif
+
    RARCH_DBG("[Playlist] Runtime written to file: \"%s\".\n", playlist->config.path);
 end:
    intfstream_close(file);
@@ -2573,6 +2581,10 @@ static bool playlist_read_file(playlist_t *playlist)
 {
    int test_char;
    bool res             = true;
+
+   if (string_is_equal(playlist->config.path, MENU_MOST_PLAYED_PLAYLIST_PATH))
+      return true;
+
 #if defined(HAVE_ZLIB)
       /* Always use RZIP interface when reading playlists
        * > this will automatically handle uncompressed

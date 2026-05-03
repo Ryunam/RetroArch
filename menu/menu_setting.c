@@ -9123,6 +9123,19 @@ static void general_write_handler(rarch_setting_t *setting)
             }
          }
          break;
+      case MENU_ENUM_LABEL_CONTENT_MOST_PLAYED_SIZE:
+         {
+            struct menu_state *menu_st = menu_state_get_ptr();
+            unsigned menu_type         = 0;
+
+            menu_most_played_mark_dirty();
+            menu_entries_get_last_stack(NULL, NULL, &menu_type, NULL, NULL);
+
+            if (menu_st && (menu_type == MENU_MOST_PLAYED_TAB))
+               menu_st->flags |= MENU_ST_FLAG_PREVENT_POPULATE
+                              |  MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
+         }
+         break;
       case MENU_ENUM_LABEL_MANUAL_CONTENT_SCAN_SYSTEM_NAME_CUSTOM:
          /* Ensure that custom system name includes no
           * invalid characters */
@@ -22667,6 +22680,23 @@ static bool setting_append_list(
                general_write_handler,
                general_read_handler);
          (*list)[list_info->index - 1].action_ok     = &setting_action_ok_uint;
+         (*list)[list_info->index - 1].offset_by     = 1;
+         menu_settings_list_current_add_range(list, list_info, 1.0f, 9999.0f, 1.0f, true, true);
+
+         CONFIG_UINT(
+               list, list_info,
+               &settings->uints.content_most_played_size,
+               MENU_ENUM_LABEL_CONTENT_MOST_PLAYED_SIZE,
+               MENU_ENUM_LABEL_VALUE_CONTENT_MOST_PLAYED_SIZE,
+               DEFAULT_CONTENT_MOST_PLAYED_SIZE,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler);
+         (*list)[list_info->index - 1].action_ok     = &setting_action_ok_uint;
+         (*list)[list_info->index - 1].action_left   = setting_uint_action_left_with_refresh;
+         (*list)[list_info->index - 1].action_right  = setting_uint_action_right_with_refresh;
          (*list)[list_info->index - 1].offset_by     = 1;
          menu_settings_list_current_add_range(list, list_info, 1.0f, 9999.0f, 1.0f, true, true);
 

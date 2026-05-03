@@ -624,6 +624,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_video_ctx_scaling,             MENU_
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_history_list_enable,           MENU_ENUM_SUBLABEL_HISTORY_LIST_ENABLE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_content_history_size,          MENU_ENUM_SUBLABEL_CONTENT_HISTORY_SIZE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_content_favorites_size,        MENU_ENUM_SUBLABEL_CONTENT_FAVORITES_SIZE)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_content_most_played_size,      MENU_ENUM_SUBLABEL_CONTENT_MOST_PLAYED_SIZE)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_input_unified_controls,   MENU_ENUM_SUBLABEL_INPUT_UNIFIED_MENU_CONTROLS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_input_disable_info_button,     MENU_ENUM_SUBLABEL_INPUT_DISABLE_INFO_BUTTON)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_input_disable_search_button,   MENU_ENUM_SUBLABEL_INPUT_DISABLE_SEARCH_BUTTON)
@@ -1037,6 +1038,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_goto_images,                        
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_goto_music,                            MENU_ENUM_SUBLABEL_GOTO_MUSIC)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_goto_video,                            MENU_ENUM_SUBLABEL_GOTO_VIDEO)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_goto_explore,                          MENU_ENUM_SUBLABEL_GOTO_EXPLORE)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_goto_most_played,                      MENU_ENUM_SUBLABEL_GOTO_MOST_PLAYED)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_goto_contentless_cores,                MENU_ENUM_SUBLABEL_GOTO_CONTENTLESS_CORES)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_filebrowser_settings,             MENU_ENUM_SUBLABEL_MENU_FILE_BROWSER_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_filebrowser_open_uwp_permissions, MENU_ENUM_SUBLABEL_FILE_BROWSER_OPEN_UWP_PERMISSIONS)
@@ -1236,6 +1238,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_import_content_entry,          
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_playlists_tab,                    MENU_ENUM_SUBLABEL_CONTENT_SHOW_PLAYLISTS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_playlist_tabs,                    MENU_ENUM_SUBLABEL_CONTENT_SHOW_PLAYLIST_TABS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_explore_tab,                      MENU_ENUM_SUBLABEL_CONTENT_SHOW_EXPLORE)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_most_played_tab,                  MENU_ENUM_SUBLABEL_CONTENT_SHOW_MOST_PLAYED)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_menu_contentless_cores_tab,            MENU_ENUM_SUBLABEL_CONTENT_SHOW_CONTENTLESS_CORES)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_main_menu_enable_settings,             MENU_ENUM_SUBLABEL_XMB_MAIN_MENU_ENABLE_SETTINGS)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_rgui_show_start_screen,                MENU_ENUM_SUBLABEL_RGUI_SHOW_START_SCREEN)
@@ -2011,6 +2014,8 @@ static int action_bind_sublabel_playlist_entry(
        && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_HISTORY_TAB))
        && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_DEFERRED_FAVORITES_LIST))
        && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_FAVORITES_TAB))
+       && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_GOTO_MOST_PLAYED))
+       && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_MOST_PLAYED_TAB))
        && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_DEFERRED_PLAYLIST_LIST))
        && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_HORIZONTAL_MENU)))
       return 0;
@@ -2822,6 +2827,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
          case MENU_ENUM_LABEL_CONTENT_SHOW_EXPLORE:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_menu_explore_tab);
             break;
+         case MENU_ENUM_LABEL_CONTENT_SHOW_MOST_PLAYED:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_menu_most_played_tab);
+            break;
          case MENU_ENUM_LABEL_CONTENT_SHOW_CONTENTLESS_CORES:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_menu_contentless_cores_tab);
             break;
@@ -2848,6 +2856,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_GOTO_EXPLORE:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_goto_explore);
+            break;
+         case MENU_ENUM_LABEL_GOTO_MOST_PLAYED:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_goto_most_played);
             break;
          case MENU_ENUM_LABEL_GOTO_CONTENTLESS_CORES:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_goto_contentless_cores);
@@ -5514,6 +5525,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_CONTENT_FAVORITES_SIZE:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_content_favorites_size);
+            break;
+         case MENU_ENUM_LABEL_CONTENT_MOST_PLAYED_SIZE:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_content_most_played_size);
             break;
          case MENU_ENUM_LABEL_NETPLAY_USE_MITM_SERVER:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_netplay_use_mitm_server);

@@ -1148,7 +1148,9 @@ ifeq ($(HAVE_MENU_COMMON), 1)
           menu/cbs/menu_cbs_sublabel.o \
           menu/cbs/menu_cbs_title.o \
           menu/menu_displaylist.o \
-          menu/menu_contentless_cores.o
+          menu/menu_contentless_cores.o \
+          menu/menu_most_played.o \
+          tasks/task_menu_most_played.o
 endif
 
 ifeq ($(HAVE_GFX_WIDGETS), 1)

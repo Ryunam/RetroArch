@@ -2753,6 +2753,88 @@ static int menu_displaylist_parse_playlist(
    return count;
 }
 
+static unsigned menu_displaylist_most_played(
+   file_list_t *list, settings_t *settings)
+{
+   struct menu_state *menu_st = menu_state_get_ptr();
+   playlist_t *playlist = NULL;
+   const char *_msg     = msg_hash_to_str(MENU_ENUM_LABEL_COLLECTION);
+   unsigned count       = 0;
+   size_t first_entry   = 0;
+   bool init_in_progress = menu_most_played_init_in_progress(NULL);
+
+   if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+            MENU_ENUM_LABEL_CONTENT_MOST_PLAYED_SIZE,
+            PARSE_ONLY_UINT, false) == 0)
+   {
+      count++;
+
+      if (list->size)
+      {
+         menu_file_list_cbs_t *cbs =
+               (menu_file_list_cbs_t*)list->list[list->size-1].actiondata;
+
+         if (cbs)
+            cbs->action_sublabel = menu_most_played_action_sublabel_spacer;
+      }
+   }
+
+   first_entry = list->size;
+
+   if (menu_most_played_is_dirty() && !init_in_progress)
+   {
+      if (task_push_menu_most_played_init(
+               settings->paths.directory_playlist,
+               settings->paths.directory_runtime_log))
+      {
+         menu_most_played_clear_dirty();
+         init_in_progress = true;
+      }
+   }
+
+   playlist = menu_most_played_get_playlist();
+
+   if (!playlist)
+   {
+      if (!init_in_progress)
+      {
+         if (task_push_menu_most_played_init(
+                  settings->paths.directory_playlist,
+                  settings->paths.directory_runtime_log))
+            menu_most_played_clear_dirty();
+      }
+
+      menu_entries_append(list,
+         msg_hash_to_str(MENU_ENUM_LABEL_VALUE_MOST_PLAYED_INITIALISING_LIST),
+         msg_hash_to_str(MENU_ENUM_LABEL_MOST_PLAYED_INITIALISING_LIST),
+         MENU_ENUM_LABEL_MOST_PLAYED_INITIALISING_LIST,
+         FILE_TYPE_NONE, 0, 0, NULL);
+
+      return (unsigned)list->size;
+   }
+
+   playlist_set_cached_external(playlist);
+
+   {
+      int parsed_count = menu_displaylist_parse_playlist(
+            list,
+            "content_most_played",
+            playlist,
+            settings,
+            _msg,
+            strlen(_msg),
+            true);
+
+      if (parsed_count > 0)
+         count += (unsigned)parsed_count;
+   }
+
+   if (menu_st && (count > 1) && (menu_st->selection_ptr < first_entry))
+      menu_st->selection_ptr = first_entry;
+
+   return count;
+}
+
 #ifdef HAVE_LIBRETRODB
 static int create_string_list_rdb_entry_string(
       enum msg_hash_enums enum_idx,
@@ -7813,6 +7895,10 @@ unsigned menu_displaylist_build_list(
 #if defined(HAVE_LIBRETRODB)
          count              = menu_displaylist_explore(list, settings);
 #endif
+         break;
+      case DISPLAYLIST_MOST_PLAYED:
+         menu_entries_clear(list);
+         count              = menu_displaylist_most_played(list, settings);
          break;
       case DISPLAYLIST_SCAN_DIRECTORY_LIST:
 #if 0
@@ -15014,6 +15100,7 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
          case DISPLAYLIST_HELP_SCREEN_LIST:
          case DISPLAYLIST_INFORMATION_LIST:
          case DISPLAYLIST_EXPLORE:
+         case DISPLAYLIST_MOST_PLAYED:
          case DISPLAYLIST_SCAN_DIRECTORY_LIST:
          case DISPLAYLIST_SYSTEM_INFO:
          case DISPLAYLIST_BLUETOOTH_SETTINGS_LIST:

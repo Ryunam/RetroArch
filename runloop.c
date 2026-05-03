@@ -655,6 +655,10 @@ static void runloop_update_runtime_log(
    /* Save runtime log file */
    runtime_log_save(runtime_log);
 
+#ifdef HAVE_MENU
+   menu_most_played_mark_dirty();
+#endif
+
    /* Clean up */
    free(runtime_log);
 }

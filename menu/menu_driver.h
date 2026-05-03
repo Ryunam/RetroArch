@@ -38,6 +38,7 @@
 #include "menu_input.h"
 #include "../input/input_osk.h"
 #include "menu_entries.h"
+#include "menu_most_played.h"
 #include "menu_shader.h"
 #include "../gfx/gfx_animation.h"
 #include "../gfx/gfx_display.h"
@@ -101,6 +102,7 @@ enum menu_settings_type
    MENU_IMAGES_TAB,
    MENU_NETPLAY_TAB,
    MENU_EXPLORE_TAB,
+   MENU_MOST_PLAYED_TAB,
    MENU_CONTENTLESS_CORES_TAB,
    MENU_ADD_TAB,
    MENU_PLAYLISTS_TAB,
