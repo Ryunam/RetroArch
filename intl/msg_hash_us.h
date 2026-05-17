@@ -5349,6 +5349,14 @@ MSG_HASH(
    "Adjust Video Layout."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_ONSCREEN_INDICATORS_SETTINGS,
+   "On-Screen Indicators"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_ONSCREEN_INDICATORS_SETTINGS,
+   "Adjust On-Screen Indicators."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_ONSCREEN_NOTIFICATIONS_SETTINGS,
    "On-Screen Notifications"
    )

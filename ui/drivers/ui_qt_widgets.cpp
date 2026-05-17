@@ -6041,6 +6041,20 @@ QVector<OptionsPage*> OnscreenDisplayCategory::pages()
    return pages;
 }
 
+IndicatorsPage::IndicatorsPage(QObject *parent) :
+   OptionsPage(parent)
+{
+   setDisplayName(MENU_ENUM_LABEL_VALUE_ONSCREEN_INDICATORS_SETTINGS);
+}
+
+QWidget *IndicatorsPage::widget()
+{
+   QWidget                            *widget = new QWidget;
+   QVBoxLayout                        *layout = new QVBoxLayout;
+
+   return widget;
+}
+
 NotificationsPage::NotificationsPage(QObject *parent) :
    OptionsPage(parent)
 {

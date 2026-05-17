@@ -9869,6 +9869,7 @@ unsigned menu_displaylist_build_list(
                {MENU_ENUM_LABEL_MENU_SETTINGS,                                         PARSE_ACTION,      true},
                {MENU_ENUM_LABEL_MENU_VIEWS_SETTINGS,                                   PARSE_ACTION,      true},
                {MENU_ENUM_LABEL_INPUT_MENU_SETTINGS,                                   PARSE_ACTION,      true},
+               {MENU_ENUM_LABEL_ONSCREEN_INDICATORS_SETTINGS,                          PARSE_ACTION,      true},
                {MENU_ENUM_LABEL_ONSCREEN_NOTIFICATIONS_SETTINGS,                       PARSE_ACTION,      true},
 #if defined(HAVE_OVERLAY)
                {MENU_ENUM_LABEL_ONSCREEN_OVERLAY_SETTINGS,                             PARSE_ACTION,      true},
@@ -9919,6 +9920,7 @@ unsigned menu_displaylist_build_list(
                          build_list[i].checked = icons && icons->size > 1;
                      }
                      break;
+                  case MENU_ENUM_LABEL_ONSCREEN_INDICATORS_SETTINGS:
                   case MENU_ENUM_LABEL_ONSCREEN_NOTIFICATIONS_SETTINGS:
                   case MENU_ENUM_LABEL_ONSCREEN_OVERLAY_SETTINGS:
                      build_list[i].checked = settings->bools.settings_show_onscreen_display;
@@ -10953,6 +10955,10 @@ unsigned menu_displaylist_build_list(
 #endif /*HAVE_LAKKA?*/
          }
          break;
+      case DISPLAYLIST_ONSCREEN_INDICATORS_SETTINGS_LIST:
+         {
+
+         }
       case DISPLAYLIST_ONSCREEN_NOTIFICATIONS_SETTINGS_LIST:
          {
             bool video_font_enable        = settings->bools.video_font_enable;
@@ -11561,6 +11567,7 @@ unsigned menu_displaylist_build_list(
          {
             /* Not used */
             static const menu_displaylist_build_info_t build_list[] = {
+               {MENU_ENUM_LABEL_ONSCREEN_INDICATORS_SETTINGS,    PARSE_ACTION},
                {MENU_ENUM_LABEL_ONSCREEN_NOTIFICATIONS_SETTINGS, PARSE_ACTION},
 #if defined(HAVE_OVERLAY)
                {MENU_ENUM_LABEL_ONSCREEN_OVERLAY_SETTINGS,       PARSE_ACTION},
@@ -14968,6 +14975,7 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
          case DISPLAYLIST_SETTINGS_ALL:
          case DISPLAYLIST_PRIVACY_SETTINGS_LIST:
          case DISPLAYLIST_CONFIGURATIONS_LIST:
+         case DISPLAYLIST_ONSCREEN_INDICATORS_SETTINGS_LIST:
          case DISPLAYLIST_ONSCREEN_NOTIFICATIONS_SETTINGS_LIST:
          case DISPLAYLIST_ONSCREEN_NOTIFICATIONS_VIEWS_SETTINGS_LIST:
          case DISPLAYLIST_LATENCY_SETTINGS_LIST:
