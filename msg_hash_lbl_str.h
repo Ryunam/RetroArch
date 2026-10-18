@@ -610,6 +610,7 @@
 #define MENU_ENUM_LABEL_RUNAHEAD_MODE_STR "run_ahead_mode"
 #define MENU_ENUM_LABEL_RUN_AHEAD_FRAMES_STR "run_ahead_frames"
 #define MENU_ENUM_LABEL_PREEMPT_FRAMES_STR "preemptive_frames"
+#define MENU_ENUM_LABEL_RUN_AHEAD_AUDIO_OFFSET_STR "run_ahead_audio_offset"
 #define MENU_ENUM_LABEL_SORT_SAVEFILES_ENABLE_STR "sort_savefiles_enable"
 #define MENU_ENUM_LABEL_SORT_SAVESTATES_ENABLE_STR "sort_savestates_enable"
 #define MENU_ENUM_LABEL_SORT_SAVEFILES_BY_CONTENT_ENABLE_STR "sort_savefiles_by_content_enable"

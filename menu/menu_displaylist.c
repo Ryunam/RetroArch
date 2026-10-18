@@ -12860,6 +12860,11 @@ unsigned menu_displaylist_build_list(
             bool runahead_supported       = true;
             bool runahead_enabled         = settings->bools.run_ahead_enabled;
             bool preempt_enabled          = settings->bools.preemptive_frames_enable;
+#if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
+            bool secondary_instance       = settings->bools.run_ahead_secondary_instance;
+#else
+            bool secondary_instance       = false;
+#endif
 #endif
             static menu_displaylist_build_info_selective_t build_list[] = {
                {MENU_ENUM_LABEL_VIDEO_FRAME_DELAY_AUTO,                PARSE_ONLY_BOOL, true },
@@ -12868,6 +12873,7 @@ unsigned menu_displaylist_build_list(
                {MENU_ENUM_LABEL_RUNAHEAD_MODE,                         PARSE_ONLY_UINT, false },
                {MENU_ENUM_LABEL_RUN_AHEAD_FRAMES,                      PARSE_ONLY_UINT, false },
                {MENU_ENUM_LABEL_PREEMPT_FRAMES,                        PARSE_ONLY_UINT, false },
+               {MENU_ENUM_LABEL_RUN_AHEAD_AUDIO_OFFSET,                PARSE_ONLY_UINT, false },
                {MENU_ENUM_LABEL_RUN_AHEAD_HIDE_WARNINGS,               PARSE_ONLY_BOOL, false },
 #endif
                {MENU_ENUM_LABEL_AUDIO_LATENCY,                         PARSE_ONLY_UINT, true },
@@ -12962,6 +12968,20 @@ unsigned menu_displaylist_build_list(
                      break;
                   case MENU_ENUM_LABEL_PREEMPT_FRAMES:
                      build_list[i].checked = runahead_supported && preempt_enabled;
+                     break;
+                  case MENU_ENUM_LABEL_RUN_AHEAD_AUDIO_OFFSET:
+                     {
+                        /* Never past the frames run ahead */
+                        unsigned frames         = settings->uints.run_ahead_frames;
+                        rarch_setting_t *offset = menu_setting_find_enum(build_list[i].enum_idx);
+                        if (offset)
+                           offset->max = frames;
+                        if (settings->uints.run_ahead_audio_offset > frames)
+                           configuration_set_uint(settings,
+                                 settings->uints.run_ahead_audio_offset, frames);
+                     }
+                     build_list[i].checked = runahead_supported
+                           && ((runahead_enabled && !secondary_instance) || preempt_enabled);
                      break;
                   case MENU_ENUM_LABEL_RUN_AHEAD_HIDE_WARNINGS:
                      build_list[i].checked = runahead_supported && (runahead_enabled || preempt_enabled);

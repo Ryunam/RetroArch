@@ -1681,18 +1681,24 @@ bool runahead_run(void *data,
          || !(runloop_st->flags & RUNLOOP_FLAG_RUNAHEAD_SECONDARY_CORE_AVAILABLE)
          || (sec_status != RUNAHEAD_COPY_READY))
    {
+      /* Run-Ahead Audio Offset: frame heard (not for Second Instance) */
+      unsigned audio_offset = use_secondary
+            ? RUNAHEAD_AUDIO_OFFSET_OFF :config_get_ptr()->uints.run_ahead_audio_offset;
+      int audio_number      = audio_offset < (unsigned)runahead_count
+            ? runahead_count - (int)audio_offset : 0;
+
       /* TODO: multiple savestates for higher performance
        * when not using secondary core */
       for (frame_number = 0; frame_number <= runahead_count; frame_number++)
       {
-         last_frame      = frame_number == runahead_count;
-         suspended_frame = !last_frame;
+         bool audio_frame = frame_number == audio_number;
+         last_frame       = frame_number == runahead_count;
+         suspended_frame  = !last_frame;
 
-         if (suspended_frame)
-         {
+         if (!audio_frame)
             AUDIO_FLAGS_SET(audio_st, AUDIO_FLAG_SUSPENDED);
+         if (suspended_frame)
             video_st->main_flags &= ~VIDEO_FLAG_ACTIVE;
-         }
 
          if (frame_number == 0)
             advanced = core_run();
@@ -1705,9 +1711,9 @@ bool runahead_run(void *data,
                video_st->main_flags |=  VIDEO_FLAG_ACTIVE;
             else
                video_st->main_flags &= ~VIDEO_FLAG_ACTIVE;
-
-            AUDIO_FLAGS_CLEAR(audio_st, AUDIO_FLAG_SUSPENDED);
          }
+         if (!audio_frame)
+            AUDIO_FLAGS_CLEAR(audio_st, AUDIO_FLAG_SUSPENDED);
 
          if (!advanced)
             return false;
@@ -1933,6 +1939,7 @@ void preempt_deinit(void *data)
 
    /* One slab; buffer[0] is its base. */
    free(preempt->buffer[0]);
+   free(preempt->audio);
 
    free(preempt);
    runloop_st->preempt_data = NULL;
@@ -2134,6 +2141,26 @@ static INLINE void preempt_input_poll(preempt_t *preempt,
 /* macro for preempt_run */
 #define PREEMPT_NEXT_PTR(x) ((x + 1) % preempt->frames)
 
+/* Runs the core; with @hold its audio goes to the slot after the held
+ * ones, for Run-Ahead Audio Offset */
+static void preempt_retro_run(runloop_state_t *runloop_st,
+      preempt_t *preempt, bool hold)
+{
+   unsigned slot = hold ? (preempt->audio_head + preempt->audio_count)
+         % (preempt->frames + 1) : 0;
+   if (hold)
+      audio_driver_hold_begin(preempt->audio + slot * preempt->audio_slot,
+            preempt->audio_slot);
+   runloop_st->current_core.retro_run();
+   if (runloop_st->auto_state_load_pending)
+      runloop_st->auto_state_load_core_ran = true;
+   if (hold)
+   {
+      preempt->audio_len[slot] = audio_driver_hold_end();
+      preempt->audio_count++;
+   }
+}
+
 /**
  * preempt_run:
  * @preempt : pointer to preemptive frames object
@@ -2149,6 +2176,24 @@ bool preempt_run(preempt_t *preempt, void *data)
    settings_t *settings              = config_get_ptr();
    unsigned input_max_users          = settings->uints.input_max_users;
    bool run_ahead_hide_warnings      = settings->bools.run_ahead_hide_warnings;
+   /* Run-Ahead Audio Offset: the frames not run ahead are held back */
+   unsigned audio_delay              = MIN(settings->uints.run_ahead_audio_offset,
+         preempt->frames);
+   unsigned left;
+
+   /* A slot per held frame and one for the frame run, each with room
+    * for several frames' audio */
+   if (audio_delay && !preempt->audio)
+   {
+      const struct retro_system_timing *timing =
+            &video_state_get_ptr()->av_info.timing;
+      size_t per_frame    = (timing->fps > 0.0)
+            ? (size_t)(timing->sample_rate / timing->fps) : 0;
+      preempt->audio_slot = 2 * MAX(per_frame * 4, 4096);
+      if (!(preempt->audio = (int16_t*)malloc((preempt->frames + 1)
+                  * preempt->audio_slot * sizeof(int16_t))))
+         audio_delay = 0;
+   }
 
    /* Poll and check for dirty input */
    preempt_input_poll(preempt, runloop_st, input_max_users);
@@ -2169,9 +2214,12 @@ bool preempt_run(preempt_t *preempt, void *data)
          goto error;
       }
 
-      current_core->retro_run();
-      if (runloop_st->auto_state_load_pending)
-         runloop_st->auto_state_load_core_ran = true;
+      /* The held audio is the replaced timeline's; the last
+       * audio_delay replays are held in its place */
+      preempt->audio_count = 0;
+      left                 = preempt->frames;
+
+      preempt_retro_run(runloop_st, preempt, left-- <= audio_delay);
       preempt->replay_ptr = PREEMPT_NEXT_PTR(preempt->start_ptr);
 
       while (preempt->replay_ptr != preempt->start_ptr)
@@ -2183,9 +2231,7 @@ bool preempt_run(preempt_t *preempt, void *data)
             goto error;
          }
 
-         current_core->retro_run();
-         if (runloop_st->auto_state_load_pending)
-            runloop_st->auto_state_load_core_ran = true;
+         preempt_retro_run(runloop_st, preempt, left-- <= audio_delay);
          preempt->replay_ptr = PREEMPT_NEXT_PTR(preempt->replay_ptr);
       }
 
@@ -2205,10 +2251,16 @@ bool preempt_run(preempt_t *preempt, void *data)
    runloop_st->flags &= ~(RUNLOOP_FLAG_REQUEST_SPECIAL_SAVESTATE
          | RUNLOOP_FLAG_INPUT_IS_DIRTY);
 
-   /* Run normal frame */
-   current_core->retro_run();
-   if (runloop_st->auto_state_load_pending)
-      runloop_st->auto_state_load_core_ran = true;
+   /* Run normal frame, then play what is held past the delay */
+   preempt_retro_run(runloop_st, preempt, audio_delay > 0);
+   for (; preempt->audio_count > audio_delay; preempt->audio_count--)
+   {
+      audio_driver_sample_batch(preempt->audio
+            + preempt->audio_head * preempt->audio_slot,
+            preempt->audio_len[preempt->audio_head] >> 1);
+      preempt->audio_head = (uint8_t)((preempt->audio_head + 1)
+            % (preempt->frames + 1));
+   }
    audio_driver_frame_end();
    preempt->frame_count++;
    return true;

@@ -24224,7 +24224,7 @@ enum msg_hash_enums
 #undef SETTINGS_DEF_STRINGS_PASS
 #undef SETTINGS_DEF_ENUM_PASS
    MENU_LABEL(RUN_AHEAD_UNSUPPORTED),
-   /* GENERATED REGION: run-ahead warnings setting enum rows (see settings/settings_def_runahead_warnings.h). */
+   /* GENERATED REGION: run-ahead warnings and audio offset setting enum rows (see settings/settings_def_runahead_warnings.h and settings_def_run_ahead_audio_offset.h). */
 #define SETTINGS_DEF_ENUM_PASS
 #define SETTINGS_DEF_STRINGS_PASS
 #define S_BOOL(f, T, n, d, sd, df, c, us, sub) MENU_LABEL(T),
@@ -24288,6 +24288,7 @@ enum msg_hash_enums
 #define S_ACTION_EX_H(T, n, sd, ok, rp, c, us, sub) MENU_LBL_H(T),
 #define S_ACTION_EX_NS_H(T, n, sd, ok, rp, c, us) MENU_LBL_H(T),
 #include "settings/settings_def_runahead_warnings.h"
+#include "settings/settings_def_run_ahead_audio_offset.h"
 #undef S_BOOL
 #undef S_BOOL_NS
 #undef S_BOOL_H

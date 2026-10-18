@@ -941,6 +941,10 @@ typedef struct
     * fills the device with silence before writing. See
     * audio_driver_resume_topup(). */
    bool                  resume_topup_pending;
+   /* Main thread only; see audio_driver_hold_begin() */
+   int16_t              *hold_buf;
+   size_t                hold_cap;
+   size_t                hold_len;
 
    /* The layout the device was opened with - AUDIO_LAYOUT_STEREO
     * unless the driver reports a wider one - its channel count, and
@@ -1299,6 +1303,16 @@ void audio_driver_publish_runloop(void);
  * flushes it there.
  **/
 void audio_driver_frame_end(void);
+
+/* Run-Ahead Audio Offset: from audio_driver_hold_begin() until
+ * audio_driver_hold_end(), the core's int16 stereo audio is kept in
+ * @buf (room for @samples int16 samples; any excess is dropped) instead
+ * of being played, even on suspended frames, so it can be played later.
+ * audio_driver_hold_end() returns how many samples were kept. Does
+ * nothing for a core with an audio callback, or with float or
+ * multichannel audio. */
+void audio_driver_hold_begin(int16_t *buf, size_t samples);
+size_t audio_driver_hold_end(void);
 
 /**
  * audio_driver_callback:

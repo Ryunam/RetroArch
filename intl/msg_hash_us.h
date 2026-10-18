@@ -12750,7 +12750,7 @@ MSG_HASH(
    MENU_ENUM_LABEL_VALUE_RUNAHEAD_MODE_PREEMPTIVE_FRAMES,
    "Preemptive Frames Mode"
    )
-/* GENERATED REGION: run-ahead warnings setting (see settings_def_runahead_warnings.h). */
+/* GENERATED REGION: run-ahead warnings and audio offset settings (see settings_def_runahead_warnings.h and settings_def_run_ahead_audio_offset.h). */
 #define SETTINGS_DEF_STRINGS_PASS
 #define S_BOOL(f, T, n, d, sd, df, c, us, sub) \
 MSG_HASH(MENU_ENUM_LABEL_VALUE_##T, us) \
@@ -12773,6 +12773,7 @@ MSG_HASH(MENU_ENUM_SUBLABEL_##T, sub)
 #define S_FLOAT_NS(f, T, n, d, rnd, sd, df, c, mn, mx, st, ok, rp, us) \
 MSG_HASH(MENU_ENUM_LABEL_VALUE_##T, us)
 #include "../settings/settings_def_runahead_warnings.h"
+#include "../settings/settings_def_run_ahead_audio_offset.h"
 #undef S_BOOL
 #undef S_BOOL_NS
 #undef S_UINT

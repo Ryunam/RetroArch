@@ -412,6 +412,7 @@ typedef struct settings
 #endif
 
       unsigned run_ahead_frames;
+      unsigned run_ahead_audio_offset;
 
       unsigned midi_volume;
       unsigned streaming_mode;

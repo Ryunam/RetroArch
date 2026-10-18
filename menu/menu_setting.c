@@ -8397,6 +8397,21 @@ static size_t setting_get_string_representation_runahead_mode(
    }
    return 0;
 }
+
+static size_t setting_get_string_representation_uint_run_ahead_audio_offset(
+      rarch_setting_t *setting, char *s, size_t len)
+{
+   if (setting)
+   {
+      unsigned value = *setting->value.target.unsigned_integer;
+
+      if (value == RUNAHEAD_AUDIO_OFFSET_OFF)
+         return strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_OFF), len);
+      else
+         return snprintf(s, len, "-%u", value);
+   }
+   return 0;
+}
 #endif
 
 static size_t setting_get_string_representation_input_touch_scale(
@@ -11139,9 +11154,9 @@ static void runahead_change_handler(rarch_setting_t *setting)
             settings->bools.preemptive_frames_enable     = false;
             break;
       }
-
-      menu_st->flags |= MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
    }
+
+   menu_st->flags |= MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
 
    preempt_enable     = settings->bools.preemptive_frames_enable;
 #if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
@@ -13307,8 +13322,9 @@ static const setting_desc_t recording_desc_3[] = {
 
 #ifdef HAVE_RUNAHEAD
 static const setting_desc_t runahead_frames_desc[] = {
-/* GENERATED: rows come from settings/settings_def_run_ahead_frames.h in order. */
+/* GENERATED: rows come from settings/settings_def_run_ahead_frames.h and settings_def_run_ahead_audio_offset.h in order. */
 #include "../settings/settings_def_run_ahead_frames.h"
+#include "../settings/settings_def_run_ahead_audio_offset.h"
 };
 #endif
 

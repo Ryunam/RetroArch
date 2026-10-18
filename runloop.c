@@ -3876,8 +3876,9 @@ bool runloop_environment_cb(unsigned cmd, void *data)
          video_driver_state_t *video_st    = video_state_get_ptr();
          audio_driver_state_t *audio_st    = audio_state_get_ptr();
 
-         if (    !(AUDIO_FLAGS_GET(audio_st) & AUDIO_FLAG_SUSPENDED)
-               && (AUDIO_FLAGS_GET(audio_st) & AUDIO_FLAG_ACTIVE))
+         if (     audio_st->hold_buf
+               || (!(AUDIO_FLAGS_GET(audio_st) & AUDIO_FLAG_SUSPENDED)
+               && (AUDIO_FLAGS_GET(audio_st) & AUDIO_FLAG_ACTIVE)))
             result |= RETRO_AV_ENABLE_AUDIO;
 
          /* A frame the fast-forward frameskip drops is not worth

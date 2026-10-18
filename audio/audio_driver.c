@@ -7178,9 +7178,37 @@ static void audio_driver_sample_accum_flush(audio_driver_state_t *audio_st)
    audio_st->data_ptr = 0;
 }
 
+void audio_driver_hold_begin(int16_t *buf, size_t samples)
+{
+   audio_driver_state_t *audio_st = &audio_driver_st;
+   audio_st->hold_len             = 0;
+   if (     !audio_st->callback.callback
+         && !audio_st->core_float
+         && !audio_st->core_multi)
+   {
+      audio_st->hold_buf          = buf;
+      audio_st->hold_cap          = samples;
+   }
+}
+
+size_t audio_driver_hold_end(void)
+{
+   audio_driver_st.hold_buf = NULL;
+   return audio_driver_st.hold_len;
+}
+
 void audio_driver_sample(int16_t left, int16_t right)
 {
    audio_driver_state_t *audio_st  = &audio_driver_st;
+   if (audio_st->hold_buf)
+   {
+      if (audio_st->hold_len + 2 <= audio_st->hold_cap)
+      {
+         audio_st->hold_buf[audio_st->hold_len++] = left;
+         audio_st->hold_buf[audio_st->hold_len++] = right;
+      }
+      return;
+   }
    if (!audio_st->sample_accum)
       return;
    if (AUDIO_FLAGS_GET(audio_st) & AUDIO_FLAG_SUSPENDED)
@@ -7247,6 +7275,18 @@ size_t audio_driver_sample_batch(const int16_t *data, size_t frames)
    audio_driver_state_t *audio_st = &audio_driver_st;
    int aflags                     = AUDIO_FLAGS_GET(audio_st);
    float slowmotion_ratio;
+
+   if (audio_st->hold_buf)
+   {
+      size_t n = MIN(frames << 1, audio_st->hold_cap - audio_st->hold_len);
+      if (data)
+      {
+         memcpy(audio_st->hold_buf + audio_st->hold_len, data,
+               n * sizeof(int16_t));
+         audio_st->hold_len += n;
+      }
+      return frames;
+   }
 
    if ((aflags & AUDIO_FLAG_SUSPENDED) || (frames < 1))
       return frames;

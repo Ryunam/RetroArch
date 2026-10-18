@@ -25,12 +25,18 @@
 #include "core.h"
 
 #define MAX_RUNAHEAD_FRAMES 12
+#define RUNAHEAD_AUDIO_OFFSET_OFF 0
 
 typedef struct preemptive_frames_data
 {
    /* Savestate buffer */
    void* buffer[MAX_RUNAHEAD_FRAMES];
    size_t state_size;
+
+   /* Run-Ahead Audio Offset: held audio, a ring of frames + 1 slots */
+   int16_t *audio;
+   size_t audio_len[MAX_RUNAHEAD_FRAMES + 1];
+   size_t audio_slot;
 
    /* Frame count since buffer init/reset */
    uint64_t frame_count;
@@ -50,6 +56,8 @@ typedef struct preemptive_frames_data
    /* Buffer indexes for replays */
    uint8_t start_ptr;
    uint8_t replay_ptr;
+   uint8_t audio_head;
+   uint8_t audio_count;
    /* Number of latency frames to remove */
    uint8_t frames;
 } preempt_t;
